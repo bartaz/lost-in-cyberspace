@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lost</title>
+    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="./aframe.js"></script>
+<style>
+  body {
+    transition: background-color 1000ms;
+  }
+</style>
+
+  </head>
+  <body>
+    <a-scene cyberspace stats id="scene">
+      <a-assets>
+        <img id="grid" src="grid-lines.png">
+        <img id="frame" src="frame.png">
+      </a-assets>
+      <a-entity id="camera" position="0 0 0">
+        <a-camera>
+        <a-entity cursor
+          position="0 0 -0.5"
+          geometry="primitive: ring; radiusInner: 0.007; radiusOuter: 0.01, segmentsTheta: 32"
+          material="color: white; shader: flat; opacity: 0.8"
+        />
+        </a-camera>
+      </a-entity>
+
+      <a-plane position="0 -1 0" rotation="-90 0 0" width="600" height="600" color="#002"></a-plane>
+      <a-plane position="0 5 0" rotation="90 0 0" width="600" height="600" color="#002"></a-plane>
+    </a-scene>
+
+    <script>
+
+    </script>
+  </body>
+</html>
