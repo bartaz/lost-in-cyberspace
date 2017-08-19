@@ -74,8 +74,13 @@ function randomColors() {
   ]
 }
 
+function randomTarget() {
+  return [randomInt(8), randomInt(8)];
+}
+
 function randomNetwork() {
   return {
+    target: randomTarget(),
     colors: randomColors(),
     walls: randomWalls()
   }
@@ -152,6 +157,14 @@ function getNetworkMap(network) {
     var j = 0;
     return line.join('').replace(/0/g, ' ').replace(/1/g, '&boxh;').replace(/2/g, '&boxv;')
       .replace(/3/g, function(){
+          var node = '@';
+
+          if (network.target) {
+            if ((i === network.target[1] * 2) && (j === network.target[0])) {
+              node = 'X';
+            }
+          }
+
           if (network.colors) {
             var color;
 
@@ -162,10 +175,10 @@ function getNetworkMap(network) {
             }
             j++;
 
-            return '<span style="color: '+ color +'">@</span>';
+            return '<span style="color: '+ color +'">' + node + '</span>';
           };
 
-          return '@';
+          return node;
       });
   }).join('\n');
 
