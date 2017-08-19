@@ -29,33 +29,33 @@ function randomInt(max) {
 }
 
 function randomWalls() {
-  let xSpread = randomInt(6) + 1;
-  let xOffset = randomInt(7);
-  let xWalls = computeWalls(xSpread, xOffset);
+  let rowSpread = randomInt(6) + 1;
+  let rowOffset = randomInt(7);
+  let rowWalls = computeWalls(rowSpread, rowOffset);
 
-  let ySpread = randomInt(6) + 1;
-  let yOffset = randomInt(7);
-  let yWalls = computeWalls(ySpread, yOffset);
+  let colSpread = randomInt(6) + 1;
+  let colOffset = randomInt(7);
+  let colWalls = computeWalls(colSpread, colOffset);
 
   // prefent non connected nodes from appearing in the corners
   if (
-    (xWalls[0] === 1 && yWalls[0] === 1) ||
-    (xWalls[7] === 7 && yWalls[7] === 7) ||
-    (xWalls[0] === 7 && yWalls[7] === 1) ||
-    (xWalls[7] === 1 && yWalls[0] === 7)
+    (rowWalls[0] === 1 && colWalls[0] === 1) ||
+    (rowWalls[7] === 7 && colWalls[7] === 7) ||
+    (rowWalls[0] === 7 && colWalls[7] === 1) ||
+    (rowWalls[7] === 1 && colWalls[0] === 7)
   ) {
-    ySpread = randomInt(6) + 1;
-    yOffset = randomInt(7);
-    yWalls = computeWalls(ySpread, yOffset);
+    colSpread = randomInt(6) + 1;
+    colOffset = randomInt(7);
+    colWalls = computeWalls(colSpread, colOffset);
   }
 
   return {
-    xSpread: xSpread,
-    xOffset: xOffset,
-    ySpread: ySpread,
-    yOffset: yOffset,
-    xWalls: xWalls,
-    yWalls: yWalls
+    rowSpread: rowSpread,
+    rowOffset: rowOffset,
+    colSpread: colSpread,
+    colOffset: colOffset,
+    rowWalls: rowWalls,
+    colWalls: colWalls
   }
 }
 
@@ -112,8 +112,8 @@ function getNetworkMap(network) {
 
   if (network && network.walls) {
     let walls;
-    if (network.walls.xWalls) {
-      walls = network.walls.xWalls;
+    if (network.walls.rowWalls) {
+      walls = network.walls.rowWalls;
       for (i = 0; i < 8; i++) {
         if (walls[i]) {
           networkGrid[i * 2][walls[i] * 2 - 1] = 0;
@@ -121,8 +121,8 @@ function getNetworkMap(network) {
       }
     }
 
-    if (network.walls.yWalls) {
-      walls = network.walls.yWalls;
+    if (network.walls.colWalls) {
+      walls = network.walls.colWalls;
       for (i = 0; i < 8; i++) {
         if (walls[i]) {
           networkGrid[walls[i] * 2 - 1][i * 2] = 0;
