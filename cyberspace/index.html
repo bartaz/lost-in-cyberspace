@@ -5,15 +5,8 @@
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="./aframe.js"></script>
 <style>
-  .a-body {
-    animation: bkg-animate 10s alternate infinite;
-  }
-  @keyframes bkg-animate
-  {
-    0% {background-color: #3E5;}
-    25% {background-color: #3CF;}
-    75% {background-color: #F3C;}
-    100% {background-color: #FF3;}
+  body {
+    transition: background-color 1000ms;
   }
 </style>
 

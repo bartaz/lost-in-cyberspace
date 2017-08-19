@@ -29,7 +29,9 @@ AFRAME.registerComponent('move-on-click', {
           z: cPos.z + ((elPos.z - cPos.z) * progress),
         }
         camera.setAttribute('position', currentPos );
-      }, 1000)
+      }, 1000);
+
+      document.body.style.backgroundColor = el.getAttribute('color');
 
     });
   }
