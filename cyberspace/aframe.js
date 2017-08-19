@@ -53,64 +53,79 @@ function animate(draw, duration) {
     }
   });
 }
-function getBox(pos) {
-  var box = document.createElement('a-box');
-  box.setAttribute('src','#grid');
-  box.setAttribute('position', pos.x + " " + pos.y + " " + pos.z);
-  box.setAttribute('color', "#4CC3D9");
-  box.setAttribute('height', "4");
-  box.setAttribute('width', "4");
-  box.setAttribute('depth', "4");
 
-  return box;
+function createEntity(name, attrs) {
+  const entity = document.createElement(name);
+
+  for (const key in attrs) {
+    let value = attrs[key];
+    if (key === 'position') {
+      value = value.x + " " + value.y + " " + value.z;
+    }
+    entity.setAttribute(key, value);
+  }
+
+  return entity;
+}
+
+function getBox(pos) {
+  return createEntity('a-box', {
+    src: '#grid',
+    position: pos,
+    color: '#fff',
+    height: 4,
+    width: 4,
+    depth: 4
+  });
 }
 
 function getNode(pos, color) {
   var node = document.createElement('a-entity');
 
-  var box = document.createElement('a-box');
+  // node box
+  node.appendChild(createEntity('a-box', {
+    position: pos,
+    color: color,
+    height: 1.5,
+    width: 1.5,
+    depth: 1.5,
+    rotation: '0 45 0',
+    'move-on-click': '',
+    'scale-on-hover': ''
+  }));
 
-  box.setAttribute('position', pos.x + " " + pos.y + " " + pos.z);
-  box.setAttribute('color', color);
-  box.setAttribute('height', "1.5");
-  box.setAttribute('width', "1.5");
-  box.setAttribute('depth', "1.5");
-  box.setAttribute('rotation', "0 45 0");
-  box.setAttribute('move-on-click', '');
-  box.setAttribute('scale-on-hover', '');
-  node.appendChild(box);
+  // node inside bottom frame
+  node.appendChild(createEntity('a-plane', {
+    position: { x: pos.x, y: pos.y - 0.7, z: pos.z },
+    color: color,
+    rotation: '-90 45 0',
+    material: 'transparent:true',
+    src: '#frame',
+    height: 1.4,
+    width: 1.4
+  }));
 
+  // node terminal
+  node.appendChild(createEntity('a-plane', {
+    position: { x: pos.x - 0.5, y: pos.y - 0.4, z: pos.z - 0.5 },
+    color: color,
+    rotation: '-10 45 0',
+    height: 0.5,
+    width: 0.5
+  }));
 
-  var frame = document.createElement('a-plane');
-  frame.setAttribute('position', (pos.x) + " " + (pos.y-0.7) + " " + (pos.z));
-  frame.setAttribute('color', color);
-  frame.setAttribute('rotation', "-90 45 0");
-  frame.setAttribute('material', 'transparent:true')
-  frame.setAttribute('src', "#frame");
-  frame.setAttribute('height', "1.4");
-  frame.setAttribute('width', "1.4");
-  node.appendChild(frame);
-
-  var terminal = document.createElement('a-plane');
-  terminal.setAttribute('position', (pos.x - 0.5) + " " + (pos.y - 0.4) + " " + (pos.z - 0.5));
-  terminal.setAttribute('color', color);
-  terminal.setAttribute('height', "0.5");
-  terminal.setAttribute('width', "0.5");
-  terminal.setAttribute('rotation', "-10 45 0");
-  node.appendChild(terminal);
-
-  var text = document.createElement('a-text');
-  text.setAttribute('position', (pos.x - 0.5) + " " + (pos.y - 0.35) + " " + (pos.z - 0.5));
-  text.setAttribute('color', "#FFF");
-  text.setAttribute('height', "0.45");
-  text.setAttribute('width', "0.45");
-  text.setAttribute('align', "left");
-  text.setAttribute('anchor', "center");
-  text.setAttribute('wrap-count', "10");
-  text.setAttribute('font', "sourcecodepro");
-  text.setAttribute('rotation', "-10 45 0");
-  text.setAttribute('value', "code\n0x475AF\n\n>hack")
-  node.appendChild(text);
+  // node terminal text
+  node.appendChild(createEntity('a-text', {
+    position: { x: pos.x - 0.5, y: pos.y - 0.35, z: pos.z - 0.5 },
+    color: '#fff',
+    rotation: '-10 45 0',
+    height: 0.45,
+    width: 0.45,
+    anchor: 'center',
+    'wrap-count': 10,
+    font: 'sourcecodepro',
+    value: "code\n0x475AF\n\n>hack"
+  }));
 
   return node;
 }
