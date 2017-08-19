@@ -59,8 +59,24 @@ function randomWalls() {
   }
 }
 
+function randomColors() {
+  let colors = [0,1,2,3];
+  let sectorAColor = colors.splice(randomInt(colors.length),1)[0];
+  let sectorBColor = colors.splice(randomInt(colors.length),1)[0];
+  let sectorCColor = colors.splice(randomInt(colors.length),1)[0];
+  let sectorDColor = colors[0];
+
+  return [
+    sectorAColor,
+    sectorBColor,
+    sectorCColor,
+    sectorDColor
+  ]
+}
+
 function randomNetwork() {
   return {
+    colors: randomColors(),
     walls: randomWalls()
   }
 }
@@ -99,6 +115,7 @@ function getNetworkMap(network) {
   // 3 - node
   //const nodesLine = '&block;&boxh;&block;&boxh;&block;&boxh;&block;&boxh;&block;&boxh;&block;&boxh;&block;&boxh;&block;';
   //const linksLine = '&boxv; &boxv; &boxv; &boxv; &boxv; &boxv; &boxv; &boxv;';
+  const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
   const nodesLine = [3,1,3,1,3,1,3,1,3,1,3,1,3,1,3];
   const linksLine = [2,0,2,0,2,0,2,0,2,0,2,0,2,0,2];
   let networkGrid = []
@@ -131,8 +148,25 @@ function getNetworkMap(network) {
     }
   }
   // turn magic numbers into HTML friendly string representation
-  let networkString = networkGrid.map(function(line){
-    return line.join('').replace(/0/g, ' ').replace(/1/g, '&boxh;').replace(/2/g, '&boxv;').replace(/3/g, '@');
+  let networkString = networkGrid.map(function(line, i){
+    var j = 0;
+    return line.join('').replace(/0/g, ' ').replace(/1/g, '&boxh;').replace(/2/g, '&boxv;')
+      .replace(/3/g, function(){
+          if (network.colors) {
+            var color;
+
+            if (i < 8) {
+              color = (j < 4) ? colorCodes[network.colors[0]] : colorCodes[network.colors[1]];
+            } else {
+              color = (j < 4) ? colorCodes[network.colors[2]] : colorCodes[network.colors[3]];
+            }
+            j++;
+
+            return '<span style="color: '+ color +'">@</span>';
+          };
+
+          return '@';
+      });
   }).join('\n');
 
   return networkString;
