@@ -28,6 +28,34 @@ function randomInt(max) {
   return ~~(Math.random() * max)
 }
 
+function createWallsObject(rowSpread, rowOffset, colSpread, colOffset) {
+  if (rowSpread === 0 || colSpread === 0) {
+    return null
+  };
+
+  let rowWalls = computeWalls(rowSpread, rowOffset);
+  let colWalls = computeWalls(colSpread, colOffset);
+
+  // prefent non connected nodes from appearing in the corners
+  if (
+    (rowWalls[0] === 1 && colWalls[0] === 1) ||
+    (rowWalls[7] === 7 && colWalls[7] === 7) ||
+    (rowWalls[0] === 7 && colWalls[7] === 1) ||
+    (rowWalls[7] === 1 && colWalls[0] === 7)
+  ) {
+    return null
+  }
+
+  return {
+    rowSpread: rowSpread,
+    rowOffset: rowOffset,
+    colSpread: colSpread,
+    colOffset: colOffset,
+    rowWalls: rowWalls,
+    colWalls: colWalls
+  }
+}
+
 function randomWalls() {
   let rowSpread = randomInt(6) + 1;
   let rowOffset = randomInt(7);
@@ -57,6 +85,25 @@ function randomWalls() {
     rowWalls: rowWalls,
     colWalls: colWalls
   }
+}
+
+function randomWalls() {
+  let rowSpread = randomInt(6) + 1;
+  let rowOffset = randomInt(7);
+  let colSpread = randomInt(6) + 1;
+  let colOffset = randomInt(7);
+
+  let walls = createWallsObject(rowSpread, rowOffset, colSpread, colOffset);
+
+  // try until valid walls are created
+  while (!walls) {
+    console.log("invalid walls, trying again");
+    colSpread = randomInt(6) + 1;
+    colOffset = randomInt(7);
+    walls = createWallsObject(rowSpread, rowOffset, colSpread, colOffset);
+  }
+
+  return walls;
 }
 
 function randomColors() {
@@ -268,7 +315,7 @@ function colorsToCode(colors) {
   let code = '0x' + type;
 
   for (let i = 0; i < 4; i++) {
-    code = code + colors[i]; // TODO: shift colors
+    code = code + colors[i]; // TODO: shift colors % 4
   }
 
   return code;
@@ -310,6 +357,81 @@ function codeToColors(code) {
   return colors;
 }
 
+// Walls codes
+// -------------
+//
+// 0xT Sr Or Sc Oc
+//
+// T - walls code value T % 4 = 1: [1,5,9,D]
+// Sr - row spread value for computing walls
+//      Sr % 8 gives value of spread [1-7]
+// Or - row offset value for computing walls
+//      0r % 8 gives value of offset [0-7]
+// Sc - column spread value for computing walls
+//      Sr % 8 gives value of spread [1-7]
+// Oc - column offset value for computing walls
+//      0r % 8 gives value of offset [0-7]
+//
+// Spread may not have value of 0.
+// Walls may not generate not connected corners.
+// In such cases code is invalid.
+//
+// Examples:
+// 0x1298E
+// 1 % 4 = 1 (code defines walls)
+// 2 % 8 = 2 (row spread value is 2)
+// 9 % 8 = 1 (row offset value is 1)
+// 8 % 8 = 0 (column spread value is 0)
+// E % 8 = 6 (column spread value is 6)
+// Code is invalid because spread can't be 0
+
+function wallsToCode(walls) {
+  let type = 'D'; // TODO: make it 1,5,9,D later?
+  let code = '0x' + type;
+
+  code = code + walls.rowSpread +
+                walls.rowOffset +
+                walls.colSpread +
+                walls.colOffset; // TODO: shift values % 8
+
+  return code;
+}
+
+// returns walls definition array for given wall code
+// throws if code is invalid
+function codeToWalls(code) {
+  code = code
+    .replace('0x','')
+    .split(''); // turn into array of hex characters
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code length is not valid.');
+  }
+
+  code = code
+    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
+    .filter(function(n) { return !isNaN(n)} ) // get only numbers
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code contains invalid characters');
+  }
+
+  let type = code.shift();
+
+  if (type % 4 !== 1) {
+    throw new Error('Invalid code. Code type is not a walls code');
+  }
+
+  let values = code.map(function(n) { return n % 8 });
+
+  let walls = createWallsObject(values[0], values[1], values[2], values[3]);
+
+  if (!walls) {
+    throw new Error('Invalid code. Code contains invalid walls definition')
+  }
+
+  return walls;
+}
 
 // TESTS
 
@@ -359,7 +481,9 @@ function runTests() {
     codeToColors('C0123').join() === [0,1,2,3].join()
   );
 
-  let err = null;
+  let err;
+
+  err = null;
 
   try {
     codeToColors('12345678');
@@ -371,13 +495,15 @@ function runTests() {
     err
   );
 
+  err = null;
+
   try {
     codeToColors('bączek');
   } catch (e) {
     err = e;
   }
 
-  it('should throw when code length is invalid',
+  it('should throw when code is invalid',
     err
   );
 
@@ -393,6 +519,8 @@ function runTests() {
     codeToColors('80123').join() === [0,1,2,3].join()
   );
 
+  err = null;
+
   try {
     codeToColors('12345');
   } catch (e) {
@@ -407,6 +535,8 @@ function runTests() {
     codeToColors('C05AF').join() === [0,1,2,3].join()
   );
 
+  err = null;
+
   try {
     codeToColors('C4242');
   } catch (e) {
@@ -414,6 +544,111 @@ function runTests() {
   }
 
   it('should throw when code type has duplicated colors',
+    err
+  );
+
+  console.groupEnd();
+
+  console.group('wallsToCode');
+
+  let walls = {
+    rowSpread: 1,
+    rowOffset: 2,
+    colSpread: 3,
+    colOffset: 4
+  }
+
+  it('should return valid code',
+    wallsToCode(walls) === '0xD1234'
+  );
+
+  console.groupEnd();
+
+  console.group('codeToWalls');
+
+  walls;
+
+  walls = codeToWalls('0xD1234');
+  it('should return walls for valid code',
+    walls.rowSpread === 1 && walls.rowOffset === 2 &&
+    walls.colSpread === 3 && walls.colOffset === 4
+  );
+
+  walls = codeToWalls('D1234');
+  it('should return colors for code without 0x',
+    walls.rowSpread === 1 && walls.rowOffset === 2 &&
+    walls.colSpread === 3 && walls.colOffset === 4
+  );
+
+  err = null;
+
+  try {
+    codeToWalls('12345678');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code length is invalid',
+    err
+  );
+
+  err = null;
+
+  try {
+    codeToWalls('bączek');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code is invalid',
+    err
+  );
+
+  walls = codeToWalls('11234');
+  it('should return walls for code for code type 1',
+    walls.rowSpread === 1 && walls.rowOffset === 2 &&
+    walls.colSpread === 3 && walls.colOffset === 4
+  );
+
+  walls = codeToWalls('51234');
+  it('should return colors for code for code type 5',
+    walls.rowSpread === 1 && walls.rowOffset === 2 &&
+    walls.colSpread === 3 && walls.colOffset === 4
+  );
+
+  walls = codeToWalls('91234');
+  it('should return colors for code for code type 9',
+    walls.rowSpread === 1 && walls.rowOffset === 2 &&
+    walls.colSpread === 3 && walls.colOffset === 4
+  );
+
+  err = null;
+
+  try {
+    codeToWalls('01234');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code type is not wall code',
+    err
+  );
+
+  walls = codeToWalls('D1A3C');
+  it('should return walls for code for walls % 8',
+    walls.rowSpread === 1 && walls.rowOffset === 2 &&
+    walls.colSpread === 3 && walls.colOffset === 4
+  );
+
+  err = null;
+
+  try {
+    codeToWalls('D0123');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code has invalid walls definition',
     err
   );
 
