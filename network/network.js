@@ -288,6 +288,26 @@ function getNetworkMap(network) {
 //
 // C - 4 hex values [0-F] defining the code value (depends on code type)
 
+function parseCode(code) {
+  code = code
+    .replace('0x','')
+    .split(''); // turn into array of hex characters
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code length is not valid.');
+  }
+
+  code = code
+    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
+    .filter(function(n) { return !isNaN(n)} ) // get only numbers
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code contains invalid characters');
+  }
+
+  return code;
+}
+
 // Colors codes
 // -------------
 //
@@ -325,21 +345,7 @@ function colorsToCode(colors) {
 // returns colors array for given color code
 // throws if code is invalid
 function codeToColors(code) {
-  code = code
-    .replace('0x','')
-    .split(''); // turn into array of hex characters
-
-  if (code.length !== 5) {
-    throw new Error('Invalid code. Code length is not valid.');
-  }
-
-  code = code
-    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
-    .filter(function(n) { return !isNaN(n)} ) // get only numbers
-
-  if (code.length !== 5) {
-    throw new Error('Invalid code. Code contains invalid characters');
-  }
+  code = parseCode(code);
 
   let type = code.shift();
 
@@ -347,7 +353,11 @@ function codeToColors(code) {
     throw new Error('Invalid code. Code type is not a color code');
   }
 
-  let colors = code.map(function(n) { return n % 4 });
+  return decodeColors(code);
+}
+
+function decodeColors(values) {
+  let colors = values.map(function(n) { return n % 4 });
 
   let hasDuplicates = colors.some(function (c,i) { return colors.indexOf(c) !== i });
 
@@ -357,7 +367,6 @@ function codeToColors(code) {
 
   return colors;
 }
-
 // Walls codes
 // -------------
 //
@@ -408,21 +417,7 @@ function wallsToCode(walls) {
 // returns walls definition array for given wall code
 // throws if code is invalid
 function codeToWalls(code) {
-  code = code
-    .replace('0x','')
-    .split(''); // turn into array of hex characters
-
-  if (code.length !== 5) {
-    throw new Error('Invalid code. Code length is not valid.');
-  }
-
-  code = code
-    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
-    .filter(function(n) { return !isNaN(n)} ) // get only numbers
-
-  if (code.length !== 5) {
-    throw new Error('Invalid code. Code contains invalid characters');
-  }
+  code = parseCode(code);
 
   let type = code.shift();
 
@@ -430,7 +425,11 @@ function codeToWalls(code) {
     throw new Error('Invalid code. Code type is not a walls code');
   }
 
-  let values = code.map(function(n) { return n % 8 });
+  return decodeWalls(code);
+}
+
+function decodeWalls(values) {
+  values = values.map(function(n) { return n % 8 });
 
   let walls = createWallsObject(values[0], values[1], values[2], values[3]);
 
@@ -440,7 +439,6 @@ function codeToWalls(code) {
 
   return walls;
 }
-
 // Traps codes
 // -------------
 //
@@ -476,21 +474,7 @@ function trapsToCode(traps) {
 // returns traps definition for given traps code
 // throws if code is invalid
 function codeToTraps(code) {
-  code = code
-    .replace('0x','')
-    .split(''); // turn into array of hex characters
-
-  if (code.length !== 5) {
-    throw new Error('Invalid code. Code length is not valid.');
-  }
-
-  code = code
-    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
-    .filter(function(n) { return !isNaN(n)} ) // get only numbers
-
-  if (code.length !== 5) {
-    throw new Error('Invalid code. Code contains invalid characters');
-  }
+  code = parseCode(code);
 
   let type = code.shift();
 
@@ -498,7 +482,11 @@ function codeToTraps(code) {
     throw new Error('Invalid code. Code type is not a traps code');
   }
 
-  return createTrapsObject(code);
+  return decodeTraps(code);
+}
+
+function decodeTraps(values) {
+  return createTrapsObject(values);
 }
 
 // Target codes
@@ -544,21 +532,7 @@ function targetToCode(target) {
 // returns target definition for given target code
 // throws if code is invalid
 function codeToTarget(code) {
-  code = code
-    .replace('0x','')
-    .split(''); // turn into array of hex characters
-
-  if (code.length !== 5) {
-    throw new Error('Invalid code. Code length is not valid.');
-  }
-
-  code = code
-    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
-    .filter(function(n) { return !isNaN(n)} ) // get only numbers
-
-  if (code.length !== 5) {
-    throw new Error('Invalid code. Code contains invalid characters');
-  }
+  code = parseCode(code);
 
   let type = code.shift();
 
@@ -566,13 +540,79 @@ function codeToTarget(code) {
     throw new Error('Invalid code. Code type is not a target code');
   }
 
-  let values = code.map(function(n) { return n % 8 });
+  return decodeTarget(code);
+}
+
+function decodeTarget(values) {
+  values = values.map(function(n) { return n % 8 });
 
   if (values[0] !== values[2] || values[1] !== values[3]) {
     throw new Error('Invalid code. Code contains invalid target definition')
   }
 
   return values.splice(0,2);
+}
+
+// Generating network definition from list of codes
+
+function getNetworkCodes(network) {
+  return [
+    colorsToCode(network.colors),
+    wallsToCode(network.walls),
+    trapsToCode(network.traps),
+    targetToCode(network.target)
+  ]
+}
+
+function networkFromCodes(codes) {
+  let network = {};
+  let errors = [];
+
+  if (!codes || !codes.length) {
+    errors.push("No codes defined")
+  } else {
+    for (let i = 0; i < codes.length; i++) {
+      let code = codes[i];
+      let parsed = null;
+
+      try {
+        parsed = parseCode(code);
+      } catch(e) {
+        errors.push(code + ": " + e.message);
+      }
+
+      if (parsed) {
+        let type = parsed.shift() % 4;
+
+        try {
+          switch(type) {
+            case 0:
+            network.colors = decodeColors(parsed);
+            break;
+            case 1:
+            network.walls = decodeWalls(parsed);
+            break;
+            case 2:
+            network.traps = decodeTraps(parsed);
+            break;
+            case 3:
+            network.target = decodeTarget(parsed);
+            break;
+          }
+          // TODO: check if multiple codes of same type are given
+          // TODO: check if traps conflict with target
+        } catch (e) {
+          errors.push(code + ": " + e.message);
+        }
+      }
+    }
+  }
+
+  if (errors.length) {
+    network.errors = errors;
+  }
+
+  return network;
 }
 
 // TESTS
