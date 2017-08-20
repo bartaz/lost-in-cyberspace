@@ -13,25 +13,28 @@ Terminal.prototype.submitInput = function () {
   this.currentValue = this.domManipulator.getInputValue();
 
   if (this.currentValue === "help") {
-    this.domManipulator.showOptionsList()
+    this.domManipulator.showOptionsList();
   } else if (this.currentValue === "map" || this.currentValue.substring(0, 4) === "map ") {
-    let codes = this.currentValue.substring(4).split(" ")
-    this.domManipulator.showMap(codes)
+    let codes = this.currentValue.substring(4).split(" ");
+    this.domManipulator.showMap(codes);
   } else {
-    this.domManipulator.showCommandNotFound()
+    this.domManipulator.showCommandNotFound();
   }
+
+  this.domManipulator.scrollToBottom();
 };
 
 Terminal.prototype.setFocus = function () {
-  this.domManipulator.setFocusToInput()
+  this.domManipulator.setFocusToInput();
 };
 
 Terminal.prototype.restorePrevCommand = function () {
-  this.domManipulator.setInputValue(this.currentValue)
+  this.domManipulator.setInputValue(this.currentValue);
+  this.domManipulator.setFocusToInput();
 };
 
 Terminal.prototype.clearInput = function () {
-  this.domManipulator.setInputValue("")
+  this.domManipulator.setInputValue("");
 };
 
 new Terminal();

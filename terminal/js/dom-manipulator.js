@@ -20,16 +20,15 @@ DomManipulator.prototype.showOptionsList = function () {
   this.createParagraph("<div class=\"uppercase mar-ver--sm\">Name </div>"
   + "<div class=\"pad-lft--md mar-ver--sm\"><b>map</b> -- Display actual map of nodes</div>"
   + "<div class=\"uppercase mar-ver--sm\">Synopsis </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\"><b>map</b> [HEX_NODE_CODE ...]</div>"
+  + "<div class=\"pad-lft--md mar-ver--sm\"><b>map</b> [NODE_CODE ...]</div>"
   + "<div class=\"uppercase mar-ver--sm\">Description </div>"
-  + "<div class=\"pad-lft--md wide mar-ver--sm\"><b>map</b> is a command to display actual map of nodes. The user must provide node codes [HEX_NODE_CODE] to include node details and hints on the map. "
+  + "<div class=\"pad-lft--md wide mar-ver--sm\"><b>map</b> is a command to display actual map of nodes. The user must provide node codes [NODE_CODE] to include node details and hints on the map. "
   + "<br/><br/>The code structure is built of 5 hex values preceded with `0x`. "
-  + "<br/><br/>The hex values define either type of the code or it's value. "
-  + "<br/><br/>There are 4 types of hints that can be shown on the map: [Colors], [Target], [Traps] and [Connections]. "
-  + "<br/><br/>The <b>map</b> command accepts multiple codes.</div>"
+  + "<br/><br/>There are 4 types of hints that can be shown on the map: [Sectors], [Target], [Traps] and [Connections]. "
+  + "<br/><br/>The <b>map</b> command accepts multiple codes with or without preceded `0x`.</div>"
   + "<div class=\"uppercase mar-ver--sm\">Examples </div>"
   + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display map of nodes with [Target] and [Traps]</div>"
-  + "<div class=\"pad-lft--lg mar-ver--sm\">map 0xEF4D0 0xB129A</div>"
+  + "<div class=\"pad-lft--lg mar-ver--sm\">map 0xEF4D0 B129A</div>"
   + "<br/><br/><div class=\"uppercase mar-ver--sm\">Name </div>"
   + "<div class=\"pad-lft--md mar-ver--sm\"><b>help</b> -- Display list of options</div>"
   + "<div class=\"uppercase mar-ver--sm\">Synopsis </div>"
@@ -73,25 +72,25 @@ DomManipulator.prototype.showErrors = function (codes, errors) {
 DomManipulator.prototype.prepareLegend = function (code) {
   let result = "<ul class=\"terminal--map-legend\">";
     if (code.colors && code.colors.length) {
-      result = result + "<li class=\"color-green\">Colors: &#10003;</li>";
+      result = result + "<li class=\"color-springgreen\">Sectors: &#10003;</li>";
     } else {
-      result = result + "<li class=\"color-red\">Colors: &#10007;</li>";
+      result = result + "<li class=\"color-red\">Sectors: &#10007;</li>";
     }
 
     if (code.target && code.target.length) {
-      result = result + "<li class=\"color-green\">Target: &#10003;</li>";
+      result = result + "<li class=\"color-springgreen\">Target: &#10003;</li>";
     } else {
       result = result + "<li class=\"color-red\">Target: &#10007;</li>";
     }
 
     if (code.traps) {
-      result = result + "<li class=\"color-green\">Traps: &#10003;</li>";
+      result = result + "<li class=\"color-springgreen\">Traps: &#10003;</li>";
     } else {
       result = result + "<li class=\"color-red\">Traps: &#10007;</li>";
     }
 
     if (code.walls) {
-      result = result + "<li class=\"color-green\">Connections: &#10003;</li>";
+      result = result + "<li class=\"color-springgreen\">Connections: &#10003;</li>";
     } else {
       result = result + "<li class=\"color-red\">Connections: &#10007;</li>";
     }
@@ -108,4 +107,8 @@ DomManipulator.prototype.createParagraph = function (innerHtml, classNames = "",
   p.setAttribute("class", classNames);
   p.innerHTML = innerHtml;
   parentNode.appendChild(p);
+};
+
+DomManipulator.prototype.scrollToBottom = function () {
+  window.scrollTo(0, document.body.scrollHeight);
 };
