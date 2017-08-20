@@ -177,15 +177,8 @@ function getNetworkMap(network) {
     }
   }
 
-  // if network has definition of traps put them on the map
-  if (network.traps && network.traps.trapsXY) {
-    for (let trap of network.traps.trapsXY) {
-      networkGrid[trap[1] * 2][trap[0] * 2] = 4;
-    }
-  }
-
   // if network has definition of target
-  if (network.traps && network.traps.trapsXY) {
+  if (network.target) {
     networkGrid[network.target[1] * 2][network.target[0] * 2] = 5;
   }
 
