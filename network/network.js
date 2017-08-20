@@ -38,7 +38,7 @@ function randomWalls() {
   let colWalls = computeWalls(colSpread, colOffset);
 
   // prefent non connected nodes from appearing in the corners
-  if (
+  while (
     (rowWalls[0] === 1 && colWalls[0] === 1) ||
     (rowWalls[7] === 7 && colWalls[7] === 7) ||
     (rowWalls[0] === 7 && colWalls[7] === 1) ||
@@ -78,8 +78,49 @@ function randomTarget() {
   return [randomInt(8), randomInt(8)];
 }
 
-function randomNetwork() {
+function randomTraps() {
+  let trapsSeed = [
+    randomInt(16),
+    randomInt(16),
+    randomInt(16),
+    randomInt(16),
+  ];
+  let trapsXY = [];
+
+  for (let i = 0; i < 4; i++) {
+    let seed = trapsSeed[i]
+    let xy = [seed % 4, ~~(seed / 4)];
+    if (i === 1 || i === 3) {
+      xy[0] = xy[0] + 4; // move x coord for sectors B and D
+    }
+    if (i === 2 || i === 3) {
+      xy[1] = xy[1] + 4; // move y coord for sectors C and D
+    }
+    trapsXY.push(xy);
+  }
+
   return {
+    trapsSeed: trapsSeed,
+    trapsXY: trapsXY
+  }
+}
+
+function randomNetwork() {
+  let traps = randomTraps();
+  let target = randomTarget();
+
+  // prevent target from appearing on traps
+  while (
+    target.join() === traps.trapsXY[0].join() ||
+    target.join() === traps.trapsXY[1].join() ||
+    target.join() === traps.trapsXY[2].join() ||
+    target.join() === traps.trapsXY[3].join()
+  ) {
+    target = randomTarget();
+  }
+
+  return {
+    traps: randomTraps(),
     target: randomTarget(),
     colors: randomColors(),
     walls: randomWalls()
@@ -154,26 +195,36 @@ function getNetworkMap(network) {
   }
   // turn magic numbers into HTML friendly string representation
   let networkString = networkGrid.map(function(line, i){
-    var j = 0;
+    var x = 0;
     return line.join('').replace(/0/g, ' ').replace(/1/g, '-').replace(/2/g, '|')
       .replace(/3/g, function(){
+          let y = i / 2;
           var node = '&#9670;';
 
           if (network.target) {
-            if ((i === network.target[1] * 2) && (j === network.target[0])) {
+            if ((y === network.target[1]) && (x === network.target[0])) {
               node = 'X';
+            }
+          }
+
+          if (network.traps && network.traps.trapsXY) {
+            for (let trap of network.traps.trapsXY) {
+              if ((x === trap[0]) && (y === trap[1])) {
+                node = '!';
+              }
             }
           }
 
           if (network.colors) {
             var color;
 
-            if (i < 8) {
-              color = (j < 4) ? colorCodes[network.colors[0]] : colorCodes[network.colors[1]];
+            if (y < 4) {
+              color = (x < 4) ? colorCodes[network.colors[0]] : colorCodes[network.colors[1]];
             } else {
-              color = (j < 4) ? colorCodes[network.colors[2]] : colorCodes[network.colors[3]];
+              color = (x < 4) ? colorCodes[network.colors[2]] : colorCodes[network.colors[3]];
             }
-            j++;
+
+            x++;
 
             return '<span style="color: '+ color +'">' + node + '</span>';
           };
