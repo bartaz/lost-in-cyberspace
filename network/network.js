@@ -200,7 +200,7 @@ function getNetworkMap(network) {
     }
   }
 
-  // if network has definition of walls put them into map
+  // if network has definition of walls/connections put them into map
   if (network && network.walls) {
     let walls;
     if (network.walls.rowWalls) {
@@ -239,7 +239,18 @@ function getNetworkMap(network) {
     var x = 0;
     return line.join('')
       .replace(/0/g, ' ') // print walls
-      .replace(/1/g, '-').replace(/2/g, '|') // print connections
+      .replace(/1|2/g, function(value) { // print connections
+        if (network && network.walls) { //if network has connections
+          if (value === '1') {
+            return '-'
+          }
+          if (value === '2') {
+            return '|'
+          }
+        } else { //by default dont show connections at all
+          return ' '
+        }
+      })
       .replace(/3|4|5/g, function(value) { // print nodes (including traps & target)
           let y = i / 2;
           var node = '&#9670;'; // standard node
@@ -367,7 +378,7 @@ function decodeColors(values) {
 
   return colors;
 }
-// Walls codes
+// Walls/connections codes
 // -------------
 //
 // 0xT Sr Or Sc Oc
