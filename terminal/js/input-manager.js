@@ -30,6 +30,10 @@ InputManager.prototype.listen = function () {
     // Enter key submits the command
     if (!modifiers && event.which === 13) {
       self.emit("submit");
+    } else if (!modifiers && event.which === 38) { //Arrow up shows 1 previous command
+      self.emit("restorePrevCommand");
+    } else if (!modifiers && event.which === 40) { //Arrow down clears input
+      self.emit("clear");
     }
   });
 

@@ -29,36 +29,31 @@ DomManipulator.prototype.showCommandNotFound = function () {
 
 DomManipulator.prototype.showMap = function (codes) {
   this.showSubmittedValue();
-  console.log(codes)
-  let testcode = {
-    colors: [1, 0, 2, 3],
-    target: [1, 4],
-    traps: {
-      trapsSeed: [5, 4, 9, 9],
-      trapsXY: [
-        [1, 1],
-        [4, 1],
-        [1, 6],
-        [5, 6]
-      ]
-    },
-    walls: {
-      colOffset: 1,
-      colSpread: 2,
-      colWalls: [4, 1, 5, 2, 6, 3, 7, 0],
-      rowOffset: 5,
-      rowSpread: 5,
-      rowWalls: [1, 6, 3, 0, 5, 2, 7, 4],
-    }
-  }
-  this.createParagraph("<span class=\"uppercase\">Map: </span>")
-  this.createParagraph(getNetworkMap(testcode) + this.prepareLegend(testcode), "terminal--map")
+  let network = networkFromCodes(codes);
+  // map 0xD1234 0xC16F8 0xEF4D0 0xB129A correct
+  // map 0xF298E 0xEF4D0 0x1298E 0x44206 invalid
+  this.createParagraph("<span class=\"uppercase\">Map: </span>");
+  this.createParagraph(getNetworkMap(network) + this.prepareLegend(network), "terminal--map");
+  this.showErrors(codes, network.errors);
   this.setInputValue("");
 };
 
+DomManipulator.prototype.showErrors = function (codes, errors) {
+  if (codes.length === 1 && codes[0] === "") {
+    this.createParagraph("Invalid empty code.");
+    return;
+  }
+  if (!errors || !errors.length) return;
+
+  let that = this;
+
+  errors.forEach(function(error) {
+    that.createParagraph(error);
+  })
+}
+
 DomManipulator.prototype.prepareLegend = function (code) {
   let result = "<ul class=\"terminal--map-legend\">";
-  //codes.forEach(function(code, index) {
     if (code.colors && code.colors.length) {
       result = result + "<li>Colors: &#10003;</li>";
     } else {
@@ -78,11 +73,10 @@ DomManipulator.prototype.prepareLegend = function (code) {
     }
 
     if (code.walls) {
-      result = result + "<li>Walls: &#10003;</li>";
+      result = result + "<li>Connections: &#10003;</li>";
     } else {
-      result = result + "<li>Walls: &#10007;</li>";
+      result = result + "<li>Connections: &#10007;</li>";
     }
-  //})
 
   return result + "</ul>";
 };
@@ -93,7 +87,7 @@ DomManipulator.prototype.showSubmittedValue = function () {
 
 DomManipulator.prototype.createParagraph = function (innerHtml, classNames = "", parentNode = this.terminal) {
   let p = document.createElement("p");
-  p.setAttribute("class", classNames)
-  p.innerHTML = innerHtml
+  p.setAttribute("class", classNames);
+  p.innerHTML = innerHtml;
   parentNode.appendChild(p);
 };
