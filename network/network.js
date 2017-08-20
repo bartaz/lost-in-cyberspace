@@ -228,6 +228,95 @@ function getNetworkMap(network) {
   return networkString;
 }
 
+// GENERATING NETWORK CODES
+// ==========================
+
+// Code structure
+// ----------------
+//
+// 0xTCCCC
+//
+// 0x - just a prefix to make it fancy
+//
+// T  - hex value [0-F] defining type of the code (colors, walls, traps, target)
+//      T % 4 gives a number 0-3: (0: colors, 1: walls, 2: traps, 3: target)
+//
+// C - 4 hex values [0-F] defining the code value (depends on code type)
+
+// Colors codes
+// -------------
+//
+// 0xTABCD
+//
+// T - color code value T % 4 = 0: [0,4,8,C]
+// ABCD - colors of corresponding sectors (A, B, C, D)
+//        number on each position % 4 gives 0-3: id of a color
+//
+// Color of each sector needs to be different, otherwise code is invalid.
+//
+// Examples:
+// 0xC16F8
+// C % 4 = 0 (code defines color, C for color ;)
+// 1 % 4 = 1 (color of sector A is 1)
+// 6 % 4 = 2 (color of sector B is 2)
+// F % 4 = 3 (color of sector C is 3)
+// 8 % 4 = 0 (color of sector D is 0)
+//
+// 0x44206
+// 4 % 4 = 0 (code defines color)
+// 4 % 4 = 0 (color of sector A is 0)
+// 2 % 4 = 2 (color of sector B is 2)
+// 0 % 4 = 0 (color of sector C is 0)
+// 6 % 4 = 2 (color of sector D is 2)
+// Code is invalid as it has duplicated colors
+
+function colorsToCode(colors) {
+  let type = 'C'; // TODO: make it 0,4,8,C later?
+  let code = '0x' + type;
+
+  for (let i = 0; i < 4; i++) {
+    code = code + colors[i]; // TODO: shift colors
+  }
+
+  return code;
+}
+
+// returns colors array for given color code
+// throws if code is invalid
+function codeToColors(code) {
+  code = code
+    .replace('0x','')
+    .split(''); // turn into array of hex characters
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code length is not valid.');
+  }
+
+  code = code
+    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
+    .filter(function(n) { return !isNaN(n)} ) // get only numbers
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code contains invalid characters');
+  }
+
+  let type = code.shift();
+
+  if (type % 4 !== 0) {
+    throw new Error('Invalid code. Code type is not a color code');
+  }
+
+  let colors = code.map(function(n) { return n % 4 });
+
+  let hasDuplicates = colors.some(function (c,i) { return colors.indexOf(c) !== i });
+
+  if (hasDuplicates) {
+    throw new Error('Invalid code. Duplicated colors in different sectors');
+  }
+
+  return colors;
+}
+
 
 // TESTS
 
@@ -256,15 +345,84 @@ function runTests() {
   );
 
   console.groupEnd();
+
+  console.group('colorsToCode');
+
+  let colors = [0,1,2,3];
+
+  it('should return valid code',
+    colorsToCode(colors) === '0xC0123'
+  );
+
+  console.groupEnd();
+
+  console.group('codeToColors');
+
+  it('should return colors for valid code',
+    codeToColors('0xC0123').join() === [0,1,2,3].join()
+  );
+
+  it('should return colors for code without 0x',
+    codeToColors('C0123').join() === [0,1,2,3].join()
+  );
+
+  let err = null;
+
+  try {
+    codeToColors('12345678');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code length is invalid',
+    err
+  );
+
+  try {
+    codeToColors('bączek');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code length is invalid',
+    err
+  );
+
+  it('should return colors for code for code type 0',
+    codeToColors('00123').join() === [0,1,2,3].join()
+  );
+
+  it('should return colors for code for code type 4',
+    codeToColors('40123').join() === [0,1,2,3].join()
+  );
+
+  it('should return colors for code for code type 8',
+    codeToColors('80123').join() === [0,1,2,3].join()
+  );
+
+  try {
+    codeToColors('12345');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code type is not color code',
+    err
+  );
+
+  it('should return colors for code for colors % 4',
+    codeToColors('C05AF').join() === [0,1,2,3].join()
+  );
+
+  try {
+    codeToColors('C4242');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code type has duplicated colors',
+    err
+  );
+
+  console.groupEnd();
 }
-
-
-
-
-
-
-
-
-
-
-// TEST RUN IN HTML
