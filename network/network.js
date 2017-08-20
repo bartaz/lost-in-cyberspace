@@ -501,6 +501,80 @@ function codeToTraps(code) {
   return createTrapsObject(code);
 }
 
+// Target codes
+// -------------
+//
+// 0xTXYXY
+//
+// T - traps code value T % 4 = 3: [3,7,B,F]
+// XY - target coordinates in the network
+//      each number % 8 is a X/Y coordinate 0-7
+//
+// Second pair of XY in the code is currently not used for any additional data.
+// It should contain duplicated values of previous XY, which can be used to
+// verify if code is valid.
+//
+// Examples:
+// 0xB129A
+// B % 4 = 3 (code defines target)
+// 1 % 8 = 1 (X coordinate of target in network is 1)
+// 2 % 8 = 2 (Y coordinate of target in network is 2)
+// 9 % 8 = 1 (duplicated X coordinate of target in network is 1)
+// A % 8 = 2 (duplicated Y coordinate of target in network is 2)
+//
+// 0xF298E
+// F % 4 = 3 (code defines target)
+// 2 % 8 = 2 (X coordinate of target in network is 2)
+// 9 % 8 = 1 (Y coordinate of target in network is 1)
+// 8 % 8 = 0 (duplicated X coordinate of target in network is 0)
+// E % 8 = 6 (duplicated Y coordinate of target in network is 6)
+// Code is invalid because duplicated coordinates don't match
+
+function targetToCode(target) {
+  let type = 'F'; // TODO: make it 3,7,B,F later?
+  let code = '0x' + type;
+
+  code = code + target.join('') + target
+    .map(function(t) { return (t + 8).toString(16).toUpperCase() })
+    .join('');
+
+  return code;
+}
+
+// returns target definition for given target code
+// throws if code is invalid
+function codeToTarget(code) {
+  code = code
+    .replace('0x','')
+    .split(''); // turn into array of hex characters
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code length is not valid.');
+  }
+
+  code = code
+    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
+    .filter(function(n) { return !isNaN(n)} ) // get only numbers
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code contains invalid characters');
+  }
+
+  let type = code.shift();
+
+  if (type % 4 !== 3) {
+    throw new Error('Invalid code. Code type is not a target code');
+  }
+
+  let values = code.map(function(n) { return n % 8 });
+
+  if (values[0] !== values[2] || values[1] !== values[3]) {
+    throw new Error('Invalid code. Code contains invalid target definition')
+  }
+
+  return values.splice(0,2);
+}
+
 // TESTS
 
 function runTests() {
@@ -638,8 +712,6 @@ function runTests() {
   console.groupEnd();
 
   console.group('codeToWalls');
-
-  walls;
 
   walls = codeToWalls('0xD1234');
   it('should return walls for valid code',
@@ -782,11 +854,11 @@ function runTests() {
     codeToTraps('0x21234').trapsSeed.join() === [1,2,3,4].join()
   );
 
-  it('should return colors for code for code type 4',
+  it('should return colors for code for code type 6',
     codeToTraps('0x61234').trapsSeed.join() === [1,2,3,4].join()
   );
 
-  it('should return colors for code for code type 8',
+  it('should return colors for code for code type A',
     codeToTraps('0xA1234').trapsSeed.join() === [1,2,3,4].join()
   );
 
@@ -805,6 +877,94 @@ function runTests() {
   random = randomTraps();
   it('should decode the same object that was coded',
     JSON.stringify(codeToTraps(trapsToCode(random))) === JSON.stringify(random)
+  );
+
+  console.groupEnd();
+
+  console.group('targetToCode');
+
+  let target = [4,2];
+
+  it('should return valid code',
+    targetToCode(target) === '0xF42CA'
+  );
+
+  console.groupEnd();
+
+  console.group('codeToTarget');
+
+  it('should return target for valid code',
+    codeToTarget('0xF129A').join() === [1,2].join()
+  );
+
+  it('should return colors for code without 0x',
+    codeToTarget('0xF129A').join() === [1,2].join()
+  );
+
+  err = null;
+
+  try {
+    codeToTarget('12345678');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code length is invalid',
+    err
+  );
+
+  err = null;
+
+  try {
+    codeToTarget('bączek');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code is invalid',
+    err
+  );
+
+  it('should return traps for code for code type 3',
+    codeToTarget('0xF129A').join() === [1,2].join()
+  );
+
+  it('should return colors for code for code type 7',
+    codeToTarget('0x7129A').join() === [1,2].join()
+  );
+
+  it('should return colors for code for code type B',
+    codeToTarget('0xB129A').join() === [1,2].join()
+  );
+
+  err = null;
+
+  try {
+    codeToTarget('02105');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code type is not target code',
+    err
+  );
+
+  err = null;
+
+  try {
+    codeToTarget('F1234');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code does not contain duplicated target',
+    err
+  );
+
+
+  random = randomTarget();
+  it('should decode the same object that was coded',
+    JSON.stringify(codeToTarget(targetToCode(random))) === JSON.stringify(random)
   );
 
   console.groupEnd();
