@@ -9,8 +9,11 @@ function Terminal() {
 Terminal.prototype.submitInput = function () {
   let currentValue = this.domManipulator.getInputValue();
 
-  if (currentValue === 'help') {
+  if (currentValue === "help") {
     this.domManipulator.showOptionsList()
+  } else if (currentValue === "map" || currentValue.substring(0, 4) === "map ") {
+    let codes = currentValue.substring(4).split(" ")
+    this.domManipulator.showMap(codes)
   } else {
     this.domManipulator.showCommandNotFound()
   }
