@@ -155,9 +155,9 @@ function getNetworkMap(network) {
   // turn magic numbers into HTML friendly string representation
   let networkString = networkGrid.map(function(line, i){
     var j = 0;
-    return line.join('').replace(/0/g, ' ').replace(/1/g, '&boxh;').replace(/2/g, '&boxv;')
+    return line.join('').replace(/0/g, ' ').replace(/1/g, '-').replace(/2/g, '|')
       .replace(/3/g, function(){
-          var node = '@';
+          var node = '&#9670;';
 
           if (network.target) {
             if ((i === network.target[1] * 2) && (j === network.target[0])) {
