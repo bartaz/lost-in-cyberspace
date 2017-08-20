@@ -155,17 +155,19 @@ function runTests() {
 }
 
 function getNetworkMap(network) {
+  const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
+
   // 0 - wall (nothing)
   // 1 - connection h
   // 2 - connection v
   // 3 - node
-  //const nodesLine = '&block;&boxh;&block;&boxh;&block;&boxh;&block;&boxh;&block;&boxh;&block;&boxh;&block;&boxh;&block;';
-  //const linksLine = '&boxv; &boxv; &boxv; &boxv; &boxv; &boxv; &boxv; &boxv;';
-  const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
+  // 4 - trap
+  // 5 - target
   const nodesLine = [3,1,3,1,3,1,3,1,3,1,3,1,3,1,3];
   const linksLine = [2,0,2,0,2,0,2,0,2,0,2,0,2,0,2];
   let networkGrid = []
 
+  // create a default empty network map
   for (let i = 0; i < 8; i++) {
     networkGrid.push(nodesLine.slice(0));
     if (i < 7) {
@@ -173,6 +175,7 @@ function getNetworkMap(network) {
     }
   }
 
+  // if network has definition of walls put them into map
   if (network && network.walls) {
     let walls;
     if (network.walls.rowWalls) {
@@ -193,26 +196,42 @@ function getNetworkMap(network) {
       }
     }
   }
+
+  // if network has definition of traps put them on the map
+  if (network.traps && network.traps.trapsXY) {
+    for (let trap of network.traps.trapsXY) {
+      networkGrid[trap[1] * 2][trap[0] * 2] = 4;
+    }
+  }
+
+  // if network has definition of traps put them on the map
+  if (network.traps && network.traps.trapsXY) {
+    for (let trap of network.traps.trapsXY) {
+      networkGrid[trap[1] * 2][trap[0] * 2] = 4;
+    }
+  }
+
+  // if network has definition of target
+  if (network.traps && network.traps.trapsXY) {
+    networkGrid[network.target[1] * 2][network.target[0] * 2] = 5;
+  }
+
   // turn magic numbers into HTML friendly string representation
   let networkString = networkGrid.map(function(line, i){
     var x = 0;
-    return line.join('').replace(/0/g, ' ').replace(/1/g, '-').replace(/2/g, '|')
-      .replace(/3/g, function(){
+    return line.join('')
+      .replace(/0/g, ' ') // print walls
+      .replace(/1/g, '-').replace(/2/g, '|') // print connections
+      .replace(/3|4|5/g, function(value) { // print nodes (including traps & target)
           let y = i / 2;
-          var node = '&#9670;';
+          var node = '&#9670;'; // standard node
 
-          if (network.target) {
-            if ((y === network.target[1]) && (x === network.target[0])) {
-              node = 'X';
-            }
+          if (value === '4') { // it's a trap!
+            node = '!'
           }
 
-          if (network.traps && network.traps.trapsXY) {
-            for (let trap of network.traps.trapsXY) {
-              if ((x === trap[0]) && (y === trap[1])) {
-                node = '!';
-              }
-            }
+          if (value === '5') { // target
+            node = 'X'
           }
 
           if (network.colors) {
