@@ -17,9 +17,18 @@
   <script>
     runTests();
 
-    var n = networkFromCodes(["0xC2310", "0xD4643", "0xECE33", "0xF43CB"]); // randomNetwork();
+    var n = randomNetwork();
     console.log("Codes", getNetworkCodes(n));
     console.log("Network to print:", n);
     document.body.innerHTML = getNetworkMap(n);
+    checkIfNodesAreConnected(n.walls.rowWalls, n.walls.colWalls);
+
+    // for (var i = 0; i < 1000; i++) {
+    //   n = randomNetwork();
+    //   var valid = checkIfNodesAreConnected(n.walls.rowWalls, n.walls.colWalls);
+    //   if (!valid) {
+    //     console.log("invalid");
+    //   }
+    // }
   </script>
 </html>

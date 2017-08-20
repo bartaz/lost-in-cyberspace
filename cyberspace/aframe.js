@@ -153,7 +153,7 @@ function getNode(pos, node) {
 
 function initNetwork() {
   // TODO: not hardcoded network
-  return networkFromCodes(["0xC2310", "0xD4643", "0xECE33", "0xF43CB"]);
+  return randomNetwork();// networkFromCodes(["0xC2310", "0xD4643", "0xECE33", "0xF43CB"]);
 }
 
 AFRAME.registerComponent('cyberspace', {

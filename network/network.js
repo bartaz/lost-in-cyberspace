@@ -56,6 +56,99 @@ function createWallsObject(rowSpread, rowOffset, colSpread, colOffset) {
   }
 }
 
+function checkIfNodesAreConnected(rowWalls, colWalls) {
+  let nodes = [];
+
+  for (let i = 0; i < 8; i++) {
+    nodes[i] = [];
+    for (let j = 0; j < 8; j++) {
+      nodes[i][j] = 0;
+    }
+  }
+
+//  console.log(nodes);
+
+  visitNode(nodes, 0,0, rowWalls, colWalls);
+
+  console.log(nodes);
+
+  nodes = nodes.reduce(function (a, b){ return a.concat(b)});
+
+  return (nodes.indexOf(0) === -1);
+}
+
+function visitNode(nodes, x, y, rowWalls, colWalls) {
+  if (nodes[x][y]) { // if already visited
+    nodes[x][y]++
+    return
+  }
+//  console.log('visiting', x, y);
+
+  nodes[x][y] = 1; // mark visited
+
+  let nx, ny; // neighbour coords
+
+  // neighbour to the left
+  // x-1, y
+  nx = x-1;
+  ny = y;
+  if (nx >= 0) {
+//    console.log("going left", nx, ny);
+    if ((rowWalls[y] !== x) &&  // is this node connected to left?
+        (7 - colWalls[y] !== x)
+    ) {
+      visitNode(nodes, nx, ny, rowWalls, colWalls);
+    }else {
+//      console.log('wall');
+    }
+  }
+
+  // neighbour to the right
+  // x+1, y
+  nx = x+1;
+  ny = y;
+  if (nx < 8) {
+//    console.log("going right", nx, ny);
+    if ((rowWalls[y] !== nx) &&  // is neighbour connected to left?
+        (7 - colWalls[y] !== nx)
+    ) {
+      visitNode(nodes, nx, ny, rowWalls, colWalls);
+    }else {
+//      console.log('wall');
+    }
+  }
+
+  // neighbour to the top
+  // x, y-1
+  nx = x;
+  ny = y-1;
+  if (ny >= 0) {
+//    console.log("going up", nx, ny);
+    if ((colWalls[x] !== y) &&  // is this node connected to top?
+        (7 - rowWalls[x] !== y)
+    ) {
+      visitNode(nodes, nx, ny, rowWalls, colWalls);
+    } else {
+//      console.log('wall');
+    }
+  }
+
+  // neighbour to the bottom
+  // x, y+1
+  nx = x;
+  ny = y+1;
+  if (ny < 8) {
+//    console.log("going down", nx, ny);
+    if ((colWalls[x] !== ny) &&  // is neighbour connected to top?
+        (7 - rowWalls[x] !== ny)
+    ) {
+      visitNode(nodes, nx, ny, rowWalls, colWalls);
+    }else {
+//      console.log('wall');
+    }
+  }
+}
+
 function randomWalls() {
   let rowSpread = randomInt(6) + 1;
   let rowOffset = randomInt(7);
@@ -97,7 +190,7 @@ function randomWalls() {
 
   // try until valid walls are created
   while (!walls) {
-    console.log("invalid walls, trying again");
+    // console.log("invalid walls, trying again");
     colSpread = randomInt(6) + 1;
     colOffset = randomInt(7);
     walls = createWallsObject(rowSpread, rowOffset, colSpread, colOffset);
@@ -209,6 +302,9 @@ function getNetworkMap(network) {
         if (walls[i]) {
           networkGrid[i * 2][walls[i] * 2 - 1] = 0;
         }
+        if (7 - walls[i]) {
+          networkGrid[(7 - walls[i]) * 2 - 1][i * 2] = 0;
+        }
       }
     }
 
@@ -217,6 +313,9 @@ function getNetworkMap(network) {
       for (i = 0; i < 8; i++) {
         if (walls[i]) {
           networkGrid[walls[i] * 2 - 1][i * 2] = 0;
+        }
+        if (7 - walls[i]) {
+          networkGrid[i * 2][(7 - walls[i]) * 2 - 1] = 0;
         }
       }
     }
