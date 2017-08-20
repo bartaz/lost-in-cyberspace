@@ -17,7 +17,8 @@
   <script>
     runTests();
 
-    var n = randomNetwork();
+    var n = networkFromCodes(["0xC2310", "0xD4643", "0xECE33", "0xF43CB"]); // randomNetwork();
+    console.log("Codes", getNetworkCodes(n));
     console.log("Network to print:", n);
     document.body.innerHTML = getNetworkMap(n);
   </script>

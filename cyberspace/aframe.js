@@ -31,8 +31,17 @@ AFRAME.registerComponent('move-on-click', {
         camera.setAttribute('position', currentPos );
       }, 1000);
 
-      document.body.style.backgroundColor = el.getAttribute('color');
-
+      // TODO: this is a hack and it doesn't work in VR mode :(
+      // only in browser preview body is visible through transparency
+      if (el.parentEl.data) {
+        if (el.parentEl.data.isTrap) {
+          document.body.style.backgroundColor = 'red';
+        } else {
+          document.body.style.backgroundColor = el.parentEl.data.colorValue;
+        }
+      } else {
+        document.body.style.backgroundColor = el.getAttribute('color');
+      }
     });
   }
 });
@@ -74,18 +83,19 @@ function getBox(pos) {
   return createEntity('a-box', {
     src: '#grid',
     position: pos,
-    color: '#fff',
+    color: '#FFF', // TODO: change 'ambient color'
     height: 4,
     width: 4,
     depth: 4
   });
 }
 
-function getNode(pos, color) {
-  var node = document.createElement('a-entity');
+function getNode(pos, node) {
+  let color = node.colorValue;
+  var nodeEl = document.createElement('a-entity');
 
   // node box
-  node.appendChild(createEntity('a-box', {
+  nodeEl.appendChild(createEntity('a-box', {
     position: pos,
     color: color,
     height: 1.5,
@@ -97,9 +107,9 @@ function getNode(pos, color) {
   }));
 
   // node inside bottom frame
-  node.appendChild(createEntity('a-plane', {
+  nodeEl.appendChild(createEntity('a-plane', {
     position: { x: pos.x, y: pos.y - 0.7, z: pos.z },
-    color: color,
+    color: node.isTrap ? 'red' : color,
     rotation: '-90 45 0',
     material: 'transparent:true',
     src: '#frame',
@@ -108,16 +118,23 @@ function getNode(pos, color) {
   }));
 
   // node terminal
-  node.appendChild(createEntity('a-plane', {
+  nodeEl.appendChild(createEntity('a-plane', {
     position: { x: pos.x - 0.5, y: pos.y - 0.4, z: pos.z - 0.5 },
-    color: color,
+    color: node.isTrap ? 'red' : color,
     rotation: '-10 45 0',
     height: 0.5,
     width: 0.5
   }));
 
   // node terminal text
-  node.appendChild(createEntity('a-text', {
+  let text = 'node\n' + node.code;
+  if (node.isTrap) {
+    text = 'intruder\ndetected!'
+  }
+  if (node.isTarget) {
+    text = 'target'
+  }
+  nodeEl.appendChild(createEntity('a-text', {
     position: { x: pos.x - 0.5, y: pos.y - 0.35, z: pos.z - 0.5 },
     color: '#fff',
     rotation: '-10 45 0',
@@ -126,37 +143,130 @@ function getNode(pos, color) {
     anchor: 'center',
     'wrap-count': 10,
     font: 'sourcecodepro',
-    value: "code\n0x475AF\n\n>hack"
+    value: text + "\n\n>hack"
   }));
 
-  return node;
+  nodeEl.data = node;
+
+  return nodeEl;
+}
+
+function initNetwork() {
+  // TODO: not hardcoded network
+  return networkFromCodes(["0xC2310", "0xD4643", "0xECE33", "0xF43CB"]);
 }
 
 AFRAME.registerComponent('cyberspace', {
   init: function () {
-    var scene = this.el;
+    // TODO: share with terminal
+    const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
 
-    for (var i = 0; i <= 16; i++) {
-      for (var j = 0; j <= 16; j++) {
-        var pos = {
+    let scene = this.el;
+
+    let network = initNetwork();
+
+    // walls
+    for (let i = 0; i <= 16; i++) {
+      for (let j = 0; j <= 16; j++) {
+        // position of walls cube
+        let pos = {
           x: (i * 4),
           y: 2,
           z: (j * 4),
         }
 
-        if (i === 0 || i == 16 ||
+        if (i === 0 || i == 16 || // fill walls around the maze
             j == 0 || j == 16 ||
-            ((i % 2 === 0) && (j % 2 === 0)) ||
-            ((((i % 2 === 0) && (j % 2 === 1)) || ((i % 2 === 1) && (j % 2 === 0))) && Math.random() < 0.25)
+            ((i % 2 === 0) && (j % 2 === 0))// fill every second sqare in the maze (corners)
         ) {
           scene.appendChild(getBox(pos));
         }
+      }
+    }
 
-        if ((i % 2 === 1) && (j % 2 === 1)) {
-          pos.y = 1.7;
-          var color = ['#3E5', '#3CF', '#FF3', '#F3C'][~~(Math.random() * 4)];
-          scene.appendChild(getNode(pos, color))
+    // additional walls from network definition
+    for (let i = 0; i < 8; i++) {
+      let wall = network.walls.rowWalls[i];
+
+      if (wall) {
+        let pos = {
+          x: (wall * 2 * 4), // wall x * 2 grid columns * 4 units
+          y: 2,
+          z: ((i * 2 + 1) * 4) // row * 2 grid rows starting from 1 * 4 units
         }
+        scene.appendChild(getBox(pos));
+      }
+
+      wall = network.walls.colWalls[i];
+
+      if (wall) {
+        let pos = {
+          x: ((i * 2 + 1) * 4), // col * 2 grid cols starting from 1 * 4 units
+          y: 2,
+          z: (wall * 2 * 4) // wall y * 2 grid rows * 4 units
+        }
+        scene.appendChild(getBox(pos));
+      }
+    }
+
+    // nodes
+    let nodes = [];
+
+    // get network codes and randomize their order
+    let tmp = getNetworkCodes(network);
+    let codes = [];
+    codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
+    codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
+    codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
+    codes.push(tmp[0]);
+
+    // init node object values
+    for (let i = 0; i < 8; i++) {
+      nodes[i] = [];
+      for (let j = 0; j < 8; j++) {
+        let node = {
+          colorId: null,
+          colorValue: null,
+          isTrap: false,
+          isTarget: false,
+          el: null,
+        }
+
+        // node sector colors and codes
+        if (j < 4) {
+          node.colorId = (i < 4) ? network.colors[0] : network.colors[1];
+          node.code = (i < 4) ? codes[0] : codes[1];
+        } else {
+          node.colorId = (i < 4) ? network.colors[2] : network.colors[3];
+          node.code = (i < 4) ? codes[2] : codes[3];
+        }
+
+        node.colorValue = colorCodes[node.colorId];
+        nodes[i][j] = node;
+      }
+    }
+
+    // traps
+    for (let i = 0; i < 4; i++) {
+      let trap = network.traps.trapsXY[i];
+      console.log(trap);
+      nodes[trap[0]][trap[1]].isTrap = true;
+      console.log(nodes[trap[0], trap[1]]);
+    }
+
+    // target
+    nodes[network.target[0]][network.target[1]].isTarget = true;
+
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        let pos = {
+          x: ((i * 2 + 1) * 4),
+          y: 1.7,
+          z: ((j * 2 + 1) * 4),
+        }
+
+        nodes[i][j].el = getNode(pos, nodes[i][j]);
+        scene.appendChild(nodes[i][j].el);
       }
     }
 
