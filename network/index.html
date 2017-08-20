@@ -11,5 +11,14 @@
       color: #EEE;
     }
   </style>
-  <script defer src="./network.js"></script>
+  <body>
+  </body>
+  <script src="./network.js"></script>
+  <script>
+    runTests();
+
+    var n = randomNetwork();
+    console.log("Network to print:", n);
+    document.body.innerHTML = getNetworkMap(n);
+  </script>
 </html>

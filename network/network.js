@@ -127,33 +127,6 @@ function randomNetwork() {
   }
 }
 
-function runTests() {
-
-  function it(message, condition) {
-    console[condition ? 'info' : 'error'](message);
-  }
-
-  console.group('computeWalls');
-
-  it('should return sorted array for spread and offset 0',
-    computeWalls(0,0).join() === [0,1,2,3,4,5,6,7].join()
-  );
-
-  it('should return array with defined spread of values',
-    computeWalls(3,0).join() === [0,3,6,1,4,7,2,5].join()
-  );
-
-  it('should return valid array for spread that would overlap',
-    computeWalls(4,0).join() === [0,2,4,6,1,3,5,7].join()
-  );
-
-  it('should offset array by given number',
-    computeWalls(0,5).join() === [5,6,7,0,1,2,3,4].join()
-  );
-
-  console.groupEnd();
-}
-
 function getNetworkMap(network) {
   const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
 
@@ -255,6 +228,43 @@ function getNetworkMap(network) {
   return networkString;
 }
 
-var n = randomNetwork();
-console.log(n);
-document.body.innerHTML = getNetworkMap(n);
+
+// TESTS
+
+function runTests() {
+
+  function it(message, condition) {
+    console[condition ? 'info' : 'error'](message);
+  }
+
+  console.group('computeWalls');
+
+  it('should return sorted array for spread and offset 0',
+    computeWalls(0,0).join() === [0,1,2,3,4,5,6,7].join()
+  );
+
+  it('should return array with defined spread of values',
+    computeWalls(3,0).join() === [0,3,6,1,4,7,2,5].join()
+  );
+
+  it('should return valid array for spread that would overlap',
+    computeWalls(4,0).join() === [0,2,4,6,1,3,5,7].join()
+  );
+
+  it('should offset array by given number',
+    computeWalls(0,5).join() === [5,6,7,0,1,2,3,4].join()
+  );
+
+  console.groupEnd();
+}
+
+
+
+
+
+
+
+
+
+
+// TEST RUN IN HTML
