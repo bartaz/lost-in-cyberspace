@@ -125,13 +125,7 @@ function randomTarget() {
   return [randomInt(8), randomInt(8)];
 }
 
-function randomTraps() {
-  let trapsSeed = [
-    randomInt(16),
-    randomInt(16),
-    randomInt(16),
-    randomInt(16),
-  ];
+function createTrapsObject(trapsSeed) {
   let trapsXY = [];
 
   for (let i = 0; i < 4; i++) {
@@ -150,6 +144,17 @@ function randomTraps() {
     trapsSeed: trapsSeed,
     trapsXY: trapsXY
   }
+}
+
+function randomTraps() {
+  let trapsSeed = [
+    randomInt(16),
+    randomInt(16),
+    randomInt(16),
+    randomInt(16),
+  ];
+
+  return createTrapsObject(trapsSeed);
 }
 
 function randomNetwork() {
@@ -312,11 +317,7 @@ function getNetworkMap(network) {
 
 function colorsToCode(colors) {
   let type = 'C'; // TODO: make it 0,4,8,C later?
-  let code = '0x' + type;
-
-  for (let i = 0; i < 4; i++) {
-    code = code + colors[i]; // TODO: shift colors % 4
-  }
+  let code = '0x' + type + colors.join(''); // TODO: shift colors % 4
 
   return code;
 }
@@ -377,6 +378,13 @@ function codeToColors(code) {
 // In such cases code is invalid.
 //
 // Examples:
+// 0xD1234
+// D % 4 = 1 (code defines walls)
+// 1 % 8 = 1 (row spread value is 1)
+// 2 % 8 = 2 (row offset value is 2)
+// 3 % 8 = 3 (column spread value is 3)
+// 4 % 8 = 4 (column spread value is 4)
+//
 // 0x1298E
 // 1 % 4 = 1 (code defines walls)
 // 2 % 8 = 2 (row spread value is 2)
@@ -431,6 +439,66 @@ function codeToWalls(code) {
   }
 
   return walls;
+}
+
+// Traps codes
+// -------------
+//
+// 0xTABCD
+//
+// T - traps code value T % 4 = 2: [2,6,A,E]
+// ABCD - traps positions in corresponding sectors (A, B, C, D)
+//        number on each position [0-15] defines position of trap in given sector:
+//            0  1  2  3
+//            4  5  6  7
+//            8  9 10 11
+//           12 13 14 15
+//
+// Examples:
+// 0xEF4D0
+// E % 4 = 2 (code defines traps)
+// F = 15 (trap position in sector A is 15, so its coors are [3,3] in whole network)
+// 4      (trap position in sector B is 4, so its coors are [4,1] in whole network)
+// D = 1  (trap position in sector C is 1, so its coors are [1,4] in whole network)
+// 0      (trap position in sector D is 1, so its coors are [4,4] in whole network)
+
+function trapsToCode(traps) {
+  let type = 'E'; // TODO: make it 2,6,A,E later?
+  let code = '0x' + type;
+
+  code = code + traps.trapsSeed
+    .map(function(t) { return t.toString(16).toUpperCase() })
+    .join('');
+
+  return code;
+}
+
+// returns traps definition for given traps code
+// throws if code is invalid
+function codeToTraps(code) {
+  code = code
+    .replace('0x','')
+    .split(''); // turn into array of hex characters
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code length is not valid.');
+  }
+
+  code = code
+    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
+    .filter(function(n) { return !isNaN(n)} ) // get only numbers
+
+  if (code.length !== 5) {
+    throw new Error('Invalid code. Code contains invalid characters');
+  }
+
+  let type = code.shift();
+
+  if (type % 4 !== 2) {
+    throw new Error('Invalid code. Code type is not a traps code');
+  }
+
+  return createTrapsObject(code);
 }
 
 // TESTS
@@ -547,6 +615,11 @@ function runTests() {
     err
   );
 
+  let random = randomColors();
+  it('should decode the same object that was coded',
+    JSON.stringify(codeToColors(colorsToCode(random))) === JSON.stringify(random)
+  );
+
   console.groupEnd();
 
   console.group('wallsToCode');
@@ -650,6 +723,88 @@ function runTests() {
 
   it('should throw when code has invalid walls definition',
     err
+  );
+
+  random = randomWalls();
+  it('should decode the same object that was coded',
+    JSON.stringify(codeToWalls(wallsToCode(random))) === JSON.stringify(random)
+  );
+
+  console.groupEnd();
+
+  console.group('trapsToCode');
+
+  let traps = {
+    trapsSeed: [9,10,11,12]
+  }
+
+  it('should return valid code',
+    trapsToCode(traps) === '0xE9ABC'
+  );
+
+  console.groupEnd();
+
+  console.group('codeToTraps');
+
+  it('should return traps for valid code',
+    codeToTraps('0xE1234').trapsSeed.join() === [1,2,3,4].join()
+  );
+
+  it('should return colors for code without 0x',
+    codeToTraps('0xE1234').trapsSeed.join() === [1,2,3,4].join()
+  );
+
+  err = null;
+
+  try {
+    codeToColors('12345678');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code length is invalid',
+    err
+  );
+
+  err = null;
+
+  try {
+    codeToColors('bączek');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code is invalid',
+    err
+  );
+
+  it('should return traps for code for code type 2',
+    codeToTraps('0x21234').trapsSeed.join() === [1,2,3,4].join()
+  );
+
+  it('should return colors for code for code type 4',
+    codeToTraps('0x61234').trapsSeed.join() === [1,2,3,4].join()
+  );
+
+  it('should return colors for code for code type 8',
+    codeToTraps('0xA1234').trapsSeed.join() === [1,2,3,4].join()
+  );
+
+  err = null;
+
+  try {
+    codeToTraps('32105');
+  } catch (e) {
+    err = e;
+  }
+
+  it('should throw when code type is not traps code',
+    err
+  );
+
+  random = randomTraps();
+  it('should decode the same object that was coded',
+    JSON.stringify(codeToTraps(trapsToCode(random))) === JSON.stringify(random)
   );
 
   console.groupEnd();
