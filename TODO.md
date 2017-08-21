@@ -1,4 +1,6 @@
 ### Terminal:
+- [ ] font in map doesn't work in Firefox (lines don't align)
+  - choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
 - [ ] there is no cursor at the end of input after copying value
 - [ ] cannot copy example code
 - [ ] what characters to use for nodes/traps/target ?
@@ -35,6 +37,12 @@
 - injecting scripts into HTML doesn't support external files (like aframe from CDN)
 - build process doesn't copy other files (images, etc)
 - use ES6? we need different uglify package
+
+## Help and tips
+
+- we need to better explain how to play the game both in VR and terminal
+- VR needs some tips on reading codes, hacking and navigating
+- terminal needs some help on using codes and reading the map
 
 ### General:
 - what ES6 features can we use natively (to make code nicer and shorter)?

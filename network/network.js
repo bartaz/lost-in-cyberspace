@@ -695,15 +695,19 @@ function networkFromCodes(codes) {
           switch(type) {
             case 0:
             network.colors = decodeColors(parsed);
+            network.colors.code = code;
             break;
             case 1:
             network.walls = decodeWalls(parsed);
+            network.walls.code = code;
             break;
             case 2:
             network.traps = decodeTraps(parsed);
+            network.traps.code = code;
             break;
             case 3:
             network.target = decodeTarget(parsed);
+            network.target.code = code;
             break;
           }
           // TODO: check if multiple codes of same type are given

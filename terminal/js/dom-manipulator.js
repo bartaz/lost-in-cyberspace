@@ -69,31 +69,39 @@ DomManipulator.prototype.showErrors = function (codes, errors) {
   })
 }
 
-DomManipulator.prototype.prepareLegend = function (code) {
+DomManipulator.prototype.prepareLegend = function (network) {
+  function formatCode(code) {
+    return code ? '0x' + code.replace('0x','').toUpperCase() : 'unknown';
+  }
+
+  function formatLine(colorClass, name, code) {
+    return "<li class='" + colorClass + "'>["+ formatCode(code) +"] " + name + "</li>";
+  }
+
   let result = "<ul class=\"terminal--map-legend\">";
-    if (code.colors && code.colors.length) {
-      result = result + "<li class=\"color-springgreen\">Sectors: &#10003;</li>";
-    } else {
-      result = result + "<li class=\"color-red\">Sectors: &#10007;</li>";
-    }
+  if (network.colors && network.colors.length) {
+    result = result + formatLine('color-springgreen', 'Sectors', network.colors.code);
+  } else {
+    result = result + formatLine('color-red', 'Sectors');
+  }
 
-    if (code.target && code.target.length) {
-      result = result + "<li class=\"color-springgreen\">Target: &#10003;</li>";
-    } else {
-      result = result + "<li class=\"color-red\">Target: &#10007;</li>";
-    }
+  if (network.target && network.target.length) {
+    result = result + formatLine('color-springgreen', 'Target coordinates', network.target.code);
+  } else {
+    result = result + formatLine('color-red', 'Target coordinates');
+  }
 
-    if (code.traps) {
-      result = result + "<li class=\"color-springgreen\">Traps: &#10003;</li>";
-    } else {
-      result = result + "<li class=\"color-red\">Traps: &#10007;</li>";
-    }
+  if (network.traps) {
+    result = result + formatLine('color-springgreen', 'Traps', network.traps.code);
+  } else {
+    result = result + formatLine('color-red', 'Traps');
+  }
 
-    if (code.walls) {
-      result = result + "<li class=\"color-springgreen\">Connections: &#10003;</li>";
-    } else {
-      result = result + "<li class=\"color-red\">Connections: &#10007;</li>";
-    }
+  if (network.walls) {
+    result = result + formatLine('color-springgreen', 'Connections', network.walls.code);
+  } else {
+    result = result + formatLine('color-red', 'Connections');
+  }
 
   return result + "</ul>";
 };
