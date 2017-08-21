@@ -19,7 +19,10 @@
 - traps should reduce time
   - trap = -1m (30sec?)
   - hack = -10sec (so it's not worth hacking blindly)
-- sounds
+- better sounds
+  - sound when entering the trap
+  - sound when time is ticking
+  - sound on win?
 - trigger actions on nodes (hack)
   - show something on hack
   - more actions? access + hack?
@@ -29,6 +32,11 @@
 - hints (text overlays with some tips?)
 - put player in sector with colors or connection codes
 - don't put player on traps
+
+## sounds
+- wrong terminal/trap: [1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5]
+- timer ticking: 1,,0.163,,0.0169,0.4782,,,,,,,,,,,,,1,,,0.1,,0.5
+- jump: 2,0.3,0.11,,0.56,0.4091,,0.1027,,,,-0.02,,0.3075,,,,,0.83,,,0.3,,0.5
 
 ## Network
 

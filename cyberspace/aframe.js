@@ -113,6 +113,7 @@ AFRAME.registerComponent('hack-on-click', {
           console.log("YOU WIN");
         } else {
           console.log("WRONG!");
+          el.components.sound.playSound();
         }
       }
     });
@@ -182,7 +183,8 @@ function getNode(pos, node) {
     'move-on-click': '',
     'scale-on-hover': '',
     'text-on-hover': '',
-    'fuse-on-hover': ''
+    'fuse-on-hover': '',
+    'sound': { src: `url(${jsfxr([2,0.3,0.11,,0.56,0.4091,,0.1027,,,,-0.02,,0.3075,,,,,0.83,,,0.3,,0.5])})`, on: 'click' }
   }));
 
   // node inside bottom frame
@@ -216,7 +218,8 @@ function getNode(pos, node) {
     src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
     'fuse-on-hover': '',
     'text-on-hover': '',
-    'hack-on-click': ''
+    'hack-on-click': '',
+    'sound': { src: `url(${jsfxr([1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5])})`}
   }));
 
   nodeEl.data = node;
