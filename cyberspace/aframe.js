@@ -153,7 +153,8 @@ function getNode(pos, node) {
 
 function initNetwork() {
   // TODO: not hardcoded network
-  return randomNetwork();// networkFromCodes(["0xC2310", "0xD4643", "0xECE33", "0xF43CB"]);
+  return randomNetwork();
+  //return networkFromCodes(["0xC2130", "0xD6451", "0xEFCDE", "0xF058D"]);
 }
 
 AFRAME.registerComponent('cyberspace', {
@@ -184,9 +185,11 @@ AFRAME.registerComponent('cyberspace', {
       }
     }
 
+    // TODO: refactor it DRY
     // additional walls from network definition
     for (let i = 0; i < 8; i++) {
-      let wall = network.walls.rowWalls[i];
+      let walls = network.walls.rowWalls[i];
+      let wall = walls[0];
 
       if (wall) {
         let pos = {
@@ -196,10 +199,29 @@ AFRAME.registerComponent('cyberspace', {
         }
         scene.appendChild(getBox(pos));
       }
+      if (walls[1] && walls[1] !== walls) {
+        wall = walls[1];
+        let pos = {
+          x: (wall * 2 * 4), // wall x * 2 grid columns * 4 units
+          y: 2,
+          z: ((i * 2 + 1) * 4) // row * 2 grid rows starting from 1 * 4 units
+        }
+        scene.appendChild(getBox(pos));
+      }
 
-      wall = network.walls.colWalls[i];
+      walls = network.walls.colWalls[i];
+      wall = walls[0];
 
       if (wall) {
+        let pos = {
+          x: ((i * 2 + 1) * 4), // col * 2 grid cols starting from 1 * 4 units
+          y: 2,
+          z: (wall * 2 * 4) // wall y * 2 grid rows * 4 units
+        }
+        scene.appendChild(getBox(pos));
+      }
+      if (walls[1] && walls[1] !== wall) {
+        wall = walls[1]
         let pos = {
           x: ((i * 2 + 1) * 4), // col * 2 grid cols starting from 1 * 4 units
           y: 2,
