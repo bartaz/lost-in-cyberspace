@@ -1,5 +1,5 @@
 ### Terminal:
-- [ ]choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
+- [ ] choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
 - [ ] cannot copy example code
 - [ ] what characters to use for nodes/traps/target ?
 - [ ] add a legend to map explaining what symbols mean (nodes, traps, etc)
@@ -48,9 +48,12 @@
 - we need to better explain how to play the game both in VR and terminal
 - VR needs some tips on reading codes, hacking and navigating
 - terminal needs some help on using codes and reading the map
+- Description in README and credits for codepen demo https://codepen.io/somethingformed/pen/raWJXV
 
 ### General:
 - what ES6 features can we use natively (to make code nicer and shorter)?
-- [ ] main menu
+- [x] main menu
   - one single index.html to launch both VR and Terminal
     - maybe we could use terminal as starting point and have a command to launch VR from there? - [it will not work well on mobile]
+- test main menu on mobile + FF
+- add favicon?

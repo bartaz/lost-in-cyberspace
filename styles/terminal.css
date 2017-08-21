@@ -9,14 +9,6 @@ p {
     margin: 6px 0;
 }
 
-ul {
-    margin: 0;
-}
-
-li {
-    list-style-type: none;
-}
-
 input {
     font-family: 'Monaco', monospace;
 }
