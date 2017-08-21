@@ -126,24 +126,14 @@ function getNode(pos, node) {
     width: 0.5
   }));
 
-  // node terminal text
-  let text = 'node\n' + node.code;
-  if (node.isTrap) {
-    text = 'intruder\ndetected!'
-  }
-  if (node.isTarget) {
-    text = 'target'
-  }
-  nodeEl.appendChild(createEntity('a-text', {
-    position: { x: pos.x - 0.5, y: pos.y - 0.35, z: pos.z - 0.5 },
-    color: '#fff',
+  // node terminal
+  nodeEl.appendChild(createEntity('a-plane', {
+    position: { x: pos.x - 0.5, y: pos.y - 0.4, z: pos.z - 0.5 },
     rotation: '-10 45 0',
-    height: 0.45,
-    width: 0.45,
-    anchor: 'center',
-    'wrap-count': 10,
-    font: 'sourcecodepro',
-    value: text + "\n\n>hack"
+    height: 0.5,
+    width: 0.5,
+    src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
+    material: 'transparent:true'
   }));
 
   nodeEl.data = node;
@@ -155,6 +145,16 @@ function initNetwork() {
   // TODO: not hardcoded network
   return randomNetwork();
   //return networkFromCodes(["0xC2130", "0xD6451", "0xEFCDE", "0xF058D"]);
+}
+
+
+function drawText(canvas, text) {
+  text = text.split('\n');
+  var ctx = document.getElementById(canvas).getContext('2d');
+  ctx.clearRect(0,0,512,512);
+  ctx.fillStyle = 'white';
+  ctx.font = '64px Monaco, monospace';
+  text.forEach((line,i) => ctx.fillText(line, 10, (i+1) * 64));
 }
 
 AFRAME.registerComponent('cyberspace', {
@@ -235,12 +235,22 @@ AFRAME.registerComponent('cyberspace', {
     let nodes = [];
 
     // get network codes and randomize their order
+    // initial order is color / connections / traps / target
     let tmp = getNetworkCodes(network);
     let codes = [];
     codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
     codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
     codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
     codes.push(tmp[0]);
+
+    // find sectors to put hacker in useful sector first
+    let colorSector = codes.indexOf(tmp[0]);
+    let wallsSector = codes.indexOf(tmp[1]);
+
+    codes.forEach((code, i) => {
+      drawText(`terminal-${i}`, `>access code\n${code}\n\n>hack`);
+    });
+    drawText('terminal-trap', `\n  INTRUDER  \n  DETECTED  \n`);
 
     // init node object values
     for (let i = 0; i < 8; i++) {
@@ -258,9 +268,11 @@ AFRAME.registerComponent('cyberspace', {
         if (j < 4) {
           node.colorId = (i < 4) ? network.colors[0] : network.colors[1];
           node.code = (i < 4) ? codes[0] : codes[1];
+          node.sector = (i < 4) ? 0 : 1;
         } else {
           node.colorId = (i < 4) ? network.colors[2] : network.colors[3];
           node.code = (i < 4) ? codes[2] : codes[3];
+          node.sector = (i < 4) ? 2 : 3;
         }
 
         node.colorValue = colorCodes[node.colorId];

@@ -11,13 +11,16 @@
 
 ## VR
 
-- can't load fonts - use local or canvas
+- canvas textures - refactor it a bit?
+- canvas textures for walls and boxes?
 - display timer
 - show when cursor fuse will trigger click
 - sounds
 - trigger actions on nodes (hack)
 - hints (text overlays with some tips?)
 - put player in sector with colors or connection codes
+- don't put player on traps
+- [x] can't load fonts - use local or canvas
 
 ## Network
 
