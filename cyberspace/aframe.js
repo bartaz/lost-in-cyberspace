@@ -16,16 +16,22 @@ AFRAME.registerComponent('fuse-on-hover', {
     var cursor = document.getElementById("cursor");
     var cancel;
     el.addEventListener('mouseenter', function () {
+      cursor.setAttribute('material', { color: '#002' });
+      cursor.setAttribute('scale', { x: 2, y: 2, z: 2 });
       cancel = animate(function(progress){
         var val = 0.007 - (0.007 - 0.0001) * progress;
         cursor.setAttribute('geometry', { radiusInner: val });
       }, 1500);
     });
     el.addEventListener('mouseleave', function () {
+      cursor.setAttribute('scale', { x: 1, y: 1, z: 1 });
+      cursor.setAttribute('material', { color: 'white' });
       cancel();
       cursor.setAttribute('geometry', { radiusInner: 0.007 });
     });
     el.addEventListener('click', function () {
+      cursor.setAttribute('scale', { x: 1, y: 1, z: 1 });
+      cursor.setAttribute('material', { color: 'white' });
       cancel();
       cursor.setAttribute('geometry', { radiusInner: 0.007 });
     });

@@ -12,29 +12,31 @@
 
 ## VR
 
+- show something on win/loose
 - canvas textures - refactor it a bit?
 - canvas textures for walls and boxes?
-- display timer
+- display timer (better)
+- traps should reduce time
+  - trap = -1m (30sec?)
+  - hack = -10sec (so it's not worth hacking blindly)
 - sounds
 - trigger actions on nodes (hack)
+  - show something on hack
+  - more actions? access + hack?
+  - how not to trigger hack by mistake when looking?
+    - confirm? - another interaction to implement
+    - hack on wrong node is not harmful? (less harmful then trap?)
 - hints (text overlays with some tips?)
 - put player in sector with colors or connection codes
 - don't put player on traps
 
-- [x] show when cursor fuse will trigger click
-- [x] can't load fonts - use local or canvas
-
 ## Network
 
-- better connections: allow only valid maze
-  - make code invalid if it creates invalid maze
-  - update VR code to display new walls
-  - refactor new walls code not to rely on rowWalls and colWalls
+- more traps
 - list errors of invalid or conflicting codes
 - refactor it not to keep everything in global scope
-- more traps
 - detect dead ends and put target there?
-
+- possible bug with target on trap?
 
 ## Build
 
