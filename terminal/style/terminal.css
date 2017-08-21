@@ -1,7 +1,8 @@
 body {
-    background: #000;
+    background: #222;
+    color: #FFF;
     margin: 0;
-    font-family: 'Courier New', monospace;
+    font-family: 'Monaco', monospace;
 }
 
 p {
@@ -17,19 +18,14 @@ li {
 }
 
 input {
-    font-family: 'Courier New', monospace;
+    font-family: 'Monaco', monospace;
 }
 
 .container {
     margin-left: 20px;
 }
 
-.title {
-    color: #FFF;
-}
-
 .terminal {
-    background: #000;
     color: #FFF;
     width: 100%;
     font-size: 1em;
@@ -40,7 +36,6 @@ input {
 }
 
 .terminal--input-wrapper::before {
-    font-family: 'Courier New', monospace;
     content: ">";
     color: #55FF55;
     font-size: 1em;
@@ -66,10 +61,10 @@ input {
 .terminal--input {
     outline: none;
     border: none;
-    background: #000;
+    background: transparent;
     font-size: 1em;
     margin-left: 18px;
-    width: 100%;
+    width: 95px;
     height: 14px;
 }
 

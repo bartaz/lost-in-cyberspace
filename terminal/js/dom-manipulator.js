@@ -1,14 +1,17 @@
 function DomManipulator() {
   this.terminal      = document.getElementById("terminal");
   this.terminalInput = document.getElementById("terminal--input");
-};
+}
 
 DomManipulator.prototype.getInputValue = function () {
   return this.terminalInput.value;
 };
 
 DomManipulator.prototype.setInputValue = function (value) {
-  this.terminalInput.value = value;
+  setTimeout(() => {
+    this.terminalInput.value = value;
+    this.terminalInput.focus();
+  }, 1);
 };
 
 DomManipulator.prototype.setFocusToInput = function () {
@@ -40,7 +43,7 @@ DomManipulator.prototype.showOptionsList = function () {
 
 DomManipulator.prototype.showCommandNotFound = function () {
   this.showSubmittedValue();
-  this.createParagraph("<span class=\"uppercase\">Command not found: </span>" + this.getInputValue())
+  this.createParagraph("<span class=\"uppercase\">Command not found: </span>" + this.getInputValue());
   this.setInputValue("");
 };
 
@@ -66,8 +69,8 @@ DomManipulator.prototype.showErrors = function (codes, errors) {
 
   errors.forEach(function(error) {
     that.createParagraph(error);
-  })
-}
+  });
+};
 
 DomManipulator.prototype.prepareLegend = function (network) {
   function formatCode(code) {

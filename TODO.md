@@ -1,13 +1,14 @@
 ### Terminal:
-- [ ] font in map doesn't work in Firefox (lines don't align)
-  - choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
-- [ ] there is no cursor at the end of input after copying value
+- [ ]choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
 - [ ] cannot copy example code
 - [ ] what characters to use for nodes/traps/target ?
 - [ ] add a legend to map explaining what symbols mean (nodes, traps, etc)
 - [ ] update map command layout to be more 'command line'
 - [ ] maybe help displays list of commands and `help map` or `help help` displays details
 - [ ] easter eggs (some additional commands?)
+
+- [x] there is no cursor at the end of input after copying value
+- [x] font in map doesn't work in Firefox (lines don't align)
 
 ## VR
 
