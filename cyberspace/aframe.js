@@ -1,13 +1,26 @@
 AFRAME.registerComponent('scale-on-hover', {
   init: function () {
     var el = this.el;
+    var cursor = document.getElementById("cursor");
+    var cancel;
     el.addEventListener('mouseenter', function () {
       el.setAttribute('scale', { x: 1.1, y: 1.1, z: 1.1 });
 
+      cancel = animate(function(progress){
+        var val = 0.007 - (0.007 - 0.0001) * progress;
+        cursor.setAttribute('geometry', { radiusInner: val });
+      }, 1500);
     });
     el.addEventListener('mouseleave', function () {
       el.setAttribute('scale', { x: 1, y: 1, z: 1 });
+      cancel();
+      cursor.setAttribute('geometry', { radiusInner: 0.007 });
     });
+    el.addEventListener('click', function () {
+      cancel();
+      cursor.setAttribute('geometry', { radiusInner: 0.007 });
+    });
+
   }
 });
 
@@ -48,6 +61,7 @@ AFRAME.registerComponent('move-on-click', {
 
 function animate(draw, duration) {
   let start = performance.now();
+  let canceled = false;
 
   requestAnimationFrame(function animate(time) {
     // timeFraction goes from 0 to 1
@@ -55,14 +69,16 @@ function animate(draw, duration) {
     if (timeFraction > 1) timeFraction = 1;
 
     // calculate the current animation state
-    let progress = timeFraction
+    let progress = timeFraction;
 
-    draw(progress); // draw it
+    if (!canceled) draw(progress); // draw it
 
-    if (timeFraction < 1) {
+    if (!canceled && timeFraction < 1) {
       requestAnimationFrame(animate);
     }
   });
+
+  return () => { canceled = true; };
 }
 
 function createEntity(name, attrs) {
