@@ -17,6 +17,10 @@
       <a-assets>
         <img id="grid" src="grid-lines.png">
         <img id="frame" src="frame.png">
+        <canvas id="node-0" width=512 height=512 />
+        <canvas id="node-1" width=512 height=512 />
+        <canvas id="node-2" width=512 height=512 />
+        <canvas id="node-3" width=512 height=512 />
         <canvas id="terminal-0" width=512 height=512 />
         <canvas id="terminal-1" width=512 height=512 />
         <canvas id="terminal-2" width=512 height=512 />
@@ -25,7 +29,7 @@
       </a-assets>
       <a-entity id="camera" position="0 0 0">
         <a-camera>
-        <a-entity id="cursor" cursor="fuse: true"
+        <a-entity id="cursor" cursor
           position="0 0 -0.5"
           geometry="primitive: ring; radiusInner: 0.007; radiusOuter: 0.01, segmentsTheta: 32"
           material="color: white; shader: flat; opacity: 0.8"

@@ -1,18 +1,27 @@
 AFRAME.registerComponent('scale-on-hover', {
   init: function () {
     var el = this.el;
+    el.addEventListener('mouseenter', function () {
+      el.setAttribute('scale', { x: 1.1, y: 1.1, z: 1.1 });
+    });
+    el.addEventListener('mouseleave', function () {
+      el.setAttribute('scale', { x: 1, y: 1, z: 1 });
+    });
+  }
+});
+
+AFRAME.registerComponent('fuse-on-hover', {
+  init: function () {
+    var el = this.el;
     var cursor = document.getElementById("cursor");
     var cancel;
     el.addEventListener('mouseenter', function () {
-      el.setAttribute('scale', { x: 1.1, y: 1.1, z: 1.1 });
-
       cancel = animate(function(progress){
         var val = 0.007 - (0.007 - 0.0001) * progress;
         cursor.setAttribute('geometry', { radiusInner: val });
       }, 1500);
     });
     el.addEventListener('mouseleave', function () {
-      el.setAttribute('scale', { x: 1, y: 1, z: 1 });
       cancel();
       cursor.setAttribute('geometry', { radiusInner: 0.007 });
     });
@@ -21,6 +30,33 @@ AFRAME.registerComponent('scale-on-hover', {
       cursor.setAttribute('geometry', { radiusInner: 0.007 });
     });
 
+  }
+});
+
+AFRAME.registerComponent('text-on-hover', {
+  init: function () {
+    var el = this.el;
+    el.addEventListener('mouseenter', function () {
+      if (el.parentNode.data) {
+        var data = el.parentNode.data;
+
+        if (el.className === 'node-box') {
+          drawText(`node-${data.sector}`, '>switch', data.colorValue, 112);
+        } else if (el.className === 'node-terminal') {
+          drawText(`terminal-${data.sector}`, `>access code\n${data.code}\n\n>hack`, data.colorValue);
+        }
+      }
+    });
+    el.addEventListener('mouseleave', function () {
+      if (el.parentNode.data) {
+        var data = el.parentNode.data;
+        if (el.className === 'node-box') {
+          drawText(`node-${data.sector}`, '>', data.colorValue, 112);
+        } else if (el.className === 'node-terminal') {
+          drawText(`terminal-${data.sector}`, `>access code\n${data.code}\n\n>`, data.colorValue);
+        }
+      }
+    });
   }
 });
 
@@ -54,6 +90,24 @@ AFRAME.registerComponent('move-on-click', {
         }
       } else {
         document.body.style.backgroundColor = el.getAttribute('color');
+      }
+    });
+  }
+});
+
+AFRAME.registerComponent('hack-on-click', {
+  init: function () {
+
+    var el = this.el;
+
+    el.addEventListener('click', function () {
+      console.log("HACK");
+      if (el.parentNode.data) {
+        if (el.parentNode.data.isTarget) {
+          console.log("YOU WIN");
+        } else {
+          console.log("WRONG!");
+        }
       }
     });
   }
@@ -112,14 +166,17 @@ function getNode(pos, node) {
 
   // node box
   nodeEl.appendChild(createEntity('a-box', {
+    'class': 'node-box',
+    src: `#node-${node.sector}`,
     position: pos,
-    color: color,
     height: 1.5,
     width: 1.5,
     depth: 1.5,
     rotation: '0 45 0',
     'move-on-click': '',
-    'scale-on-hover': ''
+    'scale-on-hover': '',
+    'text-on-hover': '',
+    'fuse-on-hover': ''
   }));
 
   // node inside bottom frame
@@ -134,22 +191,26 @@ function getNode(pos, node) {
   }));
 
   // node terminal
-  nodeEl.appendChild(createEntity('a-plane', {
-    position: { x: pos.x - 0.5, y: pos.y - 0.4, z: pos.z - 0.5 },
-    color: node.isTrap ? 'red' : color,
-    rotation: '-10 45 0',
-    height: 0.5,
-    width: 0.5
-  }));
+  // nodeEl.appendChild(createEntity('a-plane', {
+  //   position: { x: pos.x - 0.5, y: pos.y - 0.4, z: pos.z - 0.5 },
+  //   color: node.isTrap ? 'red' : color,
+  //   rotation: '-10 45 0',
+  //   height: 0.5,
+  //   width: 0.5,
+  //   'scale-on-hover': ''
+  // }));
 
-  // node terminal
+  // node terminal text
   nodeEl.appendChild(createEntity('a-plane', {
+    'class': 'node-terminal',
     position: { x: pos.x - 0.5, y: pos.y - 0.4, z: pos.z - 0.5 },
     rotation: '-10 45 0',
     height: 0.5,
     width: 0.5,
     src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
-    material: 'transparent:true'
+    'fuse-on-hover': '',
+    'text-on-hover': '',
+    'hack-on-click': ''
   }));
 
   nodeEl.data = node;
@@ -163,24 +224,63 @@ function initNetwork() {
   //return networkFromCodes(["0xC2130", "0xD6451", "0xEFCDE", "0xF058D"]);
 }
 
+function drawTime(time, network, colorCodes) {
+  let min = ~~(time / 60);
+  let sec = time % 60;
 
-function drawText(canvas, text) {
+  let formatted = `0${min}:${sec<10?'0':''}${sec}`;
+
+  console.log(formatted);
+  network.colors.forEach((color, i) => {
+    drawText(`node-${i}`, `>\n\n\n ${formatted}`, colorCodes[color], 112);
+  });
+}
+
+function initTimer(network, colorCodes) {
+  var time = 5 * 60;
+
+  drawTime(time, network, colorCodes);
+  var timer = setInterval(() => {
+    time--;
+    drawTime(time, network, colorCodes);
+
+    if (time <= 0) {
+      console.log('YOU LOOSE!')
+      clearInterval(timer);
+    }
+
+  }, 1000);
+}
+
+function drawText(canvas, text, bgColor, size = 64) {
   text = text.split('\n');
   var ctx = document.getElementById(canvas).getContext('2d');
   ctx.clearRect(0,0,512,512);
+  if (bgColor) {
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0,0,512,512);
+  }
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 1;
   ctx.fillStyle = 'white';
-  ctx.font = '64px Monaco, monospace';
-  text.forEach((line,i) => ctx.fillText(line, 10, (i+1) * 64));
+  ctx.font = `${size}px Monaco, monospace`;
+  text.forEach((line,i) => ctx.fillText(line, 10, (i+1) * size));
+  text.forEach((line,i) => ctx.strokeText(line, 10, (i+1) * size));
 }
 
 AFRAME.registerComponent('cyberspace', {
   init: function () {
     // TODO: share with terminal
+    // TODO: use darker colors (get rid of yellow?);
+    //const colorCodes = ['#1B3', '#1AD', '#F70', '#D1A'];
     const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
+
 
     let scene = this.el;
 
     let network = initNetwork();
+    console.log("NETWORK", network);
+    initTimer(network, colorCodes);
 
     // walls
     for (let i = 0; i <= 16; i++) {
@@ -264,9 +364,13 @@ AFRAME.registerComponent('cyberspace', {
     let wallsSector = codes.indexOf(tmp[1]);
 
     codes.forEach((code, i) => {
-      drawText(`terminal-${i}`, `>access code\n${code}\n\n>hack`);
+      drawText(`terminal-${i}`, `>access code\n${code}\n\n>`, colorCodes[network.colors[i]]);
     });
-    drawText('terminal-trap', `\n  INTRUDER  \n  DETECTED  \n`);
+    drawText('terminal-trap', `\n  INTRUDER  \n  DETECTED  \n`, 'red');
+
+    network.colors.forEach((color, i) => {
+      drawText(`node-${i}`, '>', colorCodes[color], 112);
+    });
 
     // init node object values
     for (let i = 0; i < 8; i++) {
@@ -325,6 +429,7 @@ AFRAME.registerComponent('cyberspace', {
       x: ~~(Math.random() * 8) * 8 + 4,
       y: 0,
       z: ~~(Math.random() * 8) * 8 + 4,
-    })
+    });
+    camera.setAttribute('rotation', '0 45 0');
   }
 });
