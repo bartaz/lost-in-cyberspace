@@ -29,9 +29,14 @@
 - detect dead ends and put target there?
 
 
+## Build
+
+- use npm del package for deleting files
+- injecting scripts into HTML doesn't support external files (like aframe from CDN)
+- build process doesn't copy other files (images, etc)
+- use ES6? we need different uglify package
+
 ### General:
-- [ ] build process
-  - get build tools from last year to copy, minify and zip the package
 - what ES6 features can we use natively (to make code nicer and shorter)?
 - [ ] main menu
   - one single index.html to launch both VR and Terminal
