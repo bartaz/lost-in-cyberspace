@@ -240,17 +240,16 @@ function randomTraps() {
   return createTrapsObject(trapsSeed);
 }
 
+// TODO: possible to generate invalid network (target on a trap?)
 function randomNetwork() {
   let traps = randomTraps();
   let target = randomTarget();
 
   // prevent target from appearing on traps
   while (
-    target.join() === traps.trapsXY[0].join() ||
-    target.join() === traps.trapsXY[1].join() ||
-    target.join() === traps.trapsXY[2].join() ||
-    target.join() === traps.trapsXY[3].join()
+    traps.trapsXY.some((xy) => xy.join() === target.join())
   ) {
+    traps = randomTraps();
     target = randomTarget();
   }
 
