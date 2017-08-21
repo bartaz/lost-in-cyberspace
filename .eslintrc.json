@@ -1,0 +1,15 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "rules": {
+      "indent": ["error", 2, { "SwitchCase": 1 }],
+      "semi": [ "error", "always" ],
+      "no-console": "off",
+      "eqeqeq": "error"
+    }
+}
