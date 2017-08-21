@@ -24,6 +24,14 @@ function computeWalls(spread, offset) {
   return walls;
 }
 
+// combine 2 arrays of walls into 2 arrays of pairs
+function combineWalls(rowWalls, colWalls) {
+  return {
+    rowWalls: rowWalls.map(function(w, i) { return [w, 7 - colWalls[i]] }),
+    colWalls: colWalls.map(function(w, i) { return [w, 7 - rowWalls[i]] })
+  }
+}
+
 function randomInt(max) {
   return ~~(Math.random() * max)
 }
@@ -36,13 +44,10 @@ function createWallsObject(rowSpread, rowOffset, colSpread, colOffset) {
   let rowWalls = computeWalls(rowSpread, rowOffset);
   let colWalls = computeWalls(colSpread, colOffset);
 
-  // prefent non connected nodes from appearing in the corners
-  if (
-    (rowWalls[0] === 1 && colWalls[0] === 1) ||
-    (rowWalls[7] === 7 && colWalls[7] === 7) ||
-    (rowWalls[0] === 7 && colWalls[7] === 1) ||
-    (rowWalls[7] === 1 && colWalls[0] === 7)
-  ) {
+  let walls = combineWalls(rowWalls, colWalls);
+
+  // make sure all nodes are connected
+  if (!areAllNodesConnected(walls.rowWalls, walls.colWalls)) {
     return null
   }
 
@@ -51,12 +56,12 @@ function createWallsObject(rowSpread, rowOffset, colSpread, colOffset) {
     rowOffset: rowOffset,
     colSpread: colSpread,
     colOffset: colOffset,
-    rowWalls: rowWalls,
-    colWalls: colWalls
+    rowWalls: walls.rowWalls,
+    colWalls: walls.colWalls
   }
 }
 
-function checkIfNodesAreConnected(rowWalls, colWalls) {
+function areAllNodesConnected(rowWalls, colWalls) {
   let nodes = [];
 
   for (let i = 0; i < 8; i++) {
@@ -65,12 +70,9 @@ function checkIfNodesAreConnected(rowWalls, colWalls) {
       nodes[i][j] = 0;
     }
   }
-
-//  console.log(nodes);
-
   visitNode(nodes, 0,0, rowWalls, colWalls);
 
-  console.log(nodes);
+  //console.log(nodes);
 
   nodes = nodes.reduce(function (a, b){ return a.concat(b)});
 
@@ -78,73 +80,61 @@ function checkIfNodesAreConnected(rowWalls, colWalls) {
 }
 
 function visitNode(nodes, x, y, rowWalls, colWalls) {
-  if (nodes[x][y]) { // if already visited
+  if (nodes[x][y]) { // if node already visited
     nodes[x][y]++
     return
   }
-//  console.log('visiting', x, y);
+  //console.log('visiting', x, y);
 
   nodes[x][y] = 1; // mark visited
 
   let nx, ny; // neighbour coords
 
-  // neighbour to the left
-  // x-1, y
-  nx = x-1;
-  ny = y;
-  if (nx >= 0) {
-//    console.log("going left", nx, ny);
-    if ((rowWalls[y] !== x) &&  // is this node connected to left?
-        (7 - colWalls[y] !== x)
-    ) {
-      visitNode(nodes, nx, ny, rowWalls, colWalls);
-    }else {
-//      console.log('wall');
-    }
-  }
-
-  // neighbour to the right
-  // x+1, y
+  // neighbour to the right (x+1, y)
   nx = x+1;
   ny = y;
   if (nx < 8) {
-//    console.log("going right", nx, ny);
-    if ((rowWalls[y] !== nx) &&  // is neighbour connected to left?
-        (7 - colWalls[y] !== nx)
-    ) {
-      visitNode(nodes, nx, ny, rowWalls, colWalls);
-    }else {
-//      console.log('wall');
-    }
-  }
-
-  // neighbour to the top
-  // x, y-1
-  nx = x;
-  ny = y-1;
-  if (ny >= 0) {
-//    console.log("going up", nx, ny);
-    if ((colWalls[x] !== y) &&  // is this node connected to top?
-        (7 - rowWalls[x] !== y)
-    ) {
+    //console.log("going right", nx, ny);
+    if (rowWalls[y].indexOf(nx) === -1) {  // is neighbour connected to left?
       visitNode(nodes, nx, ny, rowWalls, colWalls);
     } else {
-//      console.log('wall');
+      //console.log('wall');
     }
   }
 
-  // neighbour to the bottom
-  // x, y+1
+  // neighbour to the bottom (x, y+1)
   nx = x;
   ny = y+1;
   if (ny < 8) {
-//    console.log("going down", nx, ny);
-    if ((colWalls[x] !== ny) &&  // is neighbour connected to top?
-        (7 - rowWalls[x] !== ny)
-    ) {
+    //console.log("going down", nx, ny);
+    if (colWalls[x].indexOf(ny) === -1) {  // is neighbour connected to top?
       visitNode(nodes, nx, ny, rowWalls, colWalls);
-    }else {
-//      console.log('wall');
+    } else {
+      //console.log('wall');
+    }
+  }
+
+  // neighbour to the left (x-1, y)
+  nx = x-1;
+  ny = y;
+  if (nx >= 0) {
+    //console.log("going left", nx, ny);
+    if (rowWalls[y].indexOf(x) === -1) {  // is this node connected to left?
+      visitNode(nodes, nx, ny, rowWalls, colWalls);
+    } else {
+      //console.log('wall');
+    }
+  }
+
+  // neighbour to the top (x, y-1)
+  nx = x;
+  ny = y-1;
+  if (ny >= 0) {
+    //console.log("going up", nx, ny);
+    if (colWalls[x].indexOf(y) === -1) {  // is this node connected to top?
+      visitNode(nodes, nx, ny, rowWalls, colWalls);
+    } else {
+      //console.log('wall');
     }
   }
 }
@@ -190,7 +180,7 @@ function randomWalls() {
 
   // try until valid walls are created
   while (!walls) {
-    // console.log("invalid walls, trying again");
+    console.log("invalid walls, trying again");
     colSpread = randomInt(6) + 1;
     colOffset = randomInt(7);
     walls = createWallsObject(rowSpread, rowOffset, colSpread, colOffset);
@@ -299,24 +289,31 @@ function getNetworkMap(network) {
     if (network.walls.rowWalls) {
       walls = network.walls.rowWalls;
       for (i = 0; i < 8; i++) {
-        if (walls[i]) {
-          networkGrid[i * 2][walls[i] * 2 - 1] = 0;
+        if (walls[i][0]) {
+          networkGrid[i * 2][walls[i][0] * 2 - 1] = 0;
         }
-        if (7 - walls[i]) {
-          networkGrid[(7 - walls[i]) * 2 - 1][i * 2] = 0;
+        if (walls[i][1]) {
+          networkGrid[i * 2][walls[i][1] * 2 - 1] = 0;
         }
+
+        // if (7 - walls[i]) {
+        //   networkGrid[(7 - walls[i]) * 2 - 1][i * 2] = 0;
+        // }
       }
     }
 
     if (network.walls.colWalls) {
       walls = network.walls.colWalls;
       for (i = 0; i < 8; i++) {
-        if (walls[i]) {
-          networkGrid[walls[i] * 2 - 1][i * 2] = 0;
+        if (walls[i][0]) {
+          networkGrid[walls[i][0] * 2 - 1][i * 2] = 0;
         }
-        if (7 - walls[i]) {
-          networkGrid[i * 2][(7 - walls[i]) * 2 - 1] = 0;
+        if (walls[i][1]) {
+          networkGrid[walls[i][1] * 2 - 1][i * 2] = 0;
         }
+        // if (7 - walls[i]) {
+        //   networkGrid[i * 2][(7 - walls[i]) * 2 - 1] = 0;
+        // }
       }
     }
   }
@@ -723,399 +720,4 @@ function networkFromCodes(codes) {
   }
 
   return network;
-}
-
-// TESTS
-
-function runTests() {
-
-  function it(message, condition) {
-    console[condition ? 'info' : 'error'](message);
-  }
-
-  console.group('computeWalls');
-
-  it('should return sorted array for spread and offset 0',
-    computeWalls(0,0).join() === [0,1,2,3,4,5,6,7].join()
-  );
-
-  it('should return array with defined spread of values',
-    computeWalls(3,0).join() === [0,3,6,1,4,7,2,5].join()
-  );
-
-  it('should return valid array for spread that would overlap',
-    computeWalls(4,0).join() === [0,2,4,6,1,3,5,7].join()
-  );
-
-  it('should offset array by given number',
-    computeWalls(0,5).join() === [5,6,7,0,1,2,3,4].join()
-  );
-
-  console.groupEnd();
-
-  console.group('colorsToCode');
-
-  let colors = [0,1,2,3];
-
-  it('should return valid code',
-    colorsToCode(colors) === '0xC0123'
-  );
-
-  console.groupEnd();
-
-  console.group('codeToColors');
-
-  it('should return colors for valid code',
-    codeToColors('0xC0123').join() === [0,1,2,3].join()
-  );
-
-  it('should return colors for code without 0x',
-    codeToColors('C0123').join() === [0,1,2,3].join()
-  );
-
-  let err;
-
-  err = null;
-
-  try {
-    codeToColors('12345678');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code length is invalid',
-    err
-  );
-
-  err = null;
-
-  try {
-    codeToColors('bączek');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code is invalid',
-    err
-  );
-
-  it('should return colors for code for code type 0',
-    codeToColors('00123').join() === [0,1,2,3].join()
-  );
-
-  it('should return colors for code for code type 4',
-    codeToColors('40123').join() === [0,1,2,3].join()
-  );
-
-  it('should return colors for code for code type 8',
-    codeToColors('80123').join() === [0,1,2,3].join()
-  );
-
-  err = null;
-
-  try {
-    codeToColors('12345');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code type is not color code',
-    err
-  );
-
-  it('should return colors for code for colors % 4',
-    codeToColors('C05AF').join() === [0,1,2,3].join()
-  );
-
-  err = null;
-
-  try {
-    codeToColors('C4242');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code type has duplicated colors',
-    err
-  );
-
-  let random = randomColors();
-  it('should decode the same object that was coded',
-    JSON.stringify(codeToColors(colorsToCode(random))) === JSON.stringify(random)
-  );
-
-  console.groupEnd();
-
-  console.group('wallsToCode');
-
-  let walls = {
-    rowSpread: 1,
-    rowOffset: 2,
-    colSpread: 3,
-    colOffset: 4
-  }
-
-  it('should return valid code',
-    wallsToCode(walls) === '0xD1234'
-  );
-
-  console.groupEnd();
-
-  console.group('codeToWalls');
-
-  walls = codeToWalls('0xD1234');
-  it('should return walls for valid code',
-    walls.rowSpread === 1 && walls.rowOffset === 2 &&
-    walls.colSpread === 3 && walls.colOffset === 4
-  );
-
-  walls = codeToWalls('D1234');
-  it('should return colors for code without 0x',
-    walls.rowSpread === 1 && walls.rowOffset === 2 &&
-    walls.colSpread === 3 && walls.colOffset === 4
-  );
-
-  err = null;
-
-  try {
-    codeToWalls('12345678');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code length is invalid',
-    err
-  );
-
-  err = null;
-
-  try {
-    codeToWalls('bączek');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code is invalid',
-    err
-  );
-
-  walls = codeToWalls('11234');
-  it('should return walls for code for code type 1',
-    walls.rowSpread === 1 && walls.rowOffset === 2 &&
-    walls.colSpread === 3 && walls.colOffset === 4
-  );
-
-  walls = codeToWalls('51234');
-  it('should return colors for code for code type 5',
-    walls.rowSpread === 1 && walls.rowOffset === 2 &&
-    walls.colSpread === 3 && walls.colOffset === 4
-  );
-
-  walls = codeToWalls('91234');
-  it('should return colors for code for code type 9',
-    walls.rowSpread === 1 && walls.rowOffset === 2 &&
-    walls.colSpread === 3 && walls.colOffset === 4
-  );
-
-  err = null;
-
-  try {
-    codeToWalls('01234');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code type is not wall code',
-    err
-  );
-
-  walls = codeToWalls('D1A3C');
-  it('should return walls for code for walls % 8',
-    walls.rowSpread === 1 && walls.rowOffset === 2 &&
-    walls.colSpread === 3 && walls.colOffset === 4
-  );
-
-  err = null;
-
-  try {
-    codeToWalls('D0123');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code has invalid walls definition',
-    err
-  );
-
-  random = randomWalls();
-  it('should decode the same object that was coded',
-    JSON.stringify(codeToWalls(wallsToCode(random))) === JSON.stringify(random)
-  );
-
-  console.groupEnd();
-
-  console.group('trapsToCode');
-
-  let traps = {
-    trapsSeed: [9,10,11,12]
-  }
-
-  it('should return valid code',
-    trapsToCode(traps) === '0xE9ABC'
-  );
-
-  console.groupEnd();
-
-  console.group('codeToTraps');
-
-  it('should return traps for valid code',
-    codeToTraps('0xE1234').trapsSeed.join() === [1,2,3,4].join()
-  );
-
-  it('should return colors for code without 0x',
-    codeToTraps('0xE1234').trapsSeed.join() === [1,2,3,4].join()
-  );
-
-  err = null;
-
-  try {
-    codeToColors('12345678');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code length is invalid',
-    err
-  );
-
-  err = null;
-
-  try {
-    codeToColors('bączek');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code is invalid',
-    err
-  );
-
-  it('should return traps for code for code type 2',
-    codeToTraps('0x21234').trapsSeed.join() === [1,2,3,4].join()
-  );
-
-  it('should return colors for code for code type 6',
-    codeToTraps('0x61234').trapsSeed.join() === [1,2,3,4].join()
-  );
-
-  it('should return colors for code for code type A',
-    codeToTraps('0xA1234').trapsSeed.join() === [1,2,3,4].join()
-  );
-
-  err = null;
-
-  try {
-    codeToTraps('32105');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code type is not traps code',
-    err
-  );
-
-  random = randomTraps();
-  it('should decode the same object that was coded',
-    JSON.stringify(codeToTraps(trapsToCode(random))) === JSON.stringify(random)
-  );
-
-  console.groupEnd();
-
-  console.group('targetToCode');
-
-  let target = [4,2];
-
-  it('should return valid code',
-    targetToCode(target) === '0xF42CA'
-  );
-
-  console.groupEnd();
-
-  console.group('codeToTarget');
-
-  it('should return target for valid code',
-    codeToTarget('0xF129A').join() === [1,2].join()
-  );
-
-  it('should return colors for code without 0x',
-    codeToTarget('0xF129A').join() === [1,2].join()
-  );
-
-  err = null;
-
-  try {
-    codeToTarget('12345678');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code length is invalid',
-    err
-  );
-
-  err = null;
-
-  try {
-    codeToTarget('bączek');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code is invalid',
-    err
-  );
-
-  it('should return traps for code for code type 3',
-    codeToTarget('0xF129A').join() === [1,2].join()
-  );
-
-  it('should return colors for code for code type 7',
-    codeToTarget('0x7129A').join() === [1,2].join()
-  );
-
-  it('should return colors for code for code type B',
-    codeToTarget('0xB129A').join() === [1,2].join()
-  );
-
-  err = null;
-
-  try {
-    codeToTarget('02105');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code type is not target code',
-    err
-  );
-
-  err = null;
-
-  try {
-    codeToTarget('F1234');
-  } catch (e) {
-    err = e;
-  }
-
-  it('should throw when code does not contain duplicated target',
-    err
-  );
-
-
-  random = randomTarget();
-  it('should decode the same object that was coded',
-    JSON.stringify(codeToTarget(targetToCode(random))) === JSON.stringify(random)
-  );
-
-  console.groupEnd();
 }

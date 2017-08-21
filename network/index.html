@@ -14,6 +14,7 @@
   <body>
   </body>
   <script src="./network.js"></script>
+  <script src="./network.test.js"></script>
   <script>
     runTests();
 
@@ -21,14 +22,7 @@
     console.log("Codes", getNetworkCodes(n));
     console.log("Network to print:", n);
     document.body.innerHTML = getNetworkMap(n);
-    checkIfNodesAreConnected(n.walls.rowWalls, n.walls.colWalls);
 
-    // for (var i = 0; i < 1000; i++) {
-    //   n = randomNetwork();
-    //   var valid = checkIfNodesAreConnected(n.walls.rowWalls, n.walls.colWalls);
-    //   if (!valid) {
-    //     console.log("invalid");
-    //   }
-    // }
+
   </script>
 </html>
