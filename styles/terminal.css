@@ -16,7 +16,7 @@ ul {
 li {
     list-style-type: none;
 }
- 
+
 input {
     font-family: 'Monaco', monospace;
 }
@@ -64,7 +64,7 @@ input {
     background: transparent;
     font-size: 1em;
     margin-left: 18px;
-    width: 95px;
+    width: 95%;
     height: 14px;
 }
 
