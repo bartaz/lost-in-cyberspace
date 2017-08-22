@@ -1,6 +1,6 @@
 /* global AFRAME, jsfxr */
 
-(function(document) {
+!(function(document) {
 
   AFRAME.registerComponent('scale-on-hover', {
     init: function() {

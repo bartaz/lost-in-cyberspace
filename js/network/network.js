@@ -1,7 +1,7 @@
+!(function(window){
 
 // spread: 1-7
 // offset: 0-7
-
 function computeWalls(spread, offset) {
   let walls = [];
   let error = 0;
@@ -32,6 +32,7 @@ function combineWalls(rowWalls, colWalls) {
   }
 }
 
+// @public (aframe.js)?
 function randomInt(max) {
   return ~~(Math.random() * max)
 }
@@ -72,10 +73,7 @@ function areAllNodesConnected(rowWalls, colWalls) {
   }
   visitNode(nodes, 0,0, rowWalls, colWalls);
 
-  //console.log(nodes);
-
-  nodes = nodes.reduce(function (a, b){ return a.concat(b)});
-
+  nodes = nodes.reduce((a, b) => a.concat(b));
   return (nodes.indexOf(0) === -1);
 }
 
@@ -142,37 +140,6 @@ function visitNode(nodes, x, y, rowWalls, colWalls) {
 function randomWalls() {
   let rowSpread = randomInt(6) + 1;
   let rowOffset = randomInt(7);
-  let rowWalls = computeWalls(rowSpread, rowOffset);
-
-  let colSpread = randomInt(6) + 1;
-  let colOffset = randomInt(7);
-  let colWalls = computeWalls(colSpread, colOffset);
-
-  // prefent non connected nodes from appearing in the corners
-  while (
-    (rowWalls[0] === 1 && colWalls[0] === 1) ||
-    (rowWalls[7] === 7 && colWalls[7] === 7) ||
-    (rowWalls[0] === 7 && colWalls[7] === 1) ||
-    (rowWalls[7] === 1 && colWalls[0] === 7)
-  ) {
-    colSpread = randomInt(6) + 1;
-    colOffset = randomInt(7);
-    colWalls = computeWalls(colSpread, colOffset);
-  }
-
-  return {
-    rowSpread: rowSpread,
-    rowOffset: rowOffset,
-    colSpread: colSpread,
-    colOffset: colOffset,
-    rowWalls: rowWalls,
-    colWalls: colWalls
-  }
-}
-
-function randomWalls() {
-  let rowSpread = randomInt(6) + 1;
-  let rowOffset = randomInt(7);
   let colSpread = randomInt(6) + 1;
   let colOffset = randomInt(7);
 
@@ -189,6 +156,7 @@ function randomWalls() {
   return walls;
 }
 
+// @private
 function randomColors() {
   let colors = [0,1,2,3];
   let sectorAColor = colors.splice(randomInt(colors.length),1)[0];
@@ -201,7 +169,7 @@ function randomColors() {
     sectorBColor,
     sectorCColor,
     sectorDColor
-  ]
+  ];
 }
 
 function randomTarget() {
@@ -212,7 +180,7 @@ function createTrapsObject(trapsSeed) {
   let trapsXY = [];
 
   for (let i = 0; i < 4; i++) {
-    let seed = trapsSeed[i]
+    let seed = trapsSeed[i];
     let xy = [seed % 4, ~~(seed / 4)];
     if (i === 1 || i === 3) {
       xy[0] = xy[0] + 4; // move x coord for sectors B and D
@@ -226,7 +194,7 @@ function createTrapsObject(trapsSeed) {
   return {
     trapsSeed: trapsSeed,
     trapsXY: trapsXY
-  }
+  };
 }
 
 function randomTraps() {
@@ -240,6 +208,7 @@ function randomTraps() {
   return createTrapsObject(trapsSeed);
 }
 
+// @public (cyberspace)
 // TODO: possible to generate invalid network (target on a trap?)
 function randomNetwork() {
   let traps = randomTraps();
@@ -258,9 +227,10 @@ function randomNetwork() {
     target: randomTarget(),
     colors: randomColors(),
     walls: randomWalls()
-  }
+  };
 }
 
+// @public (network.html, terminal DomManipulator)
 function getNetworkMap(network) {
   const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
 
@@ -272,7 +242,7 @@ function getNetworkMap(network) {
   // 5 - target
   const nodesLine = [3,1,3,1,3,1,3,1,3,1,3,1,3,1,3];
   const linksLine = [2,0,2,0,2,0,2,0,2,0,2,0,2,0,2];
-  let networkGrid = []
+  let networkGrid = [];
 
   // create a default empty network map
   for (let i = 0; i < 8; i++) {
@@ -282,37 +252,31 @@ function getNetworkMap(network) {
     }
   }
 
+  // TODO: refactor DRY
   // if network has definition of walls/connections put them into map
   if (network && network.walls) {
     let walls;
     if (network.walls.rowWalls) {
       walls = network.walls.rowWalls;
-      for (i = 0; i < 8; i++) {
+      for (let i = 0; i < 8; i++) {
         if (walls[i][0]) {
           networkGrid[i * 2][walls[i][0] * 2 - 1] = 0;
         }
         if (walls[i][1]) {
           networkGrid[i * 2][walls[i][1] * 2 - 1] = 0;
         }
-
-        // if (7 - walls[i]) {
-        //   networkGrid[(7 - walls[i]) * 2 - 1][i * 2] = 0;
-        // }
       }
     }
 
     if (network.walls.colWalls) {
       walls = network.walls.colWalls;
-      for (i = 0; i < 8; i++) {
+      for (let i = 0; i < 8; i++) {
         if (walls[i][0]) {
           networkGrid[walls[i][0] * 2 - 1][i * 2] = 0;
         }
         if (walls[i][1]) {
           networkGrid[walls[i][1] * 2 - 1][i * 2] = 0;
         }
-        // if (7 - walls[i]) {
-        //   networkGrid[i * 2][(7 - walls[i]) * 2 - 1] = 0;
-        // }
       }
     }
   }
@@ -337,42 +301,42 @@ function getNetworkMap(network) {
       .replace(/1|2/g, function(value) { // print connections
         if (network && network.walls) { //if network has connections
           if (value === '1') {
-            return '-'
+            return '-';
           }
           if (value === '2') {
-            return '|'
+            return '|';
           }
         } else { //by default dont show connections at all
-          return ' '
+          return ' ';
         }
       })
       .replace(/3|4|5/g, function(value) { // print nodes (including traps & target)
-          let y = i / 2;
-          var node = '&#9670;'; // standard node
+        let y = i / 2;
+        var node = '&#9670;'; // standard node
 
-          if (value === '4') { // it's a trap!
-            node = '!'
+        if (value === '4') { // it's a trap!
+          node = '!';
+        }
+
+        if (value === '5') { // target
+          node = 'X';
+        }
+
+        if (network.colors) {
+          var color;
+
+          if (y < 4) {
+            color = (x < 4) ? colorCodes[network.colors[0]] : colorCodes[network.colors[1]];
+          } else {
+            color = (x < 4) ? colorCodes[network.colors[2]] : colorCodes[network.colors[3]];
           }
 
-          if (value === '5') { // target
-            node = 'X'
-          }
+          x++;
 
-          if (network.colors) {
-            var color;
+          return '<span style="color: '+ color +'">' + node + '</span>';
+        }
 
-            if (y < 4) {
-              color = (x < 4) ? colorCodes[network.colors[0]] : colorCodes[network.colors[1]];
-            } else {
-              color = (x < 4) ? colorCodes[network.colors[2]] : colorCodes[network.colors[3]];
-            }
-
-            x++;
-
-            return '<span style="color: '+ color +'">' + node + '</span>';
-          };
-
-          return node;
+        return node;
       });
   }).join('\n');
 
@@ -404,8 +368,8 @@ function parseCode(code) {
   }
 
   code = code
-    .map(function(x) { return parseInt(x, 16)} ) // parse hex values
-    .filter(function(n) { return !isNaN(n)} ) // get only numbers
+    .map(x => parseInt(x, 16)) // parse hex values
+    .filter(n => !isNaN(n)); // get only numbers
 
   if (code.length !== 5) {
     throw new Error('Invalid code. Code contains invalid characters');
@@ -450,22 +414,10 @@ function colorsToCode(colors) {
 
 // returns colors array for given color code
 // throws if code is invalid
-function codeToColors(code) {
-  code = parseCode(code);
-
-  let type = code.shift();
-
-  if (type % 4 !== 0) {
-    throw new Error('Invalid code. Code type is not a color code');
-  }
-
-  return decodeColors(code);
-}
-
 function decodeColors(values) {
-  let colors = values.map(function(n) { return n % 4 });
+  let colors = values.map(n => n % 4);
 
-  let hasDuplicates = colors.some(function (c,i) { return colors.indexOf(c) !== i });
+  let hasDuplicates = colors.some((c,i) => colors.indexOf(c) !== i);
 
   if (hasDuplicates) {
     throw new Error('Invalid code. Duplicated colors in different sectors');
@@ -522,29 +474,18 @@ function wallsToCode(walls) {
 
 // returns walls definition array for given wall code
 // throws if code is invalid
-function codeToWalls(code) {
-  code = parseCode(code);
-
-  let type = code.shift();
-
-  if (type % 4 !== 1) {
-    throw new Error('Invalid code. Code type is not a walls code');
-  }
-
-  return decodeWalls(code);
-}
-
 function decodeWalls(values) {
-  values = values.map(function(n) { return n % 8 });
+  values = values.map(n => n % 8);
 
   let walls = createWallsObject(values[0], values[1], values[2], values[3]);
 
   if (!walls) {
-    throw new Error('Invalid code. Code contains invalid walls definition')
+    throw new Error('Invalid code. Code contains invalid walls definition');
   }
 
   return walls;
 }
+
 // Traps codes
 // -------------
 //
@@ -571,7 +512,7 @@ function trapsToCode(traps) {
   let code = '0x' + type;
 
   code = code + traps.trapsSeed
-    .map(function(t) { return t.toString(16).toUpperCase() })
+    .map(t => t.toString(16).toUpperCase())
     .join('');
 
   return code;
@@ -579,18 +520,7 @@ function trapsToCode(traps) {
 
 // returns traps definition for given traps code
 // throws if code is invalid
-function codeToTraps(code) {
-  code = parseCode(code);
-
-  let type = code.shift();
-
-  if (type % 4 !== 2) {
-    throw new Error('Invalid code. Code type is not a traps code');
-  }
-
-  return decodeTraps(code);
-}
-
+// TODO: not needed?
 function decodeTraps(values) {
   return createTrapsObject(values);
 }
@@ -629,7 +559,7 @@ function targetToCode(target) {
   let code = '0x' + type;
 
   code = code + target.join('') + target
-    .map(function(t) { return (t + 8).toString(16).toUpperCase() })
+    .map(t => (t + 8).toString(16).toUpperCase())
     .join('');
 
   return code;
@@ -637,45 +567,34 @@ function targetToCode(target) {
 
 // returns target definition for given target code
 // throws if code is invalid
-function codeToTarget(code) {
-  code = parseCode(code);
-
-  let type = code.shift();
-
-  if (type % 4 !== 3) {
-    throw new Error('Invalid code. Code type is not a target code');
-  }
-
-  return decodeTarget(code);
-}
-
 function decodeTarget(values) {
-  values = values.map(function(n) { return n % 8 });
+  values = values.map(n => n % 8);
 
   if (values[0] !== values[2] || values[1] !== values[3]) {
-    throw new Error('Invalid code. Code contains invalid target definition')
+    throw new Error('Invalid code. Code contains invalid target definition');
   }
 
   return values.splice(0,2);
 }
 
 // Generating network definition from list of codes
-
+// @public (cyberspace)
 function getNetworkCodes(network) {
   return [
     colorsToCode(network.colors),
     wallsToCode(network.walls),
     trapsToCode(network.traps),
     targetToCode(network.target)
-  ]
+  ];
 }
 
+// @public (terminal, cyberspace - for testing)
 function networkFromCodes(codes) {
   let network = {};
   let errors = [];
 
   if (!codes || !codes.length) {
-    errors.push("No codes defined")
+    errors.push("No codes defined");
   } else {
     for (let i = 0; i < codes.length; i++) {
       let code = codes[i];
@@ -693,21 +612,21 @@ function networkFromCodes(codes) {
         try {
           switch(type) {
             case 0:
-            network.colors = decodeColors(parsed);
-            network.colors.code = code;
-            break;
+              network.colors = decodeColors(parsed);
+              network.colors.code = code;
+              break;
             case 1:
-            network.walls = decodeWalls(parsed);
-            network.walls.code = code;
-            break;
+              network.walls = decodeWalls(parsed);
+              network.walls.code = code;
+              break;
             case 2:
-            network.traps = decodeTraps(parsed);
-            network.traps.code = code;
-            break;
+              network.traps = decodeTraps(parsed);
+              network.traps.code = code;
+              break;
             case 3:
-            network.target = decodeTarget(parsed);
-            network.target.code = code;
-            break;
+              network.target = decodeTarget(parsed);
+              network.target.code = code;
+              break;
           }
           // TODO: check if multiple codes of same type are given
           // TODO: check if traps conflict with target
@@ -724,3 +643,13 @@ function networkFromCodes(codes) {
 
   return network;
 }
+
+  // TODO: how to export globals?
+  // randomInt needed there?
+  window.randomInt = randomInt;
+  window.getNetworkCodes = getNetworkCodes;
+  window.networkFromCodes = networkFromCodes;
+  window.randomNetwork = randomNetwork;
+  window.getNetworkMap = getNetworkMap;
+
+})(window);
