@@ -3,21 +3,16 @@
   <head>
     <title>Lost in Cyberspace</title>
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-    <script src="../js/network/network.js"></script>
-    <script src="./jsfxr.js"></script>
-    <script src="./aframe.js"></script>
-<style>
-  body {
-    transition: background-color 1000ms;
-  }
-</style>
-
+    <script src="./js/network/network.js"></script>
+    <script src="./js/cyberspace/jsfxr.js"></script>
+    <script src="./js/cyberspace/aframe.js"></script>
   </head>
   <body>
+    <!-- TODO: p style='position: absolute'>Loading...</p -->
     <a-scene cyberspace stats id="scene">
       <a-assets>
-        <img id="grid" src="grid-lines.png">
-        <img id="frame" src="frame.png">
+        <img id="grid" src="./js/cyberspace/grid-lines.png">
+        <img id="frame" src="./js/cyberspace/frame.png">
         <canvas id="node-0" width=512 height=512 />
         <canvas id="node-1" width=512 height=512 />
         <canvas id="node-2" width=512 height=512 />
