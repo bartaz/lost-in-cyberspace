@@ -57,6 +57,12 @@ function initHtmlBuildConfig(html) {
 		}
 	});
 
+	// wrap all scripts in function to close the scope (and allow better minification)
+	if (config[html].js.length > 0) {
+		config[html].js.unshift('./js/_prefix');
+		config[html].js.push('./js/_suffix');
+	}
+
 	$('link[rel="stylesheet"]').each(function() {
 		var src = $(this).attr('href');
 		config[html].css.push(src);

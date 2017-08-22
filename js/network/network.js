@@ -1,4 +1,3 @@
-!(function(window){
 
 // spread: 1-7
 // offset: 0-7
@@ -27,20 +26,20 @@ function computeWalls(spread, offset) {
 // combine 2 arrays of walls into 2 arrays of pairs
 function combineWalls(rowWalls, colWalls) {
   return {
-    rowWalls: rowWalls.map(function(w, i) { return [w, 7 - colWalls[i]] }),
-    colWalls: colWalls.map(function(w, i) { return [w, 7 - rowWalls[i]] })
-  }
+    rowWalls: rowWalls.map(function(w, i) { return [w, 7 - colWalls[i]]; }),
+    colWalls: colWalls.map(function(w, i) { return [w, 7 - rowWalls[i]]; })
+  };
 }
 
-// @public (aframe.js)?
+/* exported randomInt */ // used by cyberspace
 function randomInt(max) {
-  return ~~(Math.random() * max)
+  return ~~(Math.random() * max);
 }
 
 function createWallsObject(rowSpread, rowOffset, colSpread, colOffset) {
   if (rowSpread === 0 || colSpread === 0) {
-    return null
-  };
+    return null;
+  }
 
   let rowWalls = computeWalls(rowSpread, rowOffset);
   let colWalls = computeWalls(colSpread, colOffset);
@@ -49,7 +48,7 @@ function createWallsObject(rowSpread, rowOffset, colSpread, colOffset) {
 
   // make sure all nodes are connected
   if (!areAllNodesConnected(walls.rowWalls, walls.colWalls)) {
-    return null
+    return null;
   }
 
   return {
@@ -59,7 +58,7 @@ function createWallsObject(rowSpread, rowOffset, colSpread, colOffset) {
     colOffset: colOffset,
     rowWalls: walls.rowWalls,
     colWalls: walls.colWalls
-  }
+  };
 }
 
 function areAllNodesConnected(rowWalls, colWalls) {
@@ -79,8 +78,8 @@ function areAllNodesConnected(rowWalls, colWalls) {
 
 function visitNode(nodes, x, y, rowWalls, colWalls) {
   if (nodes[x][y]) { // if node already visited
-    nodes[x][y]++
-    return
+    nodes[x][y]++;
+    return;
   }
   //console.log('visiting', x, y);
 
@@ -147,7 +146,6 @@ function randomWalls() {
 
   // try until valid walls are created
   while (!walls) {
-    console.log("invalid walls, trying again");
     colSpread = randomInt(6) + 1;
     colOffset = randomInt(7);
     walls = createWallsObject(rowSpread, rowOffset, colSpread, colOffset);
@@ -156,7 +154,6 @@ function randomWalls() {
   return walls;
 }
 
-// @private
 function randomColors() {
   let colors = [0,1,2,3];
   let sectorAColor = colors.splice(randomInt(colors.length),1)[0];
@@ -208,8 +205,8 @@ function randomTraps() {
   return createTrapsObject(trapsSeed);
 }
 
-// @public (cyberspace)
 // TODO: possible to generate invalid network (target on a trap?)
+/* exported randomNetwork */ // used by cyberspace
 function randomNetwork() {
   let traps = randomTraps();
   let target = randomTarget();
@@ -230,7 +227,7 @@ function randomNetwork() {
   };
 }
 
-// @public (network.html, terminal DomManipulator)
+/* exported getNetworkMap */ // used by terminal (and network.html for testing)
 function getNetworkMap(network) {
   const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
 
@@ -578,7 +575,7 @@ function decodeTarget(values) {
 }
 
 // Generating network definition from list of codes
-// @public (cyberspace)
+/* exported getNetworkCodes */ // used by cyberspace
 function getNetworkCodes(network) {
   return [
     colorsToCode(network.colors),
@@ -588,7 +585,7 @@ function getNetworkCodes(network) {
   ];
 }
 
-// @public (terminal, cyberspace - for testing)
+/* exported networkFromCodes */ // used by terminal (and cyberspace for testing)
 function networkFromCodes(codes) {
   let network = {};
   let errors = [];
@@ -643,13 +640,3 @@ function networkFromCodes(codes) {
 
   return network;
 }
-
-  // TODO: how to export globals?
-  // randomInt needed there?
-  window.randomInt = randomInt;
-  window.getNetworkCodes = getNetworkCodes;
-  window.networkFromCodes = networkFromCodes;
-  window.randomNetwork = randomNetwork;
-  window.getNetworkMap = getNetworkMap;
-
-})(window);
