@@ -277,6 +277,26 @@ function drawText(canvas, text, bgColor, size = 64) {
   text.forEach((line,i) => ctx.strokeText(line, 10, (i+1) * size));
 }
 
+function initTextures() {
+  var ctx = document.getElementById('grid').getContext('2d');
+  ctx.fillStyle = 'black';
+  ctx.strokeStyle = '#FFF';
+  ctx.fillRect(0,0,256,256);
+
+  for (var i = 0; i < 6; i++) {
+    var y = i*51 + 0.5;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(256,y);
+    ctx.stroke();
+  }
+
+  ctx = document.getElementById('frame').getContext('2d');
+  ctx.strokeStyle = '#FFF';
+  ctx.clearRect(0,0,128,128);
+  ctx.strokeRect(0.5,0.5,127,127);
+}
+
 AFRAME.registerComponent('cyberspace', {
   init: function () {
     // TODO: share with terminal
@@ -289,6 +309,7 @@ AFRAME.registerComponent('cyberspace', {
 
     let network = initNetwork();
     console.log("NETWORK", network);
+    initTextures();
     initTimer(network, colorCodes);
 
     // walls

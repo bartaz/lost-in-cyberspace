@@ -4,7 +4,8 @@
   "description": "js13k games 2017",
   "main": "index.html",
   "scripts": {
-    "start": "gulp build"
+    "start": "gulp build",
+    "gulp": "gulp"
   },
   "repository": {
     "type": "git",

@@ -113,7 +113,12 @@ gulp.task('inline', ['jsmin', 'cssmin'], function() {
 				return data;
 			});
 
-			stream = stream.pipe(replace(/<\/body>/igm, '<script>'+js+'</script></body>'))
+			if (html === 'cyberspace.html') {
+				// put scripts into head as A-Frame complains about it
+				stream = stream.pipe(replace(/<\/head>/igm, '<script>'+js+'</script></head>'))
+			} else {
+				stream = stream.pipe(replace(/<\/body>/igm, '<script>'+js+'</script></body>'))
+			}
 		}
 
 		if (c.css.length > 0) {

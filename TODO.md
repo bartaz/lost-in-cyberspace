@@ -48,9 +48,8 @@
 
 ## Build
 
-- there is some issue with injecting aframe script on the end of body
-- textures need to be canvas, not images
-
+- [x] there is some issue with injecting aframe script on the end of body
+- [x] textures need to be canvas, not images
 - [x] injecting scripts into HTML doesn't support external files (like aframe from CDN)
 - [x] build process doesn't copy other files (images, etc)
 - [x] use ES6? we need different uglify package
