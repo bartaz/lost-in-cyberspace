@@ -6,9 +6,7 @@ var fs = require('fs'),
 	cssmin = require('gulp-cssmin'),
 	concat = require('gulp-concat'),
 	htmlmin = require('gulp-htmlmin'),
-  // TODO: rimraf is deprecated, use del
-  // https://github.com/gulpjs/gulp/blob/master/docs/recipes/delete-files-folder.md
-	//rimraf = require('gulp-rimraf'),
+	del = require('del');
 	replace = require('gulp-replace'),
 	uglify = require('gulp-uglify'),
 	zip = require('gulp-zip'),
@@ -21,16 +19,11 @@ var minify = composer(uglifyjs, console);
 
 gulp.task('default', ['build']);
 
-gulp.task('build', ['initbuild', 'jsmin', 'cssmin', 'inline', 'zip', 'clean', 'report']);
+gulp.task('build', ['initbuild', 'jsmin', 'cssmin', 'inline', 'zip', 'clean:tmp', 'report']);
 
-gulp.task('initbuild', function() {
+gulp.task('initbuild', ['clean:zip'], function() {
 
 	var stream, html, $, src, js = [], css = [];
-
-  // TODO: use del
-	// delete prev files
-	// stream = gulp.src('game.zip')
-	// 	.pipe(rimraf());
 
 	// get a list of all js scripts from our dev file
 	html = fs.readFileSync('index.html', 'utf-8', function(e, data) {
@@ -121,12 +114,12 @@ gulp.task('zip', ['inline'], function() {
 	return stream;
 });
 
-gulp.task('clean', ['zip'], function() {
-  // TODO: use del
-	// var stream = gulp.src('./tmp')
-	// 	.pipe(rimraf());
+gulp.task('clean:zip', function() {
+	return del('game.zip');
+});
 
-	//return stream;
+gulp.task('clean:tmp', function() {
+	return del('./tmp');
 });
 
 gulp.task('report', ['clean'], function() {

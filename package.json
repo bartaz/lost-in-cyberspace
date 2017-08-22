@@ -18,9 +18,8 @@
   "homepage": "https://github.com/bartaz/lost-js13k#readme",
   "devDependencies": {
     "cheerio": "^0.19.0",
-    "gulp": "^3.9.1"
-  },
-  "dependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
     "gulp-cssmin": "^0.2.0",
     "gulp-htmlmin": "^3.0.0",

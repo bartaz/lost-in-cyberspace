@@ -48,7 +48,6 @@
 
 ## Build
 
-- use npm del package for deleting files
 - injecting scripts into HTML doesn't support external files (like aframe from CDN)
 - build process doesn't copy other files (images, etc)
 - use ES6? we need different uglify package
