@@ -12,13 +12,10 @@
 
 ## VR
 
-- show something on win/loose
+
+- start timer after action
+- >hack on hover (not affected by timer)
 - canvas textures - refactor it a bit?
-- canvas textures for walls and boxes?
-- display timer (better)
-- traps should reduce time
-  - trap = -1m (30sec?)
-  - hack = -10sec (so it's not worth hacking blindly)
 - better sounds
   - sound when entering the trap
   - sound when time is ticking
@@ -32,6 +29,14 @@
 - hints (text overlays with some tips?)
 - put player in sector with colors or connection codes
 - don't put player on traps
+
+- [x]show something on win/loose
+  - [x] win or loose as blue screen?
+- [x] canvas textures for walls and boxes?
+- [x] display timer (better)
+- [x] traps should reduce time
+  - trap = -1m (30sec?)
+  - hack = -10sec (so it's not worth hacking blindly)
 
 ## sounds
 - wrong terminal/trap: [1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5]
