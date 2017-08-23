@@ -4,13 +4,11 @@
   <meta charset="utf-8">
   <title>Lost in Cyberspace Terminal</title>
   <link rel="stylesheet" href="./styles/terminal.css" />
-  <meta name="theme-color" content="#000">
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
-  <div class="container">
-    <div class="heading">
-      <h1 class="title">Terminal</h1>
-    </div>
+  <div class="output container">
+    <h3>Lost in <span class="logo">Cyberspace</span> Terminal</h3>
     <div class="terminal" id="terminal">
         <p>Type `help` for list of options</p>
     </div>
@@ -18,6 +16,7 @@
         <input class="terminal--input color-green" id="terminal--input" type="text" autofocus="true">
     </p>
   </div>
+  <div class="scanlines"></div>
   <script src="./js/network/network.js"></script>
   <script src="./js/terminal/dom-manipulator.js"></script>
   <script src="./js/terminal/input-manager.js"></script>

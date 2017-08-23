@@ -18,7 +18,7 @@ DomManipulator.prototype.setFocusToInput = function () {
   this.terminalInput.focus();
 };
 
-DomManipulator.prototype.showOptionsList = function () {
+DomManipulator.prototype.showMapDetails = function () {
   this.showSubmittedValue();
   this.createParagraph("<div class=\"uppercase mar-ver--sm\">Name </div>"
   + "<div class=\"pad-lft--md mar-ver--sm\"><b>map</b> -- Display actual map of nodes</div>"
@@ -30,14 +30,31 @@ DomManipulator.prototype.showOptionsList = function () {
   + "<br/><br/>There are 4 types of hints that can be shown on the map: [Sectors], [Target], [Traps] and [Connections]. "
   + "<br/><br/>The <b>map</b> command accepts multiple codes with or without preceded `0x`.</div>"
   + "<div class=\"uppercase mar-ver--sm\">Examples </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display map of nodes with [Target] and [Traps]</div>"
-  + "<div class=\"pad-lft--lg mar-ver--sm\">map 0xEF4D0 B129A</div>"
-  + "<br/><br/><div class=\"uppercase mar-ver--sm\">Name </div>"
+  + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display map of nodes with [Target] and [Traps]:</div>"
+  + "<div class=\"pad-lft--lg mar-ver--sm\">`map 0xEF4D0 B129A`</div>");
+  this.setInputValue("");
+};
+
+DomManipulator.prototype.showHelpDetails = function () {
+  this.showSubmittedValue();
+  this.createParagraph("<div class=\"uppercase mar-ver--sm\">Name </div>"
   + "<div class=\"pad-lft--md mar-ver--sm\"><b>help</b> -- Display list of options</div>"
   + "<div class=\"uppercase mar-ver--sm\">Synopsis </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\"><b>help</b></div>"
+  + "<div class=\"pad-lft--md mar-ver--sm\"><b>help</b> [COMMAND]</div>"
   + "<div class=\"uppercase mar-ver--sm\">Description </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\"><b>help</b> is a command to display list of available options.</div>");
+  + "<div class=\"pad-lft--md mar-ver--sm\"><b>help</b> is a command to display list of available options."
+  + "<br/><br/>The user can provide [COMMAND] to get details about particular [COMMAND].</div>");
+  this.setInputValue("");
+};
+
+DomManipulator.prototype.showOptionsList = function () {
+  this.showSubmittedValue();
+  this.createParagraph("<div class=\"mar-ver--sm\">List of available commands:</div>"
+  + "<div class=\"pad-lft--md mar-ver--sm\">- <b>map</b> -- Display actual map of nodes</div>"
+  + "<div class=\"pad-lft--md mar-ver--sm\">- <b>help</b> -- Display list of available options or details about particular command</div>"
+  + "<div class=\"uppercase mar-ver--sm\">Examples </div>"
+  + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display detailed information about <b>map</b> command:</div>"
+  + "<div class=\"pad-lft--lg mar-ver--sm\">`help map`</div>");
   this.setInputValue("");
 };
 
@@ -47,13 +64,19 @@ DomManipulator.prototype.showCommandNotFound = function () {
   this.setInputValue("");
 };
 
+DomManipulator.prototype.showHelpCommandNotFound = function () {
+  this.showSubmittedValue();
+  this.createParagraph("<span class=\"uppercase\">Command not found: </span>" + this.getInputValue() + ". Try with different argument");
+  this.setInputValue("");
+};
+
 DomManipulator.prototype.showMap = function (codes) {
   this.showSubmittedValue();
   let network = networkFromCodes(codes);
   // map 0xD1234 0xC16F8 0xEF4D0 0xB129A correct
   // map 0xF298E 0xEF4D0 0x1298E 0x44206 invalid
   this.createParagraph("<span class=\"uppercase\">Map of nodes: </span>");
-  this.createParagraph(getNetworkMap(network) + this.prepareLegend(network), "terminal--map");
+  this.createParagraph(getNetworkMap(network) + this.prepareTopLegend(network) + this.prepareBtmLegend(network), "terminal--map");
   this.showErrors(codes, network.errors);
   this.setInputValue("");
 };
@@ -72,7 +95,7 @@ DomManipulator.prototype.showErrors = function (codes, errors) {
   });
 };
 
-DomManipulator.prototype.prepareLegend = function (network) {
+DomManipulator.prototype.prepareBtmLegend = function (network) {
   function formatCode(code) {
     return code ? '0x' + code.replace('0x','').toUpperCase() : 'unknown';
   }
@@ -105,6 +128,13 @@ DomManipulator.prototype.prepareLegend = function (network) {
   } else {
     result = result + formatLine('color-red', 'Connections');
   }
+
+  return result + "</ul>";
+};
+
+DomManipulator.prototype.prepareTopLegend = function (network) {
+  let result = "<ul class=\"terminal--map-legend-top\">";
+  result = result + "<li>Here will be top legend</li>";
 
   return result + "</ul>";
 };

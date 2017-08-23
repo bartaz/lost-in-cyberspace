@@ -17,6 +17,9 @@ h1 {
   margin-top: 0;
   text-transform: uppercase;
 }
+h3 {
+  margin-top: 0;
+}
 p {
   margin-bottom: 2rem;
 }
