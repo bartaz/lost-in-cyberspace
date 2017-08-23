@@ -7,9 +7,19 @@ let GAME_TIME = 3 * 60;
 let SOUND_MOVE = `url(${jsfxr([2,0.3,0.11,,0.56,0.4091,,0.1027,,,,-0.02,,0.3075,,,,,0.83,,,0.3,,0.5])})`;
 let SOUND_TRAP = `url(${jsfxr([1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5])})`;
 
+// TODO: share with terminal
+// TODO: use darker colors (get rid of yellow?);
+//const COLOR_VALUES = ['#1B3', '#1AD', '#F70', '#D1A'];
+let COLOR_VALUES = ['#3E5', '#3CF', '#FF3', '#F3C'];
+
 // game state
 let time;  // current time
 let timer; // game timer setInterval (to cancel)
+
+let network;
+let sectorCodes;
+
+let terminalHover;
 
 AFRAME.registerComponent('scale-on-hover', {
   init: function() {
@@ -57,10 +67,12 @@ AFRAME.registerComponent('text-on-hover', {
         let data = el.parentNode.data;
 
         if (el.className === 'node-box') {
+          // we change the texture for all nodes in same sector,
+          // but it doesn't matter as player sees only one ;)
           drawText(`node-${data.sector}`, '>switch', data.colorValue, 112);
         } else if (el.className === 'node-terminal') {
-          // TODO:
-          //drawText(`terminal-${data.sector}`, `>access code\n${data.code}\n\n>hack`, data.colorValue);
+          terminalHover = true;
+          drawTerminals();
         }
       }
     });
@@ -70,8 +82,8 @@ AFRAME.registerComponent('text-on-hover', {
         if (el.className === 'node-box') {
           drawText(`node-${data.sector}`, '>', data.colorValue, 112);
         } else if (el.className === 'node-terminal') {
-          // TODO:
-          //drawText(`terminal-${data.sector}`, `>access code\n${data.code}\n\n>`, data.colorValue);
+          terminalHover = false;
+          drawTerminals();
         }
       }
     });
@@ -257,13 +269,15 @@ function getNode(pos, node) {
   return nodeEl;
 }
 
-function initNetwork() {
-  return randomNetwork();
-  //return networkFromCodes(["0xC2130", "0xD6451", "0xEFCDE", "0xF058D"]);
-}
 
-// TODO: draw on traps as well
-function drawTime(time, network, colorCodes, codes) {
+
+// terminal text
+// - code
+// - is time ticking
+// - time
+// - hover (hack) (or other actions?)
+// - sector color (?)
+function getTerminalText(time, code) {
   let min = ~~(time / 60);
   let sec = time % 60;
 
@@ -275,10 +289,15 @@ function drawTime(time, network, colorCodes, codes) {
                + ' '.repeat(10 - ~~(percent / 10) + (percent < 10 ? 1 : 0));
 
   let locating = `LOCATING INTRUDER\n${percent}% [${progress}]\n            ${formatted}`;
+  let access = `> access code\n  ${code}\n\n> ${terminalHover ? 'hack' : ''}`;
 
-  codes.forEach((code, i) => {
-    let text = `${locating}\n\n> access code\n  ${code}\n\n>`;
-    drawText(`terminal-${i}`, text, colorCodes[network.colors[i]], 48);
+  return locating + '\n\n' + access;
+}
+
+// TODO: draw on traps as well
+function drawTerminals() {
+  sectorCodes.forEach((code, i) => {
+    drawText(`terminal-${i}`, getTerminalText(time, code), COLOR_VALUES[network.colors[i]], 48);
   });
 }
 
@@ -286,17 +305,17 @@ function reduceTime(amount) {
   time = time - amount;
   if (time < 0) { time = 0; }
 
-  // TODO: drawTime (but draw time needs colors etc...)
+  drawTerminals();
 }
 
-function initTimer(network, colorCodes, codes) {
+function initTimer() {
   time = GAME_TIME;
 
-  drawTime(time, network, colorCodes, codes);
+  drawTerminals();
   timer = setInterval(() => {
     time--;
     if (time < 0) { time = 0; }
-    drawTime(time, network, colorCodes, codes);
+    drawTerminals();
 
     if (!time) {
       gameOver();
@@ -383,6 +402,7 @@ function drawText(canvas, text, bgColor, size = 48) {
   ctx.fillStyle = 'white';
   ctx.font = `${size}px Monaco, monospace`;
   text.forEach((line,i) => ctx.fillText(line, 10, (i+1) * size * 1.2));
+  // TODO: stroke twice (bgColor + transparent black)?
   text.forEach((line,i) => ctx.strokeText(line, 10, (i+1) * size * 1.2));
 }
 
@@ -406,16 +426,16 @@ function initTextures() {
   ctx.strokeRect(0.5,0.5,127,127);
 }
 
+function initNetwork() {
+  return randomNetwork();
+  //return networkFromCodes(["0xC2130", "0xD6451", "0xEFCDE", "0xF058D"]);
+}
+
 AFRAME.registerComponent('cyberspace', {
   init: function () {
-    // TODO: share with terminal
-    // TODO: use darker colors (get rid of yellow?);
-    //const colorCodes = ['#1B3', '#1AD', '#F70', '#D1A'];
-    const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
-
     let scene = this.el;
 
-    let network = initNetwork();
+    network = initNetwork();
     console.log("NETWORK", network);
 
     // get network codes and randomize their order
@@ -427,8 +447,9 @@ AFRAME.registerComponent('cyberspace', {
     codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
     codes.push(tmp[0]);
 
+    sectorCodes = codes;
     initTextures();
-    initTimer(network, colorCodes, codes);
+    initTimer(network, COLOR_VALUES, codes);
 
     // walls
     for (let i = 0; i <= 16; i++) {
@@ -482,16 +503,13 @@ AFRAME.registerComponent('cyberspace', {
 
     // TODO:
     // find sectors to put hacker in useful sector first
-    let colorSector = codes.indexOf(tmp[0]);
-    let wallsSector = codes.indexOf(tmp[1]);
+    let colorSector = codes.indexOf(tmp[0]); // color
+    let wallsSector = codes.indexOf(tmp[1]); // connections
 
-    // codes.forEach((code, i) => {
-    //   drawText(`terminal-${i}`, `>access code\n${code}\n\n>`, colorCodes[network.colors[i]]);
-    // });
     drawText('terminal-trap', `\n  INTRUDER  \n  DETECTED  \n`, 'red');
 
     network.colors.forEach((color, i) => {
-      drawText(`node-${i}`, '>', colorCodes[color], 112);
+      drawText(`node-${i}`, '>', COLOR_VALUES[color], 112);
     });
 
     // init node object values
@@ -517,7 +535,7 @@ AFRAME.registerComponent('cyberspace', {
           node.sector = (i < 4) ? 2 : 3;
         }
 
-        node.colorValue = colorCodes[node.colorId];
+        node.colorValue = COLOR_VALUES[node.colorId];
         nodes[i][j] = node;
       }
     }
