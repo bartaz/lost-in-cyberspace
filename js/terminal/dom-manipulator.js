@@ -76,7 +76,7 @@ DomManipulator.prototype.showMap = function (codes) {
   // map 0xD1234 0xC16F8 0xEF4D0 0xB129A correct
   // map 0xF298E 0xEF4D0 0x1298E 0x44206 invalid
   this.createParagraph("<span class=\"uppercase\">Map of nodes: </span>");
-  this.createParagraph(getNetworkMap(network) + this.prepareTopLegend(network) + this.prepareBtmLegend(network), "terminal--map");
+  this.createParagraph(getNetworkMap(network) + this.prepareTopLegend() + this.prepareBtmLegend(network), "terminal--map");
   this.showErrors(codes, network.errors);
   this.setInputValue("");
 };
@@ -132,11 +132,14 @@ DomManipulator.prototype.prepareBtmLegend = function (network) {
   return result + "</ul>";
 };
 
-DomManipulator.prototype.prepareTopLegend = function (network) {
-  let result = "<ul class=\"terminal--map-legend-top\">";
-  result = result + "<li>Here will be top legend</li>";
+DomManipulator.prototype.prepareTopLegend = function () {
+  let result = "<div class=\"terminal--map-legend-top\">Legend:<ul>";
+  result = result + "<li>&#9670; - node</li>";
+  result = result + "<li>| - connection</li>";
+  result = result + "<li>! - trap</li>";
+  result = result + "<li>X - target</li>";
 
-  return result + "</ul>";
+  return result + "</ul></div>";
 };
 
 DomManipulator.prototype.showSubmittedValue = function () {
