@@ -2,9 +2,10 @@
 - [ ] choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
 - [ ] cannot copy example code
 - [ ] what characters to use for nodes/traps/target ?
-- [ ] add a legend to map explaining what symbols mean (nodes, traps, etc)
+- [x] add a legend to map explaining what symbols mean (nodes, traps, etc)
 - [ ] update map command layout to be more 'command line'
-- [ ] maybe help displays list of commands and `help map` or `help help` displays details
+- [x] maybe help displays list of commands and `help map` or `help help` displays details
+- [ ] add example map image to the `help map` command
 - [ ] easter eggs (some additional commands?)
 
 - [x] there is no cursor at the end of input after copying value
@@ -12,25 +13,24 @@
 
 ## VR
 
-- set current node (to show different hack state per terminal)
-- win screen - better text
-- lose screen - show terminal INTRUDER ELIMINATED
-- start timer after action
-- canvas textures - refactor it a bit?
-- better sounds
+- [ ] set current node (to show different hack state per terminal)
+- [ ] win screen - better text
+- [ ] lose screen - show terminal INTRUDER ELIMINATED
+- [ ] start timer after action
+- [ ] canvas textures - refactor it a bit?
+- [ ] better sounds
   - sound when entering the trap
   - sound when time is ticking
   - sound on win?
-- trigger actions on nodes (hack)
+- [ ] trigger actions on nodes (hack)
   - show something on hack
   - more actions? access + hack?
   - how not to trigger hack by mistake when looking?
     - confirm? - another interaction to implement
     - hack on wrong node is not harmful? (less harmful then trap?)
-- hints (text overlays with some tips?)
-- put player in sector with colors or connection codes
-- don't put player on traps
-
+- [ ] hints (text overlays with some tips?)
+- [ ] put player in sector with colors or connection codes
+- [ ] don't put player on traps
 
 ## sounds
 - wrong terminal/trap: [1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5]
@@ -39,11 +39,11 @@
 
 ## Network
 
-- more traps
-- list errors of invalid or conflicting codes
-- refactor it not to keep everything in global scope
-- detect dead ends and put target there?
-- possible bug with target on trap?
+- [ ] more traps
+- [ ] list errors of invalid or conflicting codes
+- [ ] refactor it not to keep everything in global scope
+- [ ] detect dead ends and put target there?
+- [ ] possible bug with target on trap?
 
 ## Build
 
@@ -55,10 +55,9 @@
 
 ## Help and tips
 
-- we need to better explain how to play the game both in VR and terminal
-- VR needs some tips on reading codes, hacking and navigating
-- terminal needs some help on using codes and reading the map
-- Description in README and credits for codepen demo https://codepen.io/somethingformed/pen/raWJXV
+- [ ] we need to better explain how to play the game both in VR and terminal
+- [ ] VR needs some tips on reading codes, hacking and navigating
+- [ ] Description in README and credits for codepen demo https://codepen.io/somethingformed/pen/raWJXV
 
 ### General:
 - what ES6 features can we use natively (to make code nicer and shorter)?
