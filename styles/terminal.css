@@ -7,7 +7,9 @@ input {
 }
 
 .container p {
-    margin: 10px 0;
+    margin-top: 10px;
+    margin-bottom: 0;
+    line-height: 20px;
 }
 
 .terminal {
@@ -27,7 +29,7 @@ input {
     display: block;
     position: absolute;
     left: 0;
-    top: 4px;
+    top: 2px;
     width: 16px;
     height: 24px;
 }
@@ -54,7 +56,8 @@ input {
     border: none;
     background: transparent;
     font-size: 18px;
-    margin-left: 22px;
+    line-height: 20px;
+    margin-left: 20px;
     width: 95%;
     height: 24px;
 }

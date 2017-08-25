@@ -4,9 +4,8 @@
 body {
   background: #031e11;
   margin: 0;
-  color: #1FC;
+  color: #FFF;
   font-family: 'Monaco', monospace;
-  font-size: 24px;
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.2;
@@ -16,8 +15,10 @@ h1 {
   margin-bottom: 1rem;
   margin-top: 0;
   text-transform: uppercase;
+  color: #1FC;
 }
 h3 {
+  font-size: 24px;
   margin-top: 0;
 }
 p {
@@ -53,6 +54,7 @@ li {
   padding: 3rem 2rem;
   pointer-events: auto;
   text-shadow: 0rem 0.2rem 1rem #0c7b46;
+  font-size: 22px;
 }
 
 .scanlines {
