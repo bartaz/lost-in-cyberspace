@@ -63,28 +63,27 @@ AFRAME.registerComponent('text-on-hover', {
   init: function () {
     let el = this.el;
     el.addEventListener('mouseenter', () => {
-      if (el.parentNode.data) {
-        let data = el.parentNode.data;
-
-        if (el.className === 'node-box') {
+      if (el.className === 'node-box') {
+        if (el.parentNode.data) {
+          let data = el.parentNode.data;
           // we change the texture for all nodes in same sector,
           // but it doesn't matter as player sees only one ;)
           drawText(`node-${data.sector}`, '>switch', data.colorValue, 112);
-        } else if (el.className === 'node-action-hack') {
-          terminalHover = true;
-          drawTerminals();
         }
+      } else if (el.className === 'node-action-hack') {
+        terminalHover = true;
+        drawTerminals();
       }
     });
     el.addEventListener('mouseleave', () => {
-      if (el.parentNode.data) {
-        let data = el.parentNode.data;
-        if (el.className === 'node-box') {
+      if (el.className === 'node-box') {
+        if (el.parentNode.data) {
+          let data = el.parentNode.data;
           drawText(`node-${data.sector}`, '>', data.colorValue, 112);
-        } else if (el.className === 'node-action-hack') {
-          terminalHover = false;
-          drawTerminals();
         }
+      } else if (el.className === 'node-action-hack') {
+        terminalHover = false;
+        drawTerminals();
       }
     });
   }
@@ -132,7 +131,7 @@ AFRAME.registerComponent('move-on-click', {
 AFRAME.registerComponent('hack-on-click', {
   init: function () {
     let el = this.el;
-    let parent = el.parentNode;
+    let parent = el.parentNode.parentNode;
 
     el.addEventListener('click', () => {
       console.log("HACK");
@@ -202,6 +201,71 @@ function getBox(pos) {
   });
 }
 
+function getTerminal(pos, node) {
+  let terminal = createEntity('a-entity', {
+    position: { x: pos.x - 0.5, y: pos.y, z: pos.z - 0.5 },
+    rotation: '0 45 0',
+  });
+
+  // node terminal text
+  terminal.appendChild(createEntity('a-plane', {
+    'class': 'node-terminal',
+    position: { x: 0, y: -0.4, z: 0 },
+    rotation: '-10 0 0',
+    height: 0.5,
+    width: 0.5,
+    src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
+  }));
+
+  // TODO: help action
+  // nodeEl.appendChild(createEntity('a-plane', {
+  //   position: { x: pos.x - 0.15, y: pos.y - 0.2, z: pos.z - 0.75 },
+  //   rotation: '-10 30 0',
+  //   height: 0.1,
+  //   width: 0.4,
+  //   src: '#actions-help',
+  //   material: 'transparent: true;',
+  //   'fuse-on-hover': '',
+  //   'scale-on-hover': ''
+  // }));
+
+  terminal.appendChild(createEntity('a-plane', {
+    'class': 'node-action-hack',
+    position: { x: -0.30, y: -0.2, z: 0 },
+    rotation: '-10 15 0',
+    height: 0.1,
+    width: 0.4,
+    src: '#actions-hack',
+    material: 'transparent: true;',
+    'fuse-on-hover': '',
+    'scale-on-hover': '',
+    'hack-on-click': '',
+    'text-on-hover': '',
+    'sound': { src: SOUND_TRAP }
+  }));
+  //
+  // // TODO: extract to its own entity
+  // // hint text
+  terminal.appendChild(createEntity('a-plane', {
+    position: { x: 0, y: 0.2, z: -0.1 },
+    height: 0.5,
+    width: 0.5,
+    src: `#hint-1`,
+    material: 'transparent:true',
+  }));
+
+  // hint arrow
+  terminal.appendChild(createEntity('a-plane', {
+    position: { x: 0, y: -0.1125, z: -0.1 },
+    height: 0.125,
+    width: 0.125,
+    src: `#hint-arrow`,
+    material: 'transparent:true',
+  }));
+
+  return terminal;
+}
+
 function getNode(pos, node) {
   let color = node.colorValue;
   let nodeEl = document.createElement('a-entity');
@@ -224,6 +288,23 @@ function getNode(pos, node) {
     'sound__trap': { src: SOUND_TRAP }
   }));
 
+  // SWITCH ACTION ?
+  // nodeEl.appendChild(createEntity('a-plane', {
+  //   //'class': 'node-action-hack',
+  //   position: { x: pos.x - 1, y: pos.y + 0.1, z: pos.z + 4},
+  //   rotation: '0 30 0',
+  //   height: 0.375,
+  //   width: 1.5,
+  //   src: '#actions-switch',
+  //   color: '#FFF',
+  //   material: 'transparent: true;',
+  //   'fuse-on-hover': '',
+  //   'scale-on-hover': '',
+  //   //'hack-on-click': '',
+  //   //'text-on-hover': '',
+  //   //'sound': { src: SOUND_TRAP }
+  // }));
+
   // node inside bottom frame
   nodeEl.appendChild(createEntity('a-plane', {
     position: { x: pos.x, y: pos.y - 0.7, z: pos.z },
@@ -235,63 +316,9 @@ function getNode(pos, node) {
     width: 1.46
   }));
 
-  // node terminal text
-  nodeEl.appendChild(createEntity('a-plane', {
-    'class': 'node-terminal',
-    position: { x: pos.x - 0.5, y: pos.y - 0.4, z: pos.z - 0.5 },
-    rotation: '-10 45 0',
-    height: 0.5,
-    width: 0.5,
-    src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
-  }));
+  nodeEl.appendChild(getTerminal(pos, node));
 
-  // TODO: help action
-  // nodeEl.appendChild(createEntity('a-plane', {
-  //   position: { x: pos.x - 0.15, y: pos.y - 0.2, z: pos.z - 0.75 },
-  //   rotation: '-10 30 0',
-  //   height: 0.1,
-  //   width: 0.4,
-  //   src: '#actions-help',
-  //   material: 'transparent: true;',
-  //   'fuse-on-hover': '',
-  //   'scale-on-hover': ''
-  // }));
 
-  nodeEl.appendChild(createEntity('a-plane', {
-    'class': 'node-action-hack',
-    position: { x: pos.x - 0.15, y: pos.y - 0.2, z: pos.z - 0.75 },
-    rotation: '-10 30 0',
-    height: 0.1,
-    width: 0.4,
-    src: '#actions-hack',
-    material: 'transparent: true;',
-    'fuse-on-hover': '',
-    'scale-on-hover': '',
-    'hack-on-click': '',
-    'text-on-hover': '',
-    'sound': { src: SOUND_TRAP }
-  }));
-
-  // TODO: extract to its own entity
-  // hint text
-  nodeEl.appendChild(createEntity('a-plane', {
-    position: { x: pos.x - 0.6, y: pos.y + 0.2, z: pos.z - 0.6 },
-    rotation: '0 45 0',
-    height: 0.5,
-    width: 0.5,
-    src: `#hint-1`,
-    material: 'transparent:true',
-  }));
-
-  // hint arrow
-  nodeEl.appendChild(createEntity('a-plane', {
-    position: { x: pos.x - 0.6, y: pos.y - 0.1125, z: pos.z - 0.6 },
-    rotation: '0 45 0',
-    height: 0.125,
-    width: 0.125,
-    src: `#hint-arrow`,
-    material: 'transparent:true',
-  }));
 
   // TODO: second terminal ?
   // it needs actions, hint, etc...
