@@ -39,16 +39,23 @@ input {
     position: relative;
 }
 
+.terminal--map .char {
+    font-size: 20px;
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+}
+
 .terminal--map-legend {
     position: absolute;
     bottom: 0;
-    left: 240px;
+    left: 330px;
 }
 
 .terminal--map-legend-top {
     position: absolute;
     top: 10px;
-    left: 240px;
+    left: 330px;
 }
 
 .terminal--input {

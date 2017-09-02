@@ -293,25 +293,25 @@ function getNetworkMap(network) {
   let networkString = networkGrid.map(function(line, i){
     var x = 0;
     return line.join('')
-      .replace(/0/g, ' ') // print walls
+      .replace(/0/g, '<span class="char"></span>') // print walls
       .replace(/1|2/g, function(value) { // print connections
         if (network && network.walls) { //if network has connections
           if (value === '1') {
-            return '-';
+            return '<span class="char">-</span>';
           }
           if (value === '2') {
-            return '|';
+            return '<span class="char">|</span>';
           }
         } else { //by default dont show connections at all
-          return ' ';
+          return '<span class="char"></span>';
         }
       })
       .replace(/3|4|5/g, function(value) { // print nodes (including traps & target)
         let y = i / 2;
-        var node = '&#9670;'; // standard node
+        var node = '&#9830;'; // standard node
 
         if (value === '4') { // it's a trap!
-          node = '!';
+          node = '&#8709;';
         }
 
         if (value === '5') { // target
@@ -329,7 +329,7 @@ function getNetworkMap(network) {
 
           x++;
 
-          return '<span style="color: '+ color +'">' + node + '</span>';
+          return '<span class="char" style="color: '+ color +'">' + node + '</span>';
         }
 
         return node;

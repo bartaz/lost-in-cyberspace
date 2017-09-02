@@ -138,7 +138,7 @@ DomManipulator.prototype.prepareTopLegend = function () {
   let result = "<div class=\"terminal--map-legend-top\">Legend:<ul>";
   result = result + "<li>&#9670; - node</li>";
   result = result + "<li>| - connection</li>";
-  result = result + "<li>! - trap</li>";
+  result = result + "<li>&#8709; - trap</li>";
   result = result + "<li>X - target</li>";
 
   return result + "</ul></div>";
