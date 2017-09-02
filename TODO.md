@@ -28,7 +28,8 @@
   - how not to trigger hack by mistake when looking?
     - confirm? - another interaction to implement
     - hack on wrong node is not harmful? (less harmful then trap?)
-- [ ] hints (text overlays with some tips?)
+- [x] hints (text overlays with some tips?)
+  - more hints and make them contextual?
 - [ ] put player in sector with colors or connection codes
 - [ ] don't put player on traps
 

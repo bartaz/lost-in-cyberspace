@@ -249,6 +249,29 @@ function getNode(pos, node) {
     'sound': { src: SOUND_TRAP }
   }));
 
+  // TODO: extract to its own entity
+  // hint text
+  nodeEl.appendChild(createEntity('a-plane', {
+    //'class': 'node-terminal',
+    position: { x: pos.x - 0.6, y: pos.y + 0.2, z: pos.z - 0.6 },
+    rotation: '0 45 0',
+    height: 0.5,
+    width: 0.5,
+    src: `#hint-1`,
+    material: 'transparent:true',
+  }));
+
+  // hint arrow
+  nodeEl.appendChild(createEntity('a-plane', {
+    //'class': 'node-terminal',
+    position: { x: pos.x - 0.6, y: pos.y - 0.1125, z: pos.z - 0.6 },
+    rotation: '0 45 0',
+    height: 0.125,
+    width: 0.125,
+    src: `#hint-arrow`,
+    material: 'transparent:true',
+  }));
+
   // TODO: second terminal ?
   // node terminal text
   // nodeEl.appendChild(createEntity('a-plane', {
@@ -389,7 +412,7 @@ function win() {
   removeWall();
 }
 
-function drawText(canvas, text, bgColor, size = 48) {
+function drawText(canvas, text, bgColor, size = 48, textColor = 'white') {
   text = text.split('\n');
   let ctx = document.getElementById(canvas).getContext('2d');
   ctx.clearRect(0,0,512,512);
@@ -399,7 +422,7 @@ function drawText(canvas, text, bgColor, size = 48) {
   }
   ctx.strokeStyle = '#555';
   ctx.lineWidth = 1;
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = textColor;
   ctx.font = `${size}px Monaco, monospace`;
   text.forEach((line,i) => ctx.fillText(line, 10, (i+1) * size * 1.2));
   // TODO: stroke twice (bgColor + transparent black)?
@@ -424,6 +447,35 @@ function initTextures() {
   ctx.strokeStyle = '#FFF';
   ctx.clearRect(0,0,128,128);
   ctx.strokeRect(0.5,0.5,127,127);
+
+  initHints();
+}
+
+function initHints() {
+  let ctx = document.getElementById('hint-arrow').getContext('2d');
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(64, 64);
+  ctx.lineTo(128, 0);
+  ctx.fill();
+
+  let hint = [
+    'Read the ACCESS CODES from',
+    'terminals to your navigator,',
+    'so they can help you find',
+    'the TARGET node.',
+    '',
+    'If you think you\'ve reached',
+    'TARGET node hack it to win.',
+    'But beware - hacking wrong',
+    'terminals will make you',
+    'easier to locate and you',
+    'will lose when the time',
+    'runs out!'
+  ].join('\n');
+
+  drawText('hint-1', hint, 'rgba(255,255,255,0.8)', 30, '#333');
 }
 
 function initNetwork() {
