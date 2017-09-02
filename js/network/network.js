@@ -205,7 +205,6 @@ function randomTraps() {
   return createTrapsObject(trapsSeed);
 }
 
-// TODO: possible to generate invalid network (target on a trap?)
 /* exported randomNetwork */ // used by cyberspace
 function randomNetwork() {
   let traps = randomTraps();
@@ -220,8 +219,8 @@ function randomNetwork() {
   }
 
   return {
-    traps: randomTraps(),
-    target: randomTarget(),
+    traps: traps,
+    target: target,
     colors: randomColors(),
     walls: randomWalls()
   };

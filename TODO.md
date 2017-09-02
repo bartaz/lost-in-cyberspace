@@ -44,7 +44,6 @@
 - [ ] list errors of invalid or conflicting codes
 - [ ] refactor it not to keep everything in global scope
 - [ ] detect dead ends and put target there?
-- [ ] possible bug with target on trap?
 
 ## Build
 
