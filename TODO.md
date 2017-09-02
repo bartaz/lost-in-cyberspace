@@ -3,9 +3,9 @@
 - [ ] cannot copy example code
 - [ ] what characters to use for nodes/traps/target ?
 - [x] add a legend to map explaining what symbols mean (nodes, traps, etc)
-- [ ] update map command layout to be more 'command line'
+- [x] update map command layout to be more 'command line'
 - [x] maybe help displays list of commands and `help map` or `help help` displays details
-- [ ] add example map image to the `help map` command
+- [x] add example map image to the `help map` command
 - [ ] easter eggs (some additional commands?)
 
 - [x] there is no cursor at the end of input after copying value

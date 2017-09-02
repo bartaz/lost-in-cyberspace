@@ -30,8 +30,10 @@ DomManipulator.prototype.showMapDetails = function () {
   + "<br/><br/>There are 4 types of hints that can be shown on the map: [Sectors], [Target], [Traps] and [Connections]. "
   + "<br/><br/>The <b>map</b> command accepts multiple codes with or without preceded `0x`.</div>"
   + "<div class=\"uppercase mar-ver--sm\">Examples </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display map of nodes with [Target] and [Traps]:</div>"
-  + "<div class=\"pad-lft--lg mar-ver--sm\">`map 0xEF4D0 B129A`</div>");
+  + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display map of nodes with [Sectors], [Traps] and [Connections]:</div>"
+  + "<div class=\"pad-lft--lg mar-ver--sm\">`map 0xC16F8 D1234 EF4D0`</div>");
+  let network = networkFromCodes("0xC16F8 D1234 EF4D0".split(" "));
+  this.createParagraph(getNetworkMap(network) + this.prepareTopLegend() + this.prepareBtmLegend(network), "terminal--map");
   this.setInputValue("");
 };
 
