@@ -39,8 +39,8 @@ AFRAME.registerComponent('fuse-on-hover', {
     let cursor = document.getElementById("cursor");
     let cancel;
     el.addEventListener('mouseenter', () => {
-      cursor.setAttribute('material', { color: '#002' });
-      cursor.setAttribute('scale', { x: 2, y: 2, z: 2 });
+      //cursor.setAttribute('material', { color: '#002' });
+      cursor.setAttribute('scale', { x: 1.2, y: 1.2, z: 1.2 });
       cancel = animate(function(progress){
         let val = 0.007 - (0.007 - 0.0001) * progress;
         cursor.setAttribute('geometry', { radiusInner: val });
@@ -70,7 +70,7 @@ AFRAME.registerComponent('text-on-hover', {
           // we change the texture for all nodes in same sector,
           // but it doesn't matter as player sees only one ;)
           drawText(`node-${data.sector}`, '>switch', data.colorValue, 112);
-        } else if (el.className === 'node-terminal') {
+        } else if (el.className === 'node-action-hack') {
           terminalHover = true;
           drawTerminals();
         }
@@ -81,7 +81,7 @@ AFRAME.registerComponent('text-on-hover', {
         let data = el.parentNode.data;
         if (el.className === 'node-box') {
           drawText(`node-${data.sector}`, '>', data.colorValue, 112);
-        } else if (el.className === 'node-terminal') {
+        } else if (el.className === 'node-action-hack') {
           terminalHover = false;
           drawTerminals();
         }
@@ -243,16 +243,38 @@ function getNode(pos, node) {
     height: 0.5,
     width: 0.5,
     src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
+  }));
+
+  // TODO: help action
+  // nodeEl.appendChild(createEntity('a-plane', {
+  //   position: { x: pos.x - 0.15, y: pos.y - 0.2, z: pos.z - 0.75 },
+  //   rotation: '-10 30 0',
+  //   height: 0.1,
+  //   width: 0.4,
+  //   src: '#actions-help',
+  //   material: 'transparent: true;',
+  //   'fuse-on-hover': '',
+  //   'scale-on-hover': ''
+  // }));
+
+  nodeEl.appendChild(createEntity('a-plane', {
+    'class': 'node-action-hack',
+    position: { x: pos.x - 0.15, y: pos.y - 0.2, z: pos.z - 0.75 },
+    rotation: '-10 30 0',
+    height: 0.1,
+    width: 0.4,
+    src: '#actions-hack',
+    material: 'transparent: true;',
     'fuse-on-hover': '',
-    'text-on-hover': '',
+    'scale-on-hover': '',
     'hack-on-click': '',
+    'text-on-hover': '',
     'sound': { src: SOUND_TRAP }
   }));
 
   // TODO: extract to its own entity
   // hint text
   nodeEl.appendChild(createEntity('a-plane', {
-    //'class': 'node-terminal',
     position: { x: pos.x - 0.6, y: pos.y + 0.2, z: pos.z - 0.6 },
     rotation: '0 45 0',
     height: 0.5,
@@ -263,7 +285,6 @@ function getNode(pos, node) {
 
   // hint arrow
   nodeEl.appendChild(createEntity('a-plane', {
-    //'class': 'node-terminal',
     position: { x: pos.x - 0.6, y: pos.y - 0.1125, z: pos.z - 0.6 },
     rotation: '0 45 0',
     height: 0.125,
@@ -273,6 +294,7 @@ function getNode(pos, node) {
   }));
 
   // TODO: second terminal ?
+  // it needs actions, hint, etc...
   // node terminal text
   // nodeEl.appendChild(createEntity('a-plane', {
   //   'class': 'node-terminal',
@@ -449,6 +471,12 @@ function initTextures() {
   ctx.strokeRect(0.5,0.5,127,127);
 
   initHints();
+  initActions();
+}
+
+function initActions() {
+  drawText('actions-hack', '>hack', 'rgba(255,255,255,0.0)', 100);
+  // drawText('actions-help', '>help', 'rgba(255,255,255,0.0)', 100);
 }
 
 function initHints() {
