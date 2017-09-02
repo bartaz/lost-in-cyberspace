@@ -608,11 +608,6 @@ AFRAME.registerComponent('cyberspace', {
     // nodes
     let nodes = [];
 
-    // TODO:
-    // find sectors to put hacker in useful sector first
-    let colorSector = codes.indexOf(tmp[0]); // color
-    let wallsSector = codes.indexOf(tmp[1]); // connections
-
     drawText('terminal-trap', `\n  INTRUDER  \n  DETECTED  \n`, 'red');
 
     network.colors.forEach((color, i) => {
@@ -655,8 +650,9 @@ AFRAME.registerComponent('cyberspace', {
     // target
     nodes[network.target[0]][network.target[1]].isTarget = true;
 
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
+    let i,j;
+    for (i = 0; i < 8; i++) {
+      for (j = 0; j < 8; j++) {
         let pos = {
           x: ((i * 2 + 1) * 4),
           y: 1.7,
@@ -668,15 +664,27 @@ AFRAME.registerComponent('cyberspace', {
       }
     }
 
-    // TODO:
-    // - put in sector with colors or connections
-    // - don't put on traps
+    tmp = getNetworkCodes(network);
+
+    let node;
+    do {
+      i = randomInt(8);
+      j = randomInt(8);
+      node = nodes[i][j];
+    } while (
+      node.isTrap || !(node.code === tmp[0] || node.code === tmp[1])
+    );
+
     let camera = document.getElementById('camera');
-    camera.setAttribute('position', {
-      x: ~~(Math.random() * 8) * 8 + 4,
+    // TODO: read position from the node el?
+    // TODO: set position on node el and position the rest relatively
+    let pos = {
+      x: ((i * 2 + 1) * 4),
       y: 0,
-      z: ~~(Math.random() * 8) * 8 + 4,
-    });
+      z: ((j * 2 + 1) * 4),
+    };
+    camera.setAttribute('position', pos);
     camera.setAttribute('rotation', '0 45 0');
+    document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', node.colorValue));
   }
 });

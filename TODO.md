@@ -30,8 +30,8 @@
     - hack on wrong node is not harmful? (less harmful then trap?)
 - [x] hints (text overlays with some tips?)
   - more hints and make them contextual?
-- [ ] put player in sector with colors or connection codes
-- [ ] don't put player on traps
+- [x] put player in sector with colors or connection codes
+- [x] don't put player on traps
 
 ## sounds
 - wrong terminal/trap: [1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5]
