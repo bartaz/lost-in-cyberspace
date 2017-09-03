@@ -450,21 +450,25 @@ function initTextures() {
   ctx.fill();
 
   let hint = [
-    'Read the ACCESS CODES from',
-    'terminals to your navigator,',
-    'so they can help you find',
-    'the TARGET node.',
+    '> access code',
     '',
-    'If you think you\'ve reached',
-    'TARGET node hack it to win.',
-    'But beware - hacking wrong',
-    'terminals will make you',
-    'easier to locate and you',
-    'will lose when the time',
-    'runs out!'
+    'ACCESS CODES from terminals in',
+    'different sectors can be used by',
+    'NAVIGATOR to map the network and',
+    'locate the TARGET node.',
+    '',
+    '> hack',
+    '',
+    'HACK the TARGET node to destroy',
+    'the corporate network and win.',
+    '',
+    'But beware - hacking wrong nodes',
+    'will make you easier to locate',
+    'and you will be lost in cyberspace',
+    'when the time runs out!'
   ].join('\n');
 
-  drawText(getCanvas('H', 512, 512), hint, 'rgba(255,255,255,0.8)', 30, '#333');
+  drawText(getCanvas('H', 512, 512), hint, 'rgba(255,255,255,0.8)', 24, '#333');
 
   // trap terminals
   drawText(getCanvas('TT', 512, 512), `\n    INTRUDER  \n    DETECTED  \n`, 'red');

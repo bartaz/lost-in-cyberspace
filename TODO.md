@@ -13,16 +13,17 @@
 
 ## VR
 
-- [ ] help better text
+- [ ] show timer on traps
 - [ ] more help?
 - [ ] win screen - better text
 - [ ] lose screen - better text
-- [ ] canvas textures - refactor it a bit?
 - [ ] better sounds
   - sound when entering the trap
   - sound when time is ticking
   - sound on win?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] help better text
+- [x] canvas textures - refactor it a bit?
 - [x] actions texture offset (help)
 - [x] trigger actions on nodes (hack)
   - [x] show something on hack
