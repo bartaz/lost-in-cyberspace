@@ -21,6 +21,7 @@ let network;
 let sectorCodes;
 
 let terminalHover;
+let terminalHacked;
 
 AFRAME.registerComponent('scale-on-hover', {
   init: function() {
@@ -126,6 +127,7 @@ AFRAME.registerComponent('move-on-click', {
 function enterNode(node) {
   currentNode = node;
   console.log("ENTER NODE", node);
+  terminalHacked = node.isHacked;
   if (node.isTrap) {
     node.el.querySelector('.node-box').components.sound__trap.playSound();
     reduceTime(60);
@@ -154,8 +156,12 @@ AFRAME.registerComponent('hack-on-click', {
         } else {
           initTimer();
           console.log("WRONG!");
+
+          parent.data.isHacked = true;
+          terminalHacked = true;
           el.components.sound.playSound();
           reduceTime(10);
+
           // TODO:
           // draw something on terminal
         }
@@ -373,9 +379,11 @@ function getTerminalText(time, code) {
                + ' '.repeat(10 - ~~(percent / 10) + (percent < 10 ? 1 : 0));
 
   let locating = `LOCATING INTRUDER\n${percent}% [${progress}]\n            ${formatted}`;
-  let access = `> access code\n  ${code}\n\n> ${terminalHover ? 'hack' : ''}`;
 
-  return (ticking ? locating + '\n\n' : '') + access;
+  let access = `> access code\n  ${code}`;
+  let hacked = `> hack\n  ACCESS DENIED!`;
+  let prompt = '\n\n> ' + (terminalHover ? 'hack' : '');
+  return (ticking ? locating + '\n\n' : '') + (terminalHacked ? hacked : access) + prompt;
 }
 
 // TODO: draw on traps as well
@@ -637,6 +645,7 @@ AFRAME.registerComponent('cyberspace', {
           colorValue: null,
           isTrap: false,
           isTarget: false,
+          isHacked: false,
           el: null,
         };
 
