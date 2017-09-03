@@ -1,6 +1,4 @@
-/* global AFRAME, jsfxr */
-
-/* global randomNetwork getNetworkCodes randomInt */
+/* global jsfxr */
 
 let GAME_TIME = 3 * 60;
 
@@ -20,116 +18,13 @@ let ticking; // if time is already ticking
 let network;
 let sectorCodes;
 
-let terminalHover;
 let terminalHacked;
 let terminalWin;
 
-AFRAME.registerComponent('scale-on-hover', {
-  init: function() {
-    let el = this.el;
-    el.addEventListener('mouseenter', () => {
-      el.setAttribute('scale', { x: 1.1, y: 1.1, z: 1.1 });
-    });
-    el.addEventListener('mouseleave', () => {
-      el.setAttribute('scale', { x: 1, y: 1, z: 1 });
-    });
-  }
-});
-
-AFRAME.registerComponent('fuse-on-hover', {
-  init: function () {
-    let el = this.el;
-    let cursor = document.getElementById("cursor");
-    let cancel;
-    el.addEventListener('mouseenter', () => {
-      //cursor.setAttribute('material', { color: '#002' });
-      cursor.setAttribute('scale', { x: 1.2, y: 1.2, z: 1.2 });
-      cancel = animate(function(progress){
-        let val = 0.007 - (0.007 - 0.0001) * progress;
-        cursor.setAttribute('geometry', { radiusInner: val });
-      }, 1500);
-    });
-
-    let handleCancel = () => {
-      cursor.setAttribute('scale', { x: 1, y: 1, z: 1 });
-      cursor.setAttribute('material', { color: 'white' });
-      cancel();
-      cursor.setAttribute('geometry', { radiusInner: 0.007 });
-    };
-
-    el.addEventListener('mouseleave', handleCancel);
-    el.addEventListener('click', handleCancel);
-  }
-});
-
-AFRAME.registerComponent('text-on-hover', {
-  init: function () {
-    let el = this.el;
-    el.addEventListener('mouseenter', () => {
-      if (el.className === 'node-box') {
-        if (el.parentNode.data) {
-          let data = el.parentNode.data;
-          // we change the texture for all nodes in same sector,
-          // but it doesn't matter as player sees only one ;)
-          drawText(`node-${data.sector}`, '>switch', data.colorValue, 112);
-        }
-      } else if (el.className === 'node-action-hack') {
-        terminalHover = true;
-        drawTerminals();
-      }
-    });
-    el.addEventListener('mouseleave', () => {
-      if (el.className === 'node-box') {
-        if (el.parentNode.data) {
-          let data = el.parentNode.data;
-          drawText(`node-${data.sector}`, '>', data.colorValue, 112);
-        }
-      } else if (el.className === 'node-action-hack') {
-        terminalHover = false;
-        drawTerminals();
-      }
-    });
-  }
-});
-
-AFRAME.registerComponent('move-on-click', {
-  init: function () {
-
-    let el = this.el;
-    let camera = document.getElementById("camera");
-    let moving = false;
-
-    el.addEventListener('click', () => {
-      if (moving) return;
-
-      let cPos = camera.getAttribute('position');
-      let elPos = el.getAttribute('position');
-
-      animate(function(progress){
-        let currentPos = {
-          x: cPos.x + ((elPos.x - cPos.x) * progress),
-          y: cPos.y,
-          z: cPos.z + ((elPos.z - cPos.z) * progress),
-        };
-        camera.setAttribute('position', currentPos );
-      }, 1000);
-
-      let data = el.parentEl.data;
-
-      if (data) {
-        initTimer();
-        moving = true;
-        setTimeout(() => {
-          enterNode(data, true);
-          moving = false;
-        }, 900);
-      }
-    });
-  }
-});
-
+/* exported enterNode */
 function enterNode(node) {
-  currentNode = node;
+  // TODO: render inside of the box only for current one?
+
   console.log("ENTER NODE", node);
   terminalHacked = node.isHacked;
   if (node.isTrap) {
@@ -140,43 +35,11 @@ function enterNode(node) {
     // TODO: animate?
     document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', node.isTrap ? 'red' : node.colorValue));
   }
-  // TODO: render inside of the box only for current one?
   drawTerminals();
 }
 
-AFRAME.registerComponent('hack-on-click', {
-  init: function () {
-    let el = this.el;
-    let parent = el.parentNode.parentNode;
 
-    el.addEventListener('click', () => {
-      console.log("HACK");
-      if (parent.data) {
-        if (parent.data.isTarget) {
-          console.log("YOU WIN");
-          terminalWin = true;
-          drawTerminals();
-
-          // TODO:
-          // draw something on terminal?
-          win();
-        } else {
-          initTimer();
-          console.log("WRONG!");
-
-          parent.data.isHacked = true;
-          terminalHacked = true;
-          el.components.sound.playSound();
-          reduceTime(10);
-
-          // TODO:
-          // draw something on terminal
-        }
-      }
-    });
-  }
-});
-
+/* exported animate */
 function animate(draw, duration) {
   let start = performance.now();
   let canceled = false;
@@ -213,6 +76,7 @@ function createEntity(name, attrs) {
   return entity;
 }
 
+/* exported getBox */
 function getBox(pos) {
   return createEntity('a-box', {
     class: 'wall',
@@ -290,6 +154,7 @@ function getTerminal(pos, node) {
   return terminal;
 }
 
+/* exported getNode */
 function getNode(pos, node) {
   let color = node.colorValue;
   let nodeEl = createEntity('a-entity', {
@@ -374,7 +239,7 @@ function getNode(pos, node) {
 // - time
 // - hover (hack) (or other actions?)
 // - sector color (?)
-function getTerminalText(time, code) {
+function getTerminalText(time, code, action) {
   let min = ~~(time / 60);
   let sec = time % 60;
 
@@ -390,14 +255,21 @@ function getTerminalText(time, code) {
   let access = `> access code\n  ${code}`;
   let hacked = `> hack\n  ACCESS DENIED!`;
   let win = `> hack\n\n  ACCESS GRANTED`;
-  let prompt = '\n\n> ' + (terminalHover ? 'hack' : '');
+  let prompt = '\n\n> ' + (action || '');
   return (ticking && !terminalWin ? locating + '\n\n' : '') + (terminalHacked ? hacked : terminalWin ? win : access) + prompt;
 }
 
 // TODO: draw on traps as well
-function drawTerminals() {
+function drawTerminals(action) {
   sectorCodes.forEach((code, i) => {
-    drawText(`terminal-${i}`, getTerminalText(time, code), COLOR_VALUES[network.colors[i]], 48);
+    drawText(`terminal-${i}`, getTerminalText(time, code, action), COLOR_VALUES[network.colors[i]], 48);
+  });
+}
+
+/* exported drawNodes */
+function drawNodes(action) {
+  sectorCodes.forEach((code, i) => {
+    drawText(`node-${i}`, '>' + (action || ''), COLOR_VALUES[network.colors[i]], 112);
   });
 }
 
@@ -408,6 +280,7 @@ function reduceTime(amount) {
   drawTerminals();
 }
 
+/* exported initTimer */
 function initTimer() {
   if (ticking) return;
 
@@ -455,13 +328,15 @@ function showWinScreen() {
     width: 2,
     height: 2,
     position: { x: 0, y: 1, z: -4 },
-    src:'#node-0',
-    material:'transparent:true',
+    src: '#node-0',
+    material: 'transparent:true',
     rotation: '0 0 0'
   });
   document.getElementById('camera').appendChild(screen);
 }
 
+/* exported win */
+/* global randomInt */
 function win() {
   // show sky and remove floor and ceiling
   document.getElementById('scene').appendChild(createEntity('a-sky', { color: '#00F'} ));
@@ -471,30 +346,18 @@ function win() {
   // cancel animation timer
   clearInterval(timer);
 
-  // TODO: DRY
-  function removeNode() {
-    let nodes = document.querySelectorAll('.node');
+  function removeAll(selector, delay, callback) {
+    let nodes = document.querySelectorAll(selector);
     if (nodes.length) {
       let node = nodes[randomInt(nodes.length)];
       node.parentNode.removeChild(node);
-      setTimeout(removeNode, 50);
+      setTimeout(() => removeAll(selector, delay, callback), delay);
     } else {
-      showWinScreen();
+      callback();
     }
   }
 
-  function removeWall() {
-    let walls = document.querySelectorAll('.wall');
-    if (walls.length) {
-      let wall = walls[randomInt(walls.length)];
-      wall.parentNode.removeChild(wall);
-      setTimeout(removeWall, 20);
-    } else {
-      removeNode();
-    }
-  }
-
-  removeWall();
+  removeAll('.wall', 20, () => removeAll('.node', 50, showWinScreen));
 }
 
 function drawText(canvas, text, bgColor, size = 48, textColor = 'white') {
@@ -514,6 +377,7 @@ function drawText(canvas, text, bgColor, size = 48, textColor = 'white') {
   text.forEach((line,i) => ctx.strokeText(line, 10, (i+1) * size * 1.2));
 }
 
+/* exported initTextures */
 function initTextures() {
   let ctx = document.getElementById('grid').getContext('2d');
   ctx.fillStyle = 'black';
@@ -534,13 +398,9 @@ function initTextures() {
   ctx.strokeRect(0.5,0.5,127,127);
 
   initHints();
-  initActions();
+  drawText('actions-hack', '>hack', 'rgba(255,255,255,0.0)', 100);
 }
 
-function initActions() {
-  drawText('actions-hack', '>hack', 'rgba(255,255,255,0.0)', 100);
-  // drawText('actions-help', '>help', 'rgba(255,255,255,0.0)', 100);
-}
 
 function initHints() {
   let ctx = document.getElementById('hint-arrow').getContext('2d');
@@ -568,168 +428,3 @@ function initHints() {
 
   drawText('hint-1', hint, 'rgba(255,255,255,0.8)', 30, '#333');
 }
-
-function initNetwork() {
-  return randomNetwork();
-  //return networkFromCodes(["0xC2130", "0xD6451", "0xEFCDE", "0xF058D"]);
-}
-
-AFRAME.registerComponent('cyberspace', {
-  init: function () {
-    let scene = this.el;
-
-    network = initNetwork();
-    console.log("NETWORK", network);
-
-    // get network codes and randomize their order
-    // initial order is color / connections / traps / target
-    let tmp = getNetworkCodes(network);
-    let codes = [];
-    codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
-    codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
-    codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
-    codes.push(tmp[0]);
-
-    sectorCodes = codes;
-    initTextures();
-
-    // walls
-    for (let i = 0; i <= 16; i++) {
-      for (let j = 0; j <= 16; j++) {
-        // position of walls cube
-        let pos = {
-          x: (i * 4),
-          y: 2,
-          z: (j * 4),
-        };
-
-        if (i === 0 || i === 16 || // fill walls around the maze
-            j === 0 || j === 16 ||
-            ((i % 2 === 0) && (j % 2 === 0))// fill every second sqare in the maze (corners)
-        ) {
-          scene.appendChild(getBox(pos));
-        }
-      }
-    }
-
-    // additional game over walls
-    scene.appendChild(getBox({ x:-4, y: 2, z: 0 }));
-    scene.appendChild(getBox({ x: 0, y: 2, z:-4 }));
-
-    // additional walls from network definition
-    network.walls.rowWalls.forEach((walls, i) => {
-      walls.forEach((wall, j) => {
-        if (wall && wall !== walls[j-1]) {
-          scene.appendChild(getBox({
-            x: (wall * 2 * 4), // wall x * 2 grid columns * 4 units
-            y: 2,
-            z: ((i * 2 + 1) * 4) // row * 2 grid rows starting from 1 * 4 units
-          }));
-        }
-      });
-    });
-    network.walls.colWalls.forEach((walls, i) => {
-      walls.forEach((wall, j) => {
-        if (wall && wall !== walls[j-1]) {
-          scene.appendChild(getBox({
-            x: ((i * 2 + 1) * 4), // col * 2 grid cols starting from 1 * 4 units
-            y: 2,
-            z: (wall * 2 * 4) // wall y * 2 grid rows * 4 units
-          }));
-        }
-      });
-    });
-
-    // nodes
-    let nodes = [];
-
-    drawText('terminal-trap', `\n    INTRUDER  \n    DETECTED  \n`, 'red');
-
-    network.colors.forEach((color, i) => {
-      drawText(`node-${i}`, '>', COLOR_VALUES[color], 112);
-    });
-
-    // init node object values
-    for (let i = 0; i < 8; i++) {
-      nodes[i] = [];
-      for (let j = 0; j < 8; j++) {
-        let node = {
-          colorId: null,
-          colorValue: null,
-          isTrap: false,
-          isTarget: false,
-          isHacked: false,
-          el: null,
-        };
-
-        // node sector colors and codes
-        if (j < 4) {
-          node.colorId = (i < 4) ? network.colors[0] : network.colors[1];
-          node.code = (i < 4) ? codes[0] : codes[1];
-          node.sector = (i < 4) ? 0 : 1;
-        } else {
-          node.colorId = (i < 4) ? network.colors[2] : network.colors[3];
-          node.code = (i < 4) ? codes[2] : codes[3];
-          node.sector = (i < 4) ? 2 : 3;
-        }
-
-        node.colorValue = COLOR_VALUES[node.colorId];
-        nodes[i][j] = node;
-      }
-    }
-
-    // traps
-    network.traps.trapsXY.forEach((trap) => {
-      nodes[trap[0]][trap[1]].isTrap = true;
-    });
-
-    // target
-    nodes[network.target[0]][network.target[1]].isTarget = true;
-
-    let i,j;
-    for (i = 0; i < 8; i++) {
-      for (j = 0; j < 8; j++) {
-        let pos = {
-          x: ((i * 2 + 1) * 4),
-          y: 1.7,
-          z: ((j * 2 + 1) * 4),
-        };
-
-        nodes[i][j].el = getNode(pos, nodes[i][j]);
-        scene.appendChild(nodes[i][j].el);
-      }
-    }
-
-    // prison
-    let prison = {
-      colorValue: 'red',
-      isTrap: true
-    };
-    prison.el = getNode({ x: 0, y: 1.7, z: 0}, prison);
-    scene.appendChild(prison.el);
-
-
-    tmp = getNetworkCodes(network);
-
-    let node;
-    do {
-      i = randomInt(8);
-      j = randomInt(8);
-      node = nodes[i][j];
-    } while (
-      node.isTrap || !(node.code === tmp[0] || node.code === tmp[1])
-    );
-
-    let camera = document.getElementById('camera');
-    // TODO: read position from the node el?
-    // TODO: set position on node el and position the rest relatively
-    let pos = {
-      x: ((i * 2 + 1) * 4),
-      y: 0,
-      z: ((j * 2 + 1) * 4),
-    };
-    camera.setAttribute('position', pos);
-    camera.setAttribute('rotation', '0 45 0');
-    enterNode(node);
-  }
-});
