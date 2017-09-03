@@ -13,7 +13,6 @@
 
 ## VR
 
-- [ ] node-undefined warning
 - [ ] actions texture offset (help)
 - [ ] help better text
 - [ ] more help?

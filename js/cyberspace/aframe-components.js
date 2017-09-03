@@ -266,7 +266,8 @@ AFRAME.registerComponent('cyberspace', {
     // prison
     let prison = {
       colorValue: 'red',
-      isTrap: true
+      isTrap: true,
+      sector: 0
     };
     prison.el = getNode({ x: 0, y: 1.7, z: 0}, prison);
     scene.appendChild(prison.el);
