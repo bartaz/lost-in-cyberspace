@@ -97,8 +97,10 @@ AFRAME.registerComponent('move-on-click', {
 
     let el = this.el;
     let camera = document.getElementById("camera");
+    let moving = false;
 
     el.addEventListener('click', () => {
+      if (moving) return;
 
       let cPos = camera.getAttribute('position');
       let elPos = el.getAttribute('position');
@@ -116,10 +118,11 @@ AFRAME.registerComponent('move-on-click', {
 
       if (data) {
         initTimer();
-
+        moving = true;
         setTimeout(() => {
           enterNode(data, true);
-        }, 1000);
+          moving = false;
+        }, 900);
       }
     });
   }

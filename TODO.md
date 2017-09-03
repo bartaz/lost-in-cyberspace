@@ -13,7 +13,7 @@
 
 ## VR
 
-- [ ] but when clicking multiple times on node (during animation)
+- [x] bug when clicking multiple times on node (during animation)
 - [ ] win screen - better text
 - [ ] canvas textures - refactor it a bit?
 - [ ] better sounds
