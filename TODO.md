@@ -13,7 +13,6 @@
 
 ## VR
 
-- [ ] actions texture offset (help)
 - [ ] help better text
 - [ ] more help?
 - [ ] win screen - better text
@@ -24,6 +23,7 @@
   - sound when time is ticking
   - sound on win?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] actions texture offset (help)
 - [x] trigger actions on nodes (hack)
   - [x] show something on hack
   - [x] how not to trigger hack by mistake when looking?

@@ -265,9 +265,11 @@ function getTerminalText(time, code, action) {
 
   let access = `> access code\n  ${code}`;
   let hacked = `> hack\n  ACCESS DENIED!`;
-  let win = `> hack\n\n  ACCESS GRANTED`;
+  let win = `> hack\n\n  ACCESS GRANTED\n\n> sudo rm -rf /\n> kill -9 -1`;
   let prompt = '\n\n> ' + (action || '');
-  return (ticking && !terminalWin ? locating + '\n\n' : '') + (terminalHacked ? hacked : terminalWin ? win : access) + prompt;
+  return (ticking && !terminalWin ? locating + '\n\n' : '') +
+         (terminalHacked ? hacked : terminalWin ? win : access) +
+         (terminalWin ? '' : prompt);
 }
 
 // TODO: draw on traps as well
@@ -413,8 +415,8 @@ function initTextures() {
   ctx.strokeRect(0.5,0.5,127,127);
 
   initHints();
-  drawText('actions-hack', '>hack', 'rgba(255,255,255,0.0)', 100);
-  drawText('actions-help', '>help', 'rgba(255,255,255,0.0)', 100);
+  drawText('actions-hack', '>hack', 'rgba(255,255,255,0.0)', 90);
+  drawText('actions-help', '>help', 'rgba(255,255,255,0.0)', 90);
 }
 
 
