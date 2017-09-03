@@ -13,26 +13,29 @@
 
 ## VR
 
-- [x] bug when clicking multiple times on node (during animation)
+- [ ] node-undefined warning
+- [ ] actions texture offset (help)
+- [ ] help better text
+- [ ] more help?
 - [ ] win screen - better text
+- [ ] lose screen - better text
 - [ ] canvas textures - refactor it a bit?
 - [ ] better sounds
   - sound when entering the trap
   - sound when time is ticking
   - sound on win?
+- [ ] more node actions? access (to show the code) + hack?
 - [x] trigger actions on nodes (hack)
   - [x] show something on hack
-  - more actions? access + hack?
-  - how not to trigger hack by mistake when looking?
-    - confirm? - another interaction to implement
-    - hack on wrong node is not harmful? (less harmful then trap?)
+  - [x] how not to trigger hack by mistake when looking?
 - [x] hints (text overlays with some tips?)
-  - more hints and make them contextual?
+  - [x] more hints and make them contextual?
 - [x] put player in sector with colors or connection codes
 - [x] don't put player on traps
 - [x] start timer after action
 - [x] set current node (to show different hack state per terminal)
 - [x] lose screen - show terminal INTRUDER ELIMINATED
+- [x] bug when clicking multiple times on node (during animation)
 
 ## sounds
 - wrong terminal/trap: [1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5]

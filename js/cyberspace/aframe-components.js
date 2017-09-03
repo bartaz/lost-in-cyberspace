@@ -51,14 +51,13 @@ AFRAME.registerComponent('text-on-hover', {
         drawNodes('switch');
       } else if (el.className === 'node-action-hack') {
         drawTerminals('hack');
+      } if (el.className === 'node-action-help') {
+        drawTerminals('help');
       }
     });
     el.addEventListener('mouseleave', () => {
-      if (el.className === 'node-box') {
-        drawNodes();
-      } else if (el.className === 'node-action-hack') {
-        drawTerminals();
-      }
+      drawNodes();
+      drawTerminals();
     });
   }
 });
@@ -124,6 +123,17 @@ AFRAME.registerComponent('hack-on-click', {
           reduceTime(10);
         }
       }
+    });
+  }
+});
+
+AFRAME.registerComponent('help-on-click', {
+  init: function () {
+    let el = this.el;
+    let hint = el.parentNode.parentNode.querySelector('.hint');
+
+    this.el.addEventListener('click', () => {
+      hint.setAttribute('visible', !hint.getAttribute('visible'));
     });
   }
 });
@@ -270,8 +280,8 @@ AFRAME.registerComponent('cyberspace', {
       j = randomInt(8);
       node = nodes[i][j];
     } while (
-      //node.isTrap || !(node.code === tmp[0] || node.code === tmp[1])
-      !node.isTarget
+      node.isTrap || !(node.code === tmp[0] || node.code === tmp[1])
+      //!node.isTarget
     );
 
     let camera = document.getElementById('camera');
@@ -279,8 +289,7 @@ AFRAME.registerComponent('cyberspace', {
     // TODO: set position on node el and position the rest relatively
     let pos = {
       x: ((i * 2 + 1) * 4),
-      y: 0,
-      z: ((j * 2 + 1) * 4),
+      z: ((j * 2 + 1) * 4)
     };
     camera.setAttribute('position', pos);
     camera.setAttribute('rotation', '0 45 0');

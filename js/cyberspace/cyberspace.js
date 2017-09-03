@@ -68,7 +68,7 @@ function createEntity(name, attrs) {
   for (const key in attrs) {
     let value = attrs[key];
     if (key === 'position') {
-      value = value.x + " " + value.y + " " + value.z;
+      value = (value.x || 0) + " " + (value.y || 0) + " " + (value.z || 0);
     }
     entity.setAttribute(key, value);
   }
@@ -98,28 +98,32 @@ function getTerminal(pos, node) {
   // node terminal text
   terminal.appendChild(createEntity('a-plane', {
     'class': 'node-terminal',
-    position: { x: 0, y: -0.4, z: 0 },
+    position: { y: -0.4 },
     rotation: '-10 0 0',
     height: 0.5,
     width: 0.5,
     src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
   }));
 
-  // TODO: help action
-  // nodeEl.appendChild(createEntity('a-plane', {
-  //   position: { x: pos.x - 0.15, y: pos.y - 0.2, z: pos.z - 0.75 },
-  //   rotation: '-10 30 0',
-  //   height: 0.1,
-  //   width: 0.4,
-  //   src: '#actions-help',
-  //   material: 'transparent: true;',
-  //   'fuse-on-hover': '',
-  //   'scale-on-hover': ''
-  // }));
+  // help action
+  terminal.appendChild(createEntity('a-plane', {
+    'class': 'node-action-help',
+    position: { x: -0.30, y: -0.2 },
+    rotation: '-10 15 0',
+    height: 0.1,
+    width: 0.4,
+    src: '#actions-help',
+    material: 'transparent: true;',
+    'fuse-on-hover': '',
+    'scale-on-hover': '',
+    'help-on-click': '',
+    'text-on-hover': '',
+  }));
 
+  // hack action
   terminal.appendChild(createEntity('a-plane', {
     'class': 'node-action-hack',
-    position: { x: -0.30, y: -0.2, z: 0 },
+    position: { x: -0.31, y: -0.35 },
     rotation: '-10 15 0',
     height: 0.1,
     width: 0.4,
@@ -131,11 +135,17 @@ function getTerminal(pos, node) {
     'text-on-hover': '',
     'sound': { src: SOUND_TRAP }
   }));
-  //
-  // // TODO: extract to its own entity
-  // // hint text
-  terminal.appendChild(createEntity('a-plane', {
-    position: { x: 0, y: 0.2, z: -0.1 },
+
+  // hint
+  let hint = createEntity('a-entity', {
+    'class': 'hint',
+    position: { y: -0.2, z: -0.1 },
+    visible: false
+  });
+
+  // hint text
+  hint.appendChild(createEntity('a-plane', {
+    position: { y: 0.375 },
     height: 0.5,
     width: 0.5,
     src: `#hint-1`,
@@ -143,13 +153,15 @@ function getTerminal(pos, node) {
   }));
 
   // hint arrow
-  terminal.appendChild(createEntity('a-plane', {
-    position: { x: 0, y: -0.1125, z: -0.1 },
+  hint.appendChild(createEntity('a-plane', {
+    position: { y: 0.0625 },
     height: 0.125,
     width: 0.125,
     src: `#hint-arrow`,
     material: 'transparent:true',
   }));
+
+  terminal.appendChild(hint);
 
   return terminal;
 }
@@ -180,7 +192,6 @@ function getNode(pos, node) {
 
   // SWITCH ACTION ?
   // nodeEl.appendChild(createEntity('a-plane', {
-  //   //'class': 'node-action-hack',
   //   position: { x: pos.x - 1, y: pos.y + 0.1, z: pos.z + 4},
   //   rotation: '0 30 0',
   //   height: 0.375,
@@ -308,7 +319,9 @@ function gameOver() {
   drawText('terminal-trap', `\n    INTRUDER  \n   ELIMINATED \n`, 'red');
 
   document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', 'red'));
+  // TODO: remove them all together?
   document.querySelectorAll('.node-action-hack').forEach(p => p.parentNode.removeChild(p));
+  document.querySelectorAll('.node-action-help').forEach(p => p.parentNode.removeChild(p));
   document.getElementById('camera').setAttribute('position', "0 0 0");
 }
 
@@ -327,7 +340,7 @@ function showWinScreen() {
   var screen = createEntity('a-plane', {
     width: 2,
     height: 2,
-    position: { x: 0, y: 1, z: -4 },
+    position: { y: 1, z: -4 },
     src: '#node-0',
     material: 'transparent:true',
     rotation: '0 0 0'
@@ -341,7 +354,9 @@ function win() {
   // show sky and remove floor and ceiling
   document.getElementById('scene').appendChild(createEntity('a-sky', { color: '#00F'} ));
   document.querySelectorAll('.sky').forEach(p => p.parentNode.removeChild(p));
+  // TODO: remove them together (duplicated from game over)
   document.querySelectorAll('.node-action-hack').forEach(p => p.parentNode.removeChild(p));
+  document.querySelectorAll('.node-action-help').forEach(p => p.parentNode.removeChild(p));
 
   // cancel animation timer
   clearInterval(timer);
@@ -399,6 +414,7 @@ function initTextures() {
 
   initHints();
   drawText('actions-hack', '>hack', 'rgba(255,255,255,0.0)', 100);
+  drawText('actions-help', '>help', 'rgba(255,255,255,0.0)', 100);
 }
 
 
