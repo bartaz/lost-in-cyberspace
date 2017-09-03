@@ -332,7 +332,7 @@ function getNetworkMap(network) {
           return '<span class="char" style="color: '+ color +'">' + node + '</span>';
         }
 
-        return node;
+        return '<span class="char">' + node + '</span>';
       });
   }).join('\n');
 
