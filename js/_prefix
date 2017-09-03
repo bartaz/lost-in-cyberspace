@@ -1,1 +1,1 @@
-!(function(document, window){
+!(function(document, window, Math){

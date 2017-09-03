@@ -13,6 +13,9 @@
 
 ## VR
 
+- [ ] target not in sector with target code
+- [ ] start not on target
+- [ ] colorValue not needed (use sector color)?
 - [ ] show timer on traps
 - [ ] more help?
 - [ ] win screen - better text
@@ -44,9 +47,11 @@
 
 ## Network
 
-- [ ] more traps
+- [ ] generate more random codes (code ids)
+- [x] traps not next to each other (in one sector)
+- [x] make sure there are 8 traps?
+- [x] more traps
 - [ ] list errors of invalid or conflicting codes
-- [ ] refactor it not to keep everything in global scope
 - [ ] detect dead ends and put target there?
 
 ## Build

@@ -177,15 +177,37 @@ function createTrapsObject(trapsSeed) {
   let trapsXY = [];
 
   for (let i = 0; i < 4; i++) {
-    let seed = trapsSeed[i];
-    let xy = [seed % 4, ~~(seed / 4)];
-    if (i === 1 || i === 3) {
-      xy[0] = xy[0] + 4; // move x coord for sectors B and D
+    // first seed is number 0-15 (from the code)
+    let seed1 = trapsSeed[i];
+    // second seed is computed as shifted sum of 2 next seeds
+    let seed2 = (i*4 + trapsSeed[(i + 1) % 4] + trapsSeed[(i + 2) % 4]) % 16;
+
+    // make sure both seeds are not the same (so traps don't overlap)
+    if (seed1 === seed2) {
+      seed2 = 15 - seed1;
     }
-    if (i === 2 || i === 3) {
-      xy[1] = xy[1] + 4; // move y coord for sectors C and D
+
+    // make sure traps don't touch each other (at least within one sector)
+    if (
+       // if both are neighbours in columns
+      (Math.abs(seed1 - seed2) === 4) ||
+      // or are neighbours in same row
+      ((Math.abs(seed1 - seed2) === 1) && (~~(seed1 / 4) === ~~(seed2 / 4)))
+    ) {
+      seed1 = (16 + seed1 - 5) % 16;
+      seed2 = (seed2 + 5) % 16;
     }
-    trapsXY.push(xy);
+
+    [seed1, seed2].forEach(seed => {
+      let xy = [seed % 4, ~~(seed / 4)];
+      if (i === 1 || i === 3) {
+        xy[0] = xy[0] + 4; // move x coord for sectors B and D
+      }
+      if (i === 2 || i === 3) {
+        xy[1] = xy[1] + 4; // move y coord for sectors C and D
+      }
+      trapsXY.push(xy);
+    });
   }
 
   return {
