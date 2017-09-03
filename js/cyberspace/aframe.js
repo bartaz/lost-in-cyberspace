@@ -22,6 +22,7 @@ let sectorCodes;
 
 let terminalHover;
 let terminalHacked;
+let terminalWin;
 
 AFRAME.registerComponent('scale-on-hover', {
   init: function() {
@@ -150,6 +151,9 @@ AFRAME.registerComponent('hack-on-click', {
       if (parent.data) {
         if (parent.data.isTarget) {
           console.log("YOU WIN");
+          terminalWin = true;
+          drawTerminals();
+
           // TODO:
           // draw something on terminal?
           win();
@@ -382,8 +386,9 @@ function getTerminalText(time, code) {
 
   let access = `> access code\n  ${code}`;
   let hacked = `> hack\n  ACCESS DENIED!`;
+  let win = `> hack\n\n  ACCESS GRANTED`;
   let prompt = '\n\n> ' + (terminalHover ? 'hack' : '');
-  return (ticking ? locating + '\n\n' : '') + (terminalHacked ? hacked : access) + prompt;
+  return (ticking && !terminalWin ? locating + '\n\n' : '') + (terminalHacked ? hacked : terminalWin ? win : access) + prompt;
 }
 
 // TODO: draw on traps as well
@@ -453,7 +458,8 @@ function showWinScreen() {
 function win() {
   // show sky and remove floor and ceiling
   document.getElementById('scene').appendChild(createEntity('a-sky', { color: '#00F'} ));
-  document.querySelectorAll('a-plane').forEach(p => p.parentNode.removeChild(p));
+  document.querySelectorAll('.sky').forEach(p => p.parentNode.removeChild(p));
+  document.querySelectorAll('.node-action-hack').forEach(p => p.parentNode.removeChild(p));
 
   // cancel animation timer
   clearInterval(timer);
