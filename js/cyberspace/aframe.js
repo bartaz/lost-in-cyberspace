@@ -15,6 +15,7 @@ let COLOR_VALUES = ['#3E5', '#3CF', '#FF3', '#F3C'];
 // game state
 let time;  // current time
 let timer; // game timer setInterval (to cancel)
+let ticking; // if time is already ticking
 
 let network;
 let sectorCodes;
@@ -112,8 +113,10 @@ AFRAME.registerComponent('move-on-click', {
       let data = el.parentEl.data;
 
       if (data) {
+        initTimer();
+
         setTimeout(() => {
-          enterNode(data);
+          enterNode(data, true);
         }, 1000);
       }
     });
@@ -132,6 +135,7 @@ function enterNode(node) {
     document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', node.isTrap ? 'red' : node.colorValue));
   }
   // TODO: render inside of the box only for current one?
+  drawTerminals();
 }
 
 AFRAME.registerComponent('hack-on-click', {
@@ -148,6 +152,7 @@ AFRAME.registerComponent('hack-on-click', {
           // draw something on terminal?
           win();
         } else {
+          initTimer();
           console.log("WRONG!");
           el.components.sound.playSound();
           reduceTime(10);
@@ -370,7 +375,7 @@ function getTerminalText(time, code) {
   let locating = `LOCATING INTRUDER\n${percent}% [${progress}]\n            ${formatted}`;
   let access = `> access code\n  ${code}\n\n> ${terminalHover ? 'hack' : ''}`;
 
-  return locating + '\n\n' + access;
+  return (ticking ? locating + '\n\n' : '') + access;
 }
 
 // TODO: draw on traps as well
@@ -388,6 +393,9 @@ function reduceTime(amount) {
 }
 
 function initTimer() {
+  if (ticking) return;
+
+  ticking = true;
   time = GAME_TIME;
 
   drawTerminals();
@@ -563,7 +571,6 @@ AFRAME.registerComponent('cyberspace', {
 
     sectorCodes = codes;
     initTextures();
-    initTimer(network, COLOR_VALUES, codes);
 
     // walls
     for (let i = 0; i <= 16; i++) {

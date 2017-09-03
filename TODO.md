@@ -17,7 +17,6 @@
 - [ ] set current node (to show different hack state per terminal)
 - [ ] win screen - better text
 - [ ] lose screen - show terminal INTRUDER ELIMINATED
-- [ ] start timer after action
 - [ ] canvas textures - refactor it a bit?
 - [ ] better sounds
   - sound when entering the trap
@@ -33,6 +32,7 @@
   - more hints and make them contextual?
 - [x] put player in sector with colors or connection codes
 - [x] don't put player on traps
+- [x] start timer after action
 
 ## sounds
 - wrong terminal/trap: [1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5]
