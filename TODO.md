@@ -1,7 +1,7 @@
 ### Terminal:
 - [ ] choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
 - [ ] cannot copy example code
-- [ ] what characters to use for nodes/traps/target ?
+- [x] what characters to use for nodes/traps/target ?
 - [x] add a legend to map explaining what symbols mean (nodes, traps, etc)
 - [x] update map command layout to be more 'command line'
 - [x] maybe help displays list of commands and `help map` or `help help` displays details
@@ -60,7 +60,7 @@
 
 - [ ] we need to better explain how to play the game both in VR and terminal
 - [ ] VR needs some tips on reading codes, hacking and navigating
-- [ ] Description in README and credits for codepen demo https://codepen.io/somethingformed/pen/raWJXV
+- [x] Description in README and credits for codepen demo https://codepen.io/somethingformed/pen/raWJXV
 
 ### General:
 - what ES6 features can we use natively (to make code nicer and shorter)?
