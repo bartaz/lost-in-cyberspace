@@ -103,7 +103,7 @@ AFRAME.registerComponent('move-on-click', {
 AFRAME.registerComponent('hack-on-click', {
   init: function () {
     let el = this.el;
-    let parent = el.parentNode.parentNode;
+    let parent = el.parentNode.parentNode.parentNode;
 
     el.addEventListener('click', () => {
       console.log("HACK");
@@ -138,7 +138,7 @@ AFRAME.registerComponent('help-on-click', {
   }
 });
 
-/* global drawText network randomNetwork getNetworkCodes randomInt initTextures sectorCodes getBox COLOR_VALUES getNode */
+/* global prison drawText network randomNetwork getNetworkCodes randomInt initTextures sectorCodes getBox COLOR_VALUES getNode */
 AFRAME.registerComponent('cyberspace', {
   init: function () {
     let scene = this.el;
@@ -264,7 +264,7 @@ AFRAME.registerComponent('cyberspace', {
     }
 
     // prison
-    let prison = {
+    prison = {
       colorValue: 'red',
       isTrap: true,
       sector: 0

@@ -17,6 +17,7 @@ let ticking; // if time is already ticking
 
 let network;
 let sectorCodes;
+let prison;
 
 let terminalHacked;
 let terminalWin;
@@ -27,6 +28,8 @@ function enterNode(node) {
 
   console.log("ENTER NODE", node);
   terminalHacked = node.isHacked;
+  document.querySelectorAll('.node-inside').forEach(n => n.setAttribute('visible', false));
+  node.el.querySelector('.node-inside').setAttribute('visible', true);
   if (node.isTrap) {
     node.el.querySelector('.node-box').components.sound__trap.playSound();
     reduceTime(60);
@@ -92,12 +95,11 @@ function getBox(pos) {
 function getTerminal(pos, node) {
   let terminal = createEntity('a-entity', {
     position: { x: pos.x - 0.5, y: pos.y, z: pos.z - 0.5 },
-    rotation: '0 45 0',
+    rotation: '0 45 0'
   });
 
   // node terminal text
   terminal.appendChild(createEntity('a-plane', {
-    'class': 'node-terminal',
     position: { y: -0.4 },
     rotation: '-10 0 0',
     height: 0.5,
@@ -105,63 +107,65 @@ function getTerminal(pos, node) {
     src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
   }));
 
-  // help action
-  terminal.appendChild(createEntity('a-plane', {
-    'class': 'node-action-help',
-    position: { x: -0.30, y: -0.2 },
-    rotation: '-10 15 0',
-    height: 0.1,
-    width: 0.4,
-    src: '#actions-help',
-    material: 'transparent: true;',
-    'fuse-on-hover': '',
-    'scale-on-hover': '',
-    'help-on-click': '',
-    'text-on-hover': '',
-  }));
+  if (!node.isTrap) {
+    // help action
+    terminal.appendChild(createEntity('a-plane', {
+      'class': 'node-action-help',
+      position: { x: -0.30, y: -0.2 },
+      rotation: '-10 15 0',
+      height: 0.1,
+      width: 0.4,
+      src: '#actions-help',
+      material: 'transparent: true;',
+      'fuse-on-hover': '',
+      'scale-on-hover': '',
+      'help-on-click': '',
+      'text-on-hover': '',
+    }));
 
-  // hack action
-  terminal.appendChild(createEntity('a-plane', {
-    'class': 'node-action-hack',
-    position: { x: -0.31, y: -0.35 },
-    rotation: '-10 15 0',
-    height: 0.1,
-    width: 0.4,
-    src: '#actions-hack',
-    material: 'transparent: true;',
-    'fuse-on-hover': '',
-    'scale-on-hover': '',
-    'hack-on-click': '',
-    'text-on-hover': '',
-    'sound': { src: SOUND_TRAP }
-  }));
+    // hack action
+    terminal.appendChild(createEntity('a-plane', {
+      'class': 'node-action-hack',
+      position: { x: -0.31, y: -0.35 },
+      rotation: '-10 15 0',
+      height: 0.1,
+      width: 0.4,
+      src: '#actions-hack',
+      material: 'transparent: true;',
+      'fuse-on-hover': '',
+      'scale-on-hover': '',
+      'hack-on-click': '',
+      'text-on-hover': '',
+      'sound': { src: SOUND_TRAP }
+    }));
 
-  // hint
-  let hint = createEntity('a-entity', {
-    'class': 'hint',
-    position: { y: -0.2, z: -0.1 },
-    visible: false
-  });
+    // hint
+    let hint = createEntity('a-entity', {
+      'class': 'hint',
+      position: { y: -0.2, z: -0.1 },
+      visible: false
+    });
 
-  // hint text
-  hint.appendChild(createEntity('a-plane', {
-    position: { y: 0.375 },
-    height: 0.5,
-    width: 0.5,
-    src: `#hint-1`,
-    material: 'transparent:true',
-  }));
+    // hint text
+    hint.appendChild(createEntity('a-plane', {
+      position: { y: 0.375 },
+      height: 0.5,
+      width: 0.5,
+      src: `#hint-1`,
+      material: 'transparent:true',
+    }));
 
-  // hint arrow
-  hint.appendChild(createEntity('a-plane', {
-    position: { y: 0.0625 },
-    height: 0.125,
-    width: 0.125,
-    src: `#hint-arrow`,
-    material: 'transparent:true',
-  }));
+    // hint arrow
+    hint.appendChild(createEntity('a-plane', {
+      position: { y: 0.0625 },
+      height: 0.125,
+      width: 0.125,
+      src: `#hint-arrow`,
+      material: 'transparent:true',
+    }));
 
-  terminal.appendChild(hint);
+    terminal.appendChild(hint);
+  }
 
   return terminal;
 }
@@ -206,8 +210,12 @@ function getNode(pos, node) {
   //   //'sound': { src: SOUND_TRAP }
   // }));
 
+  let inside = createEntity('a-entity', {
+    'class': 'node-inside'
+  });
+
   // node inside bottom frame
-  nodeEl.appendChild(createEntity('a-plane', {
+  inside.appendChild(createEntity('a-plane', {
     position: { x: pos.x, y: pos.y - 0.7, z: pos.z },
     color: node.isTrap ? 'red' : color,
     rotation: '-90 45 0',
@@ -217,9 +225,9 @@ function getNode(pos, node) {
     width: 1.46
   }));
 
-  nodeEl.appendChild(getTerminal(pos, node));
+  inside.appendChild(getTerminal(pos, node));
 
-
+  nodeEl.appendChild(inside);
 
   // TODO: second terminal ?
   // it needs actions, hint, etc...
@@ -317,14 +325,9 @@ function initTimer() {
 // TODO: some text in game over area
 function gameOver() {
   console.log('YOU LOSE!');
-
   drawText('terminal-trap', `\n    INTRUDER  \n   ELIMINATED \n`, 'red');
-
-  document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', 'red'));
-  // TODO: remove them all together?
-  document.querySelectorAll('.node-action-hack').forEach(p => p.parentNode.removeChild(p));
-  document.querySelectorAll('.node-action-help').forEach(p => p.parentNode.removeChild(p));
   document.getElementById('camera').setAttribute('position', "0 0 0");
+  enterNode(prison);
 }
 
 function showWinScreen() {
@@ -356,18 +359,19 @@ function win() {
   // show sky and remove floor and ceiling
   document.getElementById('scene').appendChild(createEntity('a-sky', { color: '#00F'} ));
   document.querySelectorAll('.sky').forEach(p => p.parentNode.removeChild(p));
-  // TODO: remove them together (duplicated from game over)
+  
   document.querySelectorAll('.node-action-hack').forEach(p => p.parentNode.removeChild(p));
   document.querySelectorAll('.node-action-help').forEach(p => p.parentNode.removeChild(p));
+  document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', '#00F'));
 
   // cancel animation timer
   clearInterval(timer);
 
   function removeAll(selector, delay, callback) {
-    let nodes = document.querySelectorAll(selector);
+    let nodes = [].filter.call(document.querySelectorAll(selector), n => n.getAttribute('visible'));
     if (nodes.length) {
-      let node = nodes[randomInt(nodes.length)];
-      node.parentNode.removeChild(node);
+      nodes[randomInt(nodes.length)].setAttribute('visible', false);
+      nodes[randomInt(nodes.length)].setAttribute('visible', false);
       setTimeout(() => removeAll(selector, delay, callback), delay);
     } else {
       callback();
