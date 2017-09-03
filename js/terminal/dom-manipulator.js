@@ -8,6 +8,21 @@ function setInputValue(value) {
   }, 1);
 }
 
+
+function showCat() {
+  this.showSubmittedValue();
+
+  this.createParagraph(
+    "<span class='color-red'>,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`</span><br>"
+    + "<span style='color: "+ COLOR_VALUES[2] +"'>.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,</span><br>"
+    + "<span style='color: "+ COLOR_VALUES[0] +"'>*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,---/V\\<br>"
+    + "<span style='color: "+ COLOR_VALUES[1] +"'>`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.</span>&nbsp;&nbsp;&nbsp;&nbsp;~|__(o.o)<br>"
+    + "<span style='color: "+ COLOR_VALUES[3] +"'>^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'</span>&nbsp;&nbsp;UU&nbsp;&nbsp;UU"
+  );
+
+  this.setInputValue("");
+};
+
 /* global networkFromCodes getNetworkMap */
 function showCommandHelp(cmd) {
   showSubmittedValue();

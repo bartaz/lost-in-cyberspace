@@ -39,6 +39,8 @@ Terminal.prototype.submitInput = function () {
     showTopScore(args);
   } else if (cmd === 'make-me-a-sandwich') {
     showSandwich(sudo, args);
+  } else if (cmd === 'cat') {
+    showCat();
   } else {
     showCommandNotFound();
   }
