@@ -15,7 +15,6 @@
 
 - [ ] but when clicking multiple times on node (during animation)
 - [ ] win screen - better text
-- [ ] lose screen - show terminal INTRUDER ELIMINATED
 - [ ] canvas textures - refactor it a bit?
 - [ ] better sounds
   - sound when entering the trap
@@ -33,6 +32,8 @@
 - [x] don't put player on traps
 - [x] start timer after action
 - [x] set current node (to show different hack state per terminal)
+- [x] lose screen - show terminal INTRUDER ELIMINATED
+
 ## sounds
 - wrong terminal/trap: [1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5]
 - timer ticking: 1,,0.163,,0.0169,0.4782,,,,,,,,,,,,,1,,,0.1,,0.5

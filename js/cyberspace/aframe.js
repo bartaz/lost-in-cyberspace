@@ -427,8 +427,12 @@ function initTimer() {
 
 // TODO: some text in game over area
 function gameOver() {
-  console.log('YOU LOOSE!');
+  console.log('YOU LOSE!');
+
+  drawText('terminal-trap', `\n    INTRUDER  \n   ELIMINATED \n`, 'red');
+
   document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', 'red'));
+  document.querySelectorAll('.node-action-hack').forEach(p => p.parentNode.removeChild(p));
   document.getElementById('camera').setAttribute('position', "0 0 0");
 }
 
@@ -636,7 +640,7 @@ AFRAME.registerComponent('cyberspace', {
     // nodes
     let nodes = [];
 
-    drawText('terminal-trap', `\n  INTRUDER  \n  DETECTED  \n`, 'red');
+    drawText('terminal-trap', `\n    INTRUDER  \n    DETECTED  \n`, 'red');
 
     network.colors.forEach((color, i) => {
       drawText(`node-${i}`, '>', COLOR_VALUES[color], 112);
@@ -692,6 +696,15 @@ AFRAME.registerComponent('cyberspace', {
         scene.appendChild(nodes[i][j].el);
       }
     }
+
+    // prison
+    let prison = {
+      colorValue: 'red',
+      isTrap: true
+    };
+    prison.el = getNode({ x: 0, y: 1.7, z: 0}, prison);
+    scene.appendChild(prison.el);
+
 
     tmp = getNetworkCodes(network);
 
