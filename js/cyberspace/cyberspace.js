@@ -83,7 +83,7 @@ function createEntity(name, attrs) {
 function getBox(pos) {
   return createEntity('a-box', {
     class: 'wall',
-    src: '#grid',
+    src: '#G',
     position: pos,
     color: '#FFF',
     height: 4,
@@ -104,7 +104,7 @@ function getTerminal(pos, node) {
     rotation: '-10 0 0',
     height: 0.5,
     width: 0.5,
-    src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
+    src: `#T${node.isTrap ? 'T' : node.sector}`
   }));
 
   if (!node.isTrap) {
@@ -115,7 +115,7 @@ function getTerminal(pos, node) {
       rotation: '-10 15 0',
       height: 0.1,
       width: 0.4,
-      src: '#actions-help',
+      src: '#AE',
       material: 'transparent: true;',
       'fuse-on-hover': '',
       'scale-on-hover': '',
@@ -130,7 +130,7 @@ function getTerminal(pos, node) {
       rotation: '-10 15 0',
       height: 0.1,
       width: 0.4,
-      src: '#actions-hack',
+      src: '#AA',
       material: 'transparent: true;',
       'fuse-on-hover': '',
       'scale-on-hover': '',
@@ -151,7 +151,7 @@ function getTerminal(pos, node) {
       position: { y: 0.375 },
       height: 0.5,
       width: 0.5,
-      src: `#hint-1`,
+      src: `#H`,
       material: 'transparent:true',
     }));
 
@@ -160,7 +160,7 @@ function getTerminal(pos, node) {
       position: { y: 0.0625 },
       height: 0.125,
       width: 0.125,
-      src: `#hint-arrow`,
+      src: `#HA`,
       material: 'transparent:true',
     }));
 
@@ -180,7 +180,7 @@ function getNode(pos, node) {
   // node box
   nodeEl.appendChild(createEntity('a-box', {
     'class': 'node-box',
-    src: `#node-${node.sector}`,
+    src: `#N${node.sector}`,
     position: pos,
     height: 1.5,
     width: 1.5,
@@ -220,7 +220,7 @@ function getNode(pos, node) {
     color: node.isTrap ? 'red' : color,
     rotation: '-90 45 0',
     material: 'transparent:true',
-    src: '#frame',
+    src: '#F',
     height: 1.46,
     width: 1.46
   }));
@@ -283,14 +283,14 @@ function getTerminalText(time, code, action) {
 // TODO: draw on traps as well
 function drawTerminals(action) {
   sectorCodes.forEach((code, i) => {
-    drawText(`terminal-${i}`, getTerminalText(time, code, action), COLOR_VALUES[network.colors[i]], 48);
+    drawText(TEXTURES[`T${i}`], getTerminalText(time, code, action), COLOR_VALUES[network.colors[i]], 48);
   });
 }
 
 /* exported drawNodes */
 function drawNodes(action) {
   sectorCodes.forEach((code, i) => {
-    drawText(`node-${i}`, '>' + (action || ''), COLOR_VALUES[network.colors[i]], 112);
+    drawText(TEXTURES[`N${i}`], '>' + (action || ''), COLOR_VALUES[network.colors[i]], 112);
   });
 }
 
@@ -325,7 +325,7 @@ function initTimer() {
 // TODO: some text in game over area
 function gameOver() {
   console.log('YOU LOSE!');
-  drawText('terminal-trap', `\n    INTRUDER  \n   ELIMINATED \n`, 'red');
+  drawText(TEXTURES['TT'], `\n    INTRUDER  \n   ELIMINATED \n`, 'red');
   document.getElementById('camera').setAttribute('position', "0 0 0");
   enterNode(prison);
 }
@@ -341,12 +341,12 @@ function showWinScreen() {
                         "\n" +
                         "\n" +
                         "YOU WIN!";
-  drawText('node-0', blueScreenOfWin, 'transparent', 32);
+  drawText(TEXTURES['N0'], blueScreenOfWin, 'transparent', 32);
   var screen = createEntity('a-plane', {
     width: 2,
     height: 2,
     position: { y: 1, z: -4 },
-    src: '#node-0',
+    src: '#N0',
     material: 'transparent:true',
     rotation: '0 0 0'
   });
@@ -359,7 +359,7 @@ function win() {
   // show sky and remove floor and ceiling
   document.getElementById('scene').appendChild(createEntity('a-sky', { color: '#00F'} ));
   document.querySelectorAll('.sky').forEach(p => p.parentNode.removeChild(p));
-  
+
   document.querySelectorAll('.node-action-hack').forEach(p => p.parentNode.removeChild(p));
   document.querySelectorAll('.node-action-help').forEach(p => p.parentNode.removeChild(p));
   document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', '#00F'));
@@ -381,9 +381,9 @@ function win() {
   removeAll('.wall', 20, () => removeAll('.node', 50, showWinScreen));
 }
 
-function drawText(canvas, text, bgColor, size = 48, textColor = 'white') {
+function drawText(ctx, text, bgColor, size = 48, textColor = 'white') {
   text = text.split('\n');
-  let ctx = document.getElementById(canvas).getContext('2d');
+
   ctx.clearRect(0,0,512,512);
   if (bgColor) {
     ctx.fillStyle = bgColor;
@@ -398,9 +398,26 @@ function drawText(canvas, text, bgColor, size = 48, textColor = 'white') {
   text.forEach((line,i) => ctx.strokeText(line, 10, (i+1) * size * 1.2));
 }
 
+let TEXTURES = {};
+
 /* exported initTextures */
 function initTextures() {
-  let ctx = document.getElementById('grid').getContext('2d');
+  let assets = document.querySelector('a-assets');
+
+  let getCanvas = (id, width, height) => {
+    let canvas = document.createElement('canvas');
+    canvas.id = id;
+    canvas.width = width;
+    canvas.height = height;
+
+    TEXTURES[id] = canvas.getContext('2d');
+    assets.appendChild(canvas);
+
+    return TEXTURES[id];
+  };
+
+  // wall grid texture
+  let ctx = getCanvas('G', 256, 256);
   ctx.fillStyle = 'black';
   ctx.strokeStyle = '#FFF';
   ctx.fillRect(0,0,256,256);
@@ -413,19 +430,18 @@ function initTextures() {
     ctx.stroke();
   }
 
-  ctx = document.getElementById('frame').getContext('2d');
+  // node inside frame texture
+  ctx = getCanvas('F', 128, 128);
   ctx.strokeStyle = '#FFF';
   ctx.clearRect(0,0,128,128);
   ctx.strokeRect(0.5,0.5,127,127);
 
-  initHints();
-  drawText('actions-hack', '>hack', 'rgba(255,255,255,0.0)', 90);
-  drawText('actions-help', '>help', 'rgba(255,255,255,0.0)', 90);
-}
+  // hack and help actions textures
+  drawText(getCanvas('AA', 512, 128), '>hack', 'rgba(255,255,255,0.0)', 90);
+  drawText(getCanvas('AE', 512, 128), '>help', 'rgba(255,255,255,0.0)', 90);
 
-
-function initHints() {
-  let ctx = document.getElementById('hint-arrow').getContext('2d');
+  // hint arrow and hint text
+  ctx = getCanvas('HA', 128, 128);
   ctx.fillStyle = 'rgba(255,255,255,0.8)';
   ctx.beginPath();
   ctx.moveTo(0, 0);
@@ -448,5 +464,16 @@ function initHints() {
     'runs out!'
   ].join('\n');
 
-  drawText('hint-1', hint, 'rgba(255,255,255,0.8)', 30, '#333');
+  drawText(getCanvas('H', 512, 512), hint, 'rgba(255,255,255,0.8)', 30, '#333');
+
+  // trap terminals
+  drawText(getCanvas('TT', 512, 512), `\n    INTRUDER  \n    DETECTED  \n`, 'red');
+
+  // init node box sides and terminals for all sectors
+  [
+    'N0', 'N1', 'N2', 'N3',
+    'T0', 'T1', 'T2', 'T3',
+  ].forEach(id => getCanvas(id, 512, 512));
+
+  drawNodes();
 }

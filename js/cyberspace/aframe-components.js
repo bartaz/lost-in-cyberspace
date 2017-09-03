@@ -138,7 +138,7 @@ AFRAME.registerComponent('help-on-click', {
   }
 });
 
-/* global prison drawText network randomNetwork getNetworkCodes randomInt initTextures sectorCodes getBox COLOR_VALUES getNode */
+/* global prison network randomNetwork getNetworkCodes randomInt initTextures sectorCodes getBox COLOR_VALUES getNode */
 AFRAME.registerComponent('cyberspace', {
   init: function () {
     let scene = this.el;
@@ -207,10 +207,6 @@ AFRAME.registerComponent('cyberspace', {
 
     // nodes
     let nodes = [];
-
-    drawText('terminal-trap', `\n    INTRUDER  \n    DETECTED  \n`, 'red');
-
-    drawNodes();
 
     // init node object values
     for (let i = 0; i < 8; i++) {
