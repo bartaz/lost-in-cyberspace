@@ -110,23 +110,29 @@ AFRAME.registerComponent('move-on-click', {
       }, 1000);
 
       let data = el.parentEl.data;
+
       if (data) {
-        if (data.isTrap) {
-          setTimeout(() => {
-            el.components.sound__trap.playSound();
-            reduceTime(60);
-          }, 1000);
-        }
-        if (data.colorValue) {
-          // TODO: animate?
-          setTimeout(() => {
-            document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', data.colorValue));
-          }, 1000);
-        }
+        setTimeout(() => {
+          enterNode(data);
+        }, 1000);
       }
     });
   }
 });
+
+function enterNode(node) {
+  currentNode = node;
+  console.log("ENTER NODE", node);
+  if (node.isTrap) {
+    node.el.querySelector('.node-box').components.sound__trap.playSound();
+    reduceTime(60);
+  }
+  if (node.colorValue) {
+    // TODO: animate?
+    document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', node.isTrap ? 'red' : node.colorValue));
+  }
+  // TODO: render inside of the box only for current one?
+}
 
 AFRAME.registerComponent('hack-on-click', {
   init: function () {
@@ -194,7 +200,7 @@ function getBox(pos) {
     class: 'wall',
     src: '#grid',
     position: pos,
-    color: '#FFF', // TODO: change 'ambient color'
+    color: '#FFF',
     height: 4,
     width: 4,
     depth: 4
@@ -268,8 +274,9 @@ function getTerminal(pos, node) {
 
 function getNode(pos, node) {
   let color = node.colorValue;
-  let nodeEl = document.createElement('a-entity');
-  nodeEl.className = 'node';
+  let nodeEl = createEntity('a-entity', {
+    'class': 'node',
+  });
 
   // node box
   nodeEl.appendChild(createEntity('a-box', {
@@ -685,6 +692,6 @@ AFRAME.registerComponent('cyberspace', {
     };
     camera.setAttribute('position', pos);
     camera.setAttribute('rotation', '0 45 0');
-    document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', node.colorValue));
+    enterNode(node);
   }
 });

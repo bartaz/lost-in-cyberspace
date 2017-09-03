@@ -13,6 +13,7 @@
 
 ## VR
 
+- [ ] but when clicking multiple times on node (during animation)
 - [ ] set current node (to show different hack state per terminal)
 - [ ] win screen - better text
 - [ ] lose screen - show terminal INTRUDER ELIMINATED
