@@ -62,7 +62,7 @@ AFRAME.registerComponent('text-on-hover', {
   }
 });
 
-/* global initTimer enterNode */
+/* global isGameOver cancelMove initTimer enterNode */
 AFRAME.registerComponent('move-on-click', {
   init: function () {
 
@@ -71,12 +71,12 @@ AFRAME.registerComponent('move-on-click', {
     let moving = false;
 
     el.addEventListener('click', () => {
-      if (moving) return;
+      if (moving || isGameOver) return;
 
       let cPos = camera.getAttribute('position');
       let elPos = el.getAttribute('position');
 
-      animate(progress => {
+      cancelMove = animate(progress => {
         let currentPos = {
           x: cPos.x + ((elPos.x - cPos.x) * progress),
           y: cPos.y,
@@ -91,8 +91,10 @@ AFRAME.registerComponent('move-on-click', {
         initTimer();
         moving = true;
         setTimeout(() => {
-          enterNode(data, true);
-          moving = false;
+          if (!isGameOver) {
+            enterNode(data, true);
+            moving = false;
+          }
         }, 900);
       }
     });

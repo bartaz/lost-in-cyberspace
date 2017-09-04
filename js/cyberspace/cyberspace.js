@@ -14,6 +14,8 @@ let COLOR_VALUES = ['#3E5', '#3CF', '#FF3', '#F3C'];
 let time;  // current time
 let timer; // game timer setInterval (to cancel)
 let ticking; // if time is already ticking
+let isGameOver; /* exported isGameOver */
+let cancelMove;
 
 let network;
 let sectorCodes;
@@ -25,8 +27,6 @@ let terminalWin;
 /* exported enterNode */
 function enterNode(node) {
   // TODO: render inside of the box only for current one?
-
-  console.log("ENTER NODE", node);
   terminalHacked = node.isHacked;
   document.querySelectorAll('.node-inside').forEach(n => n.setAttribute('visible', false));
   node.el.querySelector('.node-inside').setAttribute('visible', true);
@@ -35,6 +35,7 @@ function enterNode(node) {
     reduceTime(60);
   }
   // TODO: animate?
+  // TODO: this is very slow on mobile
   document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', node.isTrap ? 'red' : COLOR_VALUES[network.colors[node.sector]]));
   drawTerminals();
 }
@@ -321,6 +322,8 @@ function initTimer() {
 
 // TODO: some text in game over area
 function gameOver() {
+  if (cancelMove) cancelMove();
+  isGameOver = true;
   console.log('YOU LOSE!');
   drawText(TEXTURES['TT'], `\n    INTRUDER  \n   ELIMINATED \n`, 'red');
   document.getElementById('camera').setAttribute('position', "0 0 0");
@@ -361,7 +364,7 @@ function win() {
   document.querySelectorAll('.node-action-help').forEach(p => p.parentNode.removeChild(p));
   document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', '#00F'));
 
-  // cancel animation timer
+  // cancel game timer
   clearInterval(timer);
 
   function removeAll(selector, delay, callback) {

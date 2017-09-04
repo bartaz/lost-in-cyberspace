@@ -13,7 +13,7 @@
 
 ## VR
 
-- [ ] bug - moving/clicking when game ends?
+- [ ] slow performance of painting walls on mobile
 - [ ] target not in sector with target code
 - [ ] start not on target
 - [ ] show timer on traps
@@ -25,6 +25,7 @@
   - sound when time is ticking
   - sound on win?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] bug - moving/clicking when game ends?
 
 ## sounds
 - wrong terminal/trap: [1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5]
