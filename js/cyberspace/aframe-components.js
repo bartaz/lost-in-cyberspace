@@ -152,14 +152,30 @@ AFRAME.registerComponent('cyberspace', {
     // initial order is color / connections / traps / target
     let networkCodes = getNetworkCodes(network);
 
-    let tmp = networkCodes.slice(0);
-    let codes = [];
-    codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
-    codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
-    codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
-    codes.push(tmp[0]);
+    let target = network.target;
+    let targetCodeSector;
 
-    sectorCodes = codes;
+    // put target code in opposite sector then target itself
+    // 0 1        3 2
+    // 2 3   =>   1 0
+    if (target[1] < 4) {
+      targetCodeSector = (target[0] < 4) ? 3 : 2;
+    } else {
+      targetCodeSector = (target[0] < 4) ? 1 : 0;
+    }
+
+    // node sector colors and codes
+    // take all codes except target code (which luckly is last in the array)
+    let tmp = networkCodes.slice(0,3);
+    // randomize the 3 codes
+    sectorCodes = [];
+    sectorCodes.push(tmp.splice(randomInt(tmp.length),1)[0]);
+    sectorCodes.push(tmp.splice(randomInt(tmp.length),1)[0]);
+    sectorCodes.push(tmp[0]);
+
+    // put target code at proper index into sector codes
+    sectorCodes.splice(targetCodeSector, 0, networkCodes[3]);
+
     initTextures();
 
     // walls
@@ -225,10 +241,10 @@ AFRAME.registerComponent('cyberspace', {
 
         // node sector colors and codes
         if (j < 4) {
-          node.code = (i < 4) ? codes[0] : codes[1];
+          node.code = (i < 4) ? sectorCodes[0] : sectorCodes[1];
           node.sector = (i < 4) ? 0 : 1;
         } else {
-          node.code = (i < 4) ? codes[2] : codes[3];
+          node.code = (i < 4) ? sectorCodes[2] : sectorCodes[3];
           node.sector = (i < 4) ? 2 : 3;
         }
 

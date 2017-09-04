@@ -1,4 +1,6 @@
 ### Terminal:
+- [ ] typo in 'help comand'
+- [ ] review help text ('actual map of nodes' sounds strange)
 - [ ] choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
 - [ ] cannot copy example code
 - [x] what characters to use for nodes/traps/target ?
@@ -13,8 +15,8 @@
 
 ## VR
 
+- [ ] test game and adjust timings
 - [ ] slow performance of painting walls on mobile
-- [ ] target not in sector with target code
 - [ ] start not on target
 - [ ] show timer on traps
 - [ ] more help?
@@ -25,6 +27,7 @@
   - sound when time is ticking
   - sound on win?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] target not in sector with target code
 - [x] bug - moving/clicking when game ends?
 
 ## sounds
