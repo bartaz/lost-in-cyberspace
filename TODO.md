@@ -13,6 +13,7 @@
 
 ## VR
 
+- [ ] bug with hover of cube when rendering end screen...
 - [ ] target not in sector with target code
 - [ ] start not on target
 - [ ] colorValue not needed (use sector color)?
@@ -47,7 +48,7 @@
 
 ## Network
 
-- [ ] generate more random codes (code ids)
+- [x] generate more random codes (code ids)
 - [x] traps not next to each other (in one sector)
 - [x] make sure there are 8 traps?
 - [x] more traps

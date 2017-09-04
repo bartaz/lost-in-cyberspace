@@ -396,6 +396,14 @@ function parseCode(code) {
   return code;
 }
 
+function hexRandomMod4(n) {
+  return (n + randomInt(4) * 4).toString(16).toUpperCase();
+}
+
+function hexRandomMod8(n) {
+  return (n + randomInt(2) * 8).toString(16).toUpperCase();
+}
+
 // Colors codes
 // -------------
 //
@@ -422,10 +430,9 @@ function parseCode(code) {
 // 0 % 4 = 0 (color of sector C is 0)
 // 6 % 4 = 2 (color of sector D is 2)
 // Code is invalid as it has duplicated colors
-
 function colorsToCode(colors) {
-  let type = 'C'; // TODO: make it 0,4,8,C later?
-  let code = '0x' + type + colors.join(''); // TODO: shift colors % 4
+  let type = hexRandomMod4(0);
+  let code = '0x' + type + colors.map(hexRandomMod4).join('');
 
   return code;
 }
@@ -479,13 +486,15 @@ function decodeColors(values) {
 // Code is invalid because spread can't be 0
 
 function wallsToCode(walls) {
-  let type = 'D'; // TODO: make it 1,5,9,D later?
+  let type = hexRandomMod4(1);
   let code = '0x' + type;
 
-  code = code + walls.rowSpread +
-                walls.rowOffset +
-                walls.colSpread +
-                walls.colOffset; // TODO: shift values % 8
+  code = code + [
+    walls.rowSpread,
+    walls.rowOffset,
+    walls.colSpread,
+    walls.colOffset
+  ].map(hexRandomMod8).join('');
 
   return code;
 }
@@ -526,7 +535,7 @@ function decodeWalls(values) {
 // 0      (trap position in sector D is 1, so its coors are [4,4] in whole network)
 
 function trapsToCode(traps) {
-  let type = 'E'; // TODO: make it 2,6,A,E later?
+  let type = hexRandomMod4(2);
   let code = '0x' + type;
 
   code = code + traps.trapsSeed
@@ -573,12 +582,10 @@ function decodeTraps(values) {
 // Code is invalid because duplicated coordinates don't match
 
 function targetToCode(target) {
-  let type = 'F'; // TODO: make it 3,7,B,F later?
+  let type = hexRandomMod4(3); // TODO: make it 3,7,B,F later?
   let code = '0x' + type;
 
-  code = code + target.join('') + target
-    .map(t => (t + 8).toString(16).toUpperCase())
-    .join('');
+  code = code + target.map(hexRandomMod8).join('') + target.map(hexRandomMod8).join('');
 
   return code;
 }

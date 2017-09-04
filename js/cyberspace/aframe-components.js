@@ -148,7 +148,9 @@ AFRAME.registerComponent('cyberspace', {
 
     // get network codes and randomize their order
     // initial order is color / connections / traps / target
-    let tmp = getNetworkCodes(network);
+    let networkCodes = getNetworkCodes(network);
+
+    let tmp = networkCodes.slice(0);
     let codes = [];
     codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
     codes.push(tmp.splice(randomInt(tmp.length),1)[0]);
@@ -268,16 +270,13 @@ AFRAME.registerComponent('cyberspace', {
     prison.el = getNode({ x: 0, y: 1.7, z: 0}, prison);
     scene.appendChild(prison.el);
 
-
-    tmp = getNetworkCodes(network);
-
     let node;
     do {
       i = randomInt(8);
       j = randomInt(8);
       node = nodes[i][j];
     } while (
-      node.isTrap || !(node.code === tmp[0] || node.code === tmp[1])
+      node.isTrap || !(node.code === networkCodes[0] || node.code === networkCodes[1])
       //!node.isTarget
     );
 
