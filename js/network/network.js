@@ -46,8 +46,17 @@ function createWallsObject(rowSpread, rowOffset, colSpread, colOffset) {
 
   let walls = combineWalls(rowWalls, colWalls);
 
+  let connections = getConnections(walls.rowWalls, walls.colWalls);
+
   // make sure all nodes are connected
-  if (!areAllNodesConnected(walls.rowWalls, walls.colWalls)) {
+  let areAllNodesConnected = connections.reduce((a, b) => a.concat(b)).indexOf(0) === -1;
+  if (!areAllNodesConnected) {
+    return null;
+  }
+
+  // make sure there are some dead ends (to make things more interesting)
+  let numberOfDeadEnds = connections.reduce((a, b) => a.concat(b)).filter(c => c === 1).length;
+  if (numberOfDeadEnds < 5) {
     return null;
   }
 
@@ -57,11 +66,12 @@ function createWallsObject(rowSpread, rowOffset, colSpread, colOffset) {
     colSpread: colSpread,
     colOffset: colOffset,
     rowWalls: walls.rowWalls,
-    colWalls: walls.colWalls
+    colWalls: walls.colWalls,
+    connections: connections
   };
 }
 
-function areAllNodesConnected(rowWalls, colWalls) {
+function getConnections(rowWalls, colWalls) {
   let nodes = [];
 
   for (let i = 0; i < 8; i++) {
@@ -70,10 +80,10 @@ function areAllNodesConnected(rowWalls, colWalls) {
       nodes[i][j] = 0;
     }
   }
-  visitNode(nodes, 0,0, rowWalls, colWalls);
 
-  nodes = nodes.reduce((a, b) => a.concat(b));
-  return (nodes.indexOf(0) === -1);
+  visitNode(nodes, 0,0, rowWalls, colWalls);
+  nodes[0][0]--;
+  return nodes;
 }
 
 function visitNode(nodes, x, y, rowWalls, colWalls) {
@@ -231,20 +241,23 @@ function randomTraps() {
 function randomNetwork() {
   let traps = randomTraps();
   let target = randomTarget();
+  let walls = randomWalls();
 
-  // prevent target from appearing on traps
   while (
-    traps.trapsXY.some((xy) => xy.join() === target.join())
+    // prevent target from appearing on traps
+    traps.trapsXY.some((xy) => xy.join() === target.join()) ||
+    // and make sure it appears in a dead end
+    walls.connections[target[0]][target[1]] !== 1
   ) {
     traps = randomTraps();
     target = randomTarget();
   }
 
   return {
+    colors: randomColors(),
     traps: traps,
     target: target,
-    colors: randomColors(),
-    walls: randomWalls()
+    walls: walls
   };
 }
 

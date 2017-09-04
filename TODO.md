@@ -34,8 +34,8 @@
 
 ## Network
 
-- [ ] detect dead ends and put target there?
 - [ ] list errors of invalid or conflicting codes
+- [x] detect dead ends and put target there?
 - [x] more traps (?)
 
 ## Help and tips
