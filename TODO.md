@@ -13,7 +13,6 @@
 
 ## VR
 
-- [ ] bug with hover of cube when rendering end screen...
 - [ ] target not in sector with target code
 - [ ] start not on target
 - [ ] colorValue not needed (use sector color)?
@@ -26,6 +25,7 @@
   - sound when time is ticking
   - sound on win?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] bug with hover of cube when rendering end screen...
 - [x] help better text
 - [x] canvas textures - refactor it a bit?
 - [x] actions texture offset (help)

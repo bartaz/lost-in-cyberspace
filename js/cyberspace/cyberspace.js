@@ -341,12 +341,12 @@ function showWinScreen() {
                         "\n" +
                         "\n" +
                         "YOU WIN!";
-  drawText(TEXTURES['N0'], blueScreenOfWin, 'transparent', 32);
+  drawText(TEXTURES['TT'], blueScreenOfWin, 'transparent', 32);
   var screen = createEntity('a-plane', {
     width: 2,
     height: 2,
     position: { y: 1, z: -4 },
-    src: '#N0',
+    src: '#TT',
     material: 'transparent:true',
     rotation: '0 0 0'
   });
