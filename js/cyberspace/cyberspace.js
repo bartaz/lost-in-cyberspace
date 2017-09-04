@@ -34,10 +34,8 @@ function enterNode(node) {
     node.el.querySelector('.node-box').components.sound__trap.playSound();
     reduceTime(60);
   }
-  if (node.colorValue) {
-    // TODO: animate?
-    document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', node.isTrap ? 'red' : node.colorValue));
-  }
+  // TODO: animate?
+  document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', node.isTrap ? 'red' : COLOR_VALUES[network.colors[node.sector]]));
   drawTerminals();
 }
 
@@ -172,7 +170,6 @@ function getTerminal(pos, node) {
 
 /* exported getNode */
 function getNode(pos, node) {
-  let color = node.colorValue;
   let nodeEl = createEntity('a-entity', {
     'class': 'node',
   });
@@ -217,7 +214,7 @@ function getNode(pos, node) {
   // node inside bottom frame
   inside.appendChild(createEntity('a-plane', {
     position: { x: pos.x, y: pos.y - 0.7, z: pos.z },
-    color: node.isTrap ? 'red' : color,
+    color: node.isTrap ? 'red' : COLOR_VALUES[network.colors[node.sector]],
     rotation: '-90 45 0',
     material: 'transparent:true',
     src: '#F',

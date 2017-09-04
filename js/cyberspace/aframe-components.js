@@ -215,8 +215,6 @@ AFRAME.registerComponent('cyberspace', {
       nodes[i] = [];
       for (let j = 0; j < 8; j++) {
         let node = {
-          colorId: null,
-          colorValue: null,
           isTrap: false,
           isTarget: false,
           isHacked: false,
@@ -225,16 +223,13 @@ AFRAME.registerComponent('cyberspace', {
 
         // node sector colors and codes
         if (j < 4) {
-          node.colorId = (i < 4) ? network.colors[0] : network.colors[1];
           node.code = (i < 4) ? codes[0] : codes[1];
           node.sector = (i < 4) ? 0 : 1;
         } else {
-          node.colorId = (i < 4) ? network.colors[2] : network.colors[3];
           node.code = (i < 4) ? codes[2] : codes[3];
           node.sector = (i < 4) ? 2 : 3;
         }
 
-        node.colorValue = COLOR_VALUES[node.colorId];
         nodes[i][j] = node;
       }
     }
@@ -263,7 +258,6 @@ AFRAME.registerComponent('cyberspace', {
 
     // prison
     prison = {
-      colorValue: 'red',
       isTrap: true,
       sector: 0
     };

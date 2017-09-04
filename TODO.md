@@ -13,6 +13,7 @@
 
 ## VR
 
+- [ ] bug - moving/clicking when game ends?
 - [ ] target not in sector with target code
 - [ ] start not on target
 - [ ] colorValue not needed (use sector color)?
