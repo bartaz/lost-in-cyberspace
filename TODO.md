@@ -15,8 +15,8 @@
 
 ## VR
 
-- [ ] save current node (instead of color and hack, etc)
-- [ ] start not on target
+- [ ] count time, moves (hacks, traps?) and display in the end
+  - generate a code from it for a hi score in terminal?
 - [ ] show timer on traps
 - [ ] win screen - better text
 - [ ] lose screen - better text
@@ -27,6 +27,8 @@
   - sound on win?
 - [ ] more help?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] start not on target
+- [x] save current node (instead of color and hack, etc)
 - [x] keep trap color in COLOR_VALUES
 - [x] slow performance of painting walls on mobile
 - [x] target not in sector with target code

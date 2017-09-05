@@ -16,18 +16,18 @@ let time;  // current time
 let timer; // game timer setInterval (to cancel)
 let ticking; // if time is already ticking
 let isGameOver; /* exported isGameOver */
+let isWin;
 let cancelMove;
 
 let network;
 let sectorCodes;
 let prison;
 
-let terminalHacked;
-let terminalWin;
+let currentNode;
 
 /* exported enterNode */
 function enterNode(node) {
-  terminalHacked = node.isHacked;
+  currentNode = node;
 
   // render inside of the box only for current node
   document.querySelectorAll('.node-inside').forEach(n => n.setAttribute('visible', false));
@@ -273,9 +273,9 @@ function getTerminalText(time, code, action) {
   let hacked = `> hack\n  ACCESS DENIED!`;
   let win = `> hack\n\n  ACCESS GRANTED\n\n> sudo rm -rf /\n> kill -9 -1`;
   let prompt = '\n\n> ' + (action || '');
-  return (ticking && !terminalWin ? locating + '\n\n' : '') +
-         (terminalHacked ? hacked : terminalWin ? win : access) +
-         (terminalWin ? '' : prompt);
+  return (ticking && !isWin ? locating + '\n\n' : '') +
+         (currentNode.isHacked ? hacked : isWin ? win : access) +
+         (isWin ? '' : prompt);
 }
 
 // TODO: draw on traps as well
@@ -357,6 +357,9 @@ function showWinScreen() {
 /* exported win */
 /* global randomInt */
 function win() {
+  isWin = true;
+  drawTerminals();
+
   // show sky and remove floor and ceiling
   document.getElementById('scene').appendChild(createEntity('a-sky', { color: '#00F'} ));
   document.querySelectorAll('.sky').forEach(p => p.parentNode.removeChild(p));
@@ -401,11 +404,8 @@ function drawText(ctx, text, bgColor, size = 48, textColor = 'white') {
 
 let TEXTURES = {};
 
-let currentWallColor = '#FFF';
-
 function paintWalls(color = '#FFF') {
   let ctx = TEXTURES['G'];
-  currentWallColor = color;
   ctx.fillStyle = 'black';
   ctx.strokeStyle = color;
   ctx.fillRect(0,0,256,256);

@@ -62,7 +62,7 @@ AFRAME.registerComponent('text-on-hover', {
   }
 });
 
-/* global isGameOver cancelMove initTimer enterNode paintWalls COLOR_VALUES currentWallColor */
+/* global isGameOver cancelMove initTimer enterNode paintWalls COLOR_VALUES currentNode */
 AFRAME.registerComponent('move-on-click', {
   init: function () {
 
@@ -78,7 +78,7 @@ AFRAME.registerComponent('move-on-click', {
 
       let data = el.parentEl.data;
 
-      let fromColor = currentWallColor;
+      let fromColor = currentNode.isTrap ? COLOR_TRAP : COLOR_VALUES[network.colors[currentNode.sector]];
       let nextColor = data.isTrap ? COLOR_TRAP : COLOR_VALUES[network.colors[data.sector]];
 
       // get array of RGB values from #RGB notation (just 16 steps per channel)
@@ -119,26 +119,21 @@ AFRAME.registerComponent('move-on-click', {
   }
 });
 
-/* global win reduceTime terminalWin terminalHacked */
+/* global win reduceTime */
 AFRAME.registerComponent('hack-on-click', {
   init: function () {
     let el = this.el;
+
+    // action > terminal entity > node inside entity > node (with data)
     let parent = el.parentNode.parentNode.parentNode;
 
     el.addEventListener('click', () => {
-      console.log("HACK");
       if (parent.data) {
         if (parent.data.isTarget) {
-          console.log("YOU WIN");
-          terminalWin = true;
-          drawTerminals();
           win();
         } else {
           initTimer();
-          console.log("WRONG!");
-
           parent.data.isHacked = true;
-          terminalHacked = true;
           el.components.sound.playSound();
           reduceTime(10);
         }
@@ -306,7 +301,7 @@ AFRAME.registerComponent('cyberspace', {
       j = randomInt(8);
       node = nodes[i][j];
     } while (
-      node.isTrap || !(node.code === networkCodes[0] || node.code === networkCodes[1])
+      node.isTrap || node.isTarget || !(node.code === networkCodes[0] || node.code === networkCodes[1])
       //!node.isTarget
     );
 
