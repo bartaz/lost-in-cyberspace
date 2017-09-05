@@ -26,17 +26,16 @@ let terminalWin;
 
 /* exported enterNode */
 function enterNode(node) {
-  // TODO: render inside of the box only for current one?
   terminalHacked = node.isHacked;
+
+  // render inside of the box only for current node
   document.querySelectorAll('.node-inside').forEach(n => n.setAttribute('visible', false));
   node.el.querySelector('.node-inside').setAttribute('visible', true);
+
   if (node.isTrap) {
     node.el.querySelector('.node-box').components.sound__trap.playSound();
     reduceTime(60);
   }
-
-  // TODO: animate?
-  paintWalls( node.isTrap ? 'red' : COLOR_VALUES[network.colors[node.sector]] );
 
   drawTerminals();
 }
@@ -215,7 +214,7 @@ function getNode(pos, node) {
   // node inside bottom frame
   inside.appendChild(createEntity('a-plane', {
     position: { x: pos.x, y: pos.y - 0.7, z: pos.z },
-    color: node.isTrap ? 'red' : COLOR_VALUES[network.colors[node.sector]],
+    color: node.isTrap ? '#F00' : COLOR_VALUES[network.colors[node.sector]],
     rotation: '-90 45 0',
     material: 'transparent:true',
     src: '#F',
@@ -325,8 +324,9 @@ function gameOver() {
   if (cancelMove) cancelMove();
   isGameOver = true;
   console.log('YOU LOSE!');
-  drawText(TEXTURES['TT'], `\n    INTRUDER  \n   ELIMINATED \n`, 'red');
+  drawText(TEXTURES['TT'], `\n    INTRUDER  \n   ELIMINATED \n`, '#F00');
   document.getElementById('camera').setAttribute('position', "0 0 0");
+  paintWalls('#F00');
   enterNode(prison);
 }
 
@@ -400,11 +400,13 @@ function drawText(ctx, text, bgColor, size = 48, textColor = 'white') {
 
 let TEXTURES = {};
 
-function paintWalls(color) {
-  let ctx = TEXTURES['G'];
+let currentWallColor = '#FFF';
 
+function paintWalls(color = '#FFF') {
+  let ctx = TEXTURES['G'];
+  currentWallColor = color;
   ctx.fillStyle = 'black';
-  ctx.strokeStyle = color || '#FFF';
+  ctx.strokeStyle = color;
   ctx.fillRect(0,0,256,256);
 
   for (let i = 0; i < 6; i++) {
@@ -477,7 +479,7 @@ function initTextures() {
   drawText(createTexture('H', 512, 512), hint, 'rgba(255,255,255,0.8)', 24, '#333');
 
   // trap terminals
-  drawText(createTexture('TT', 512, 512), `\n    INTRUDER  \n    DETECTED  \n`, 'red');
+  drawText(createTexture('TT', 512, 512), `\n    INTRUDER  \n    DETECTED  \n`, '#F00');
 
   // init node box sides and terminals for all sectors
   [

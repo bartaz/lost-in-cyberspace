@@ -62,7 +62,7 @@ AFRAME.registerComponent('text-on-hover', {
   }
 });
 
-/* global isGameOver cancelMove initTimer enterNode */
+/* global isGameOver cancelMove initTimer enterNode paintWalls COLOR_VALUES currentWallColor */
 AFRAME.registerComponent('move-on-click', {
   init: function () {
 
@@ -76,6 +76,15 @@ AFRAME.registerComponent('move-on-click', {
       let cPos = camera.getAttribute('position');
       let elPos = el.getAttribute('position');
 
+      let data = el.parentEl.data;
+
+      let fromColor = currentWallColor;
+      let nextColor = data.isTrap ? '#F00' : COLOR_VALUES[network.colors[data.sector]];
+
+      // get array of RGB values from #RGB notation (just 16 steps per channel)
+      let fromRGB = fromColor.split('').splice(1).map(h => parseInt(h, 16));
+      let nextRGB = nextColor.split('').splice(1).map(h => parseInt(h, 16));
+
       cancelMove = animate(progress => {
         let currentPos = {
           x: cPos.x + ((elPos.x - cPos.x) * progress),
@@ -83,9 +92,18 @@ AFRAME.registerComponent('move-on-click', {
           z: cPos.z + ((elPos.z - cPos.z) * progress),
         };
         camera.setAttribute('position', currentPos );
+
+        // if nodes have different colors, animate the walls
+        if (fromColor !== nextColor) {
+          paintWalls('#' + fromRGB.map((from, i) => {
+            // simple animation of each #RGB value
+            // each represented by single hex value (so just 16 steps instead of 256)
+            // but it's good enough to keep it that simple
+            return (~~(from + ((nextRGB[i] - from) * progress))).toString(16);
+          }).join(''));
+        }
       }, 1000);
 
-      let data = el.parentEl.data;
 
       if (data) {
         initTimer();
@@ -140,7 +158,7 @@ AFRAME.registerComponent('help-on-click', {
   }
 });
 
-/* global prison network randomNetwork getNetworkCodes randomInt initTextures sectorCodes getBox COLOR_VALUES getNode */
+/* global prison network randomNetwork getNetworkCodes randomInt initTextures sectorCodes getBox getNode */
 AFRAME.registerComponent('cyberspace', {
   init: function () {
     let scene = this.el;
@@ -301,6 +319,8 @@ AFRAME.registerComponent('cyberspace', {
     };
     camera.setAttribute('position', pos);
     camera.setAttribute('rotation', '0 45 0');
+
+    paintWalls( node.isTrap ? '#F00' : COLOR_VALUES[network.colors[node.sector]] );
     enterNode(node);
   }
 });
