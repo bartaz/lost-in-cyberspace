@@ -12,12 +12,16 @@
 
 - [x] there is no cursor at the end of input after copying value
 - [x] font in map doesn't work in Firefox (lines don't align)
+- [ ] "top" command to display top 10 scores (?)
+  - "top" without arguments just displays top 10 (with hardcoded initial values)
+  - "top WIN_CODE NAME" adds entry to top 10 for given win code (from final screen and team name)
 
 ## VR
 
 - [ ] count time, moves (hacks, traps?) and display in the end
   - generate a code from it for a hi score in terminal?
-- [ ] show timer on traps
+- [ ] show 2 terminals in nodes
+- [ ] help hint on trap?
 - [ ] win screen - better text
 - [ ] lose screen - better text
 - [ ] test game and adjust timings
@@ -27,6 +31,7 @@
   - sound on win?
 - [ ] more help?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] show timer on traps
 - [x] start not on target
 - [x] save current node (instead of color and hack, etc)
 - [x] keep trap color in COLOR_VALUES
@@ -55,3 +60,18 @@
 
 - test main menu on mobile + FF
 - add favicon?
+
+
+### HI SCORE TOP 10 hackers:
+
+bartaz & calanthe // our best score
+
+Oracle & ?? (Braniac) / Black Canary
+The Lone Gunmen
+Acid Burn & Crash Override
+Wasp & Bob the Dog
+Johnny Mnemonic & Jones
+Motoko & Project 2501
+Martin Brice and Cosmo
+Elliot Alderson & Mr. Robot (fsociety)
+Neo & Trinity

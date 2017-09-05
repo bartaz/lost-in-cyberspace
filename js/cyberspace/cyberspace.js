@@ -13,7 +13,6 @@ let COLOR_TRAP = '#F00';
 
 // game state
 let time;  // current time
-let timer; // game timer setInterval (to cancel)
 let ticking; // if time is already ticking
 let isGameOver; /* exported isGameOver */
 let isWin;
@@ -249,7 +248,6 @@ function getNode(pos, node) {
 }
 
 
-
 // terminal text
 // - code
 // - is time ticking
@@ -257,6 +255,18 @@ function getNode(pos, node) {
 // - hover (hack) (or other actions?)
 // - sector color (?)
 function getTerminalText(time, code, action) {
+  let locating = getTimerText(time);
+
+  let access = `> access code\n  ${code}`;
+  let hacked = `> hack\n  ACCESS DENIED!`;
+  let win = `> hack\n\n  ACCESS GRANTED\n\n> sudo rm -rf /\n> kill -9 -1`;
+  let prompt = '\n\n> ' + (action || '');
+  return (ticking && !isWin ? locating + '\n\n' : '') +
+         (currentNode.isHacked ? hacked : isWin ? win : access) +
+         (isWin ? '' : prompt);
+}
+
+function getTimerText(time) {
   let min = ~~(time / 60);
   let sec = time % 60;
 
@@ -269,20 +279,22 @@ function getTerminalText(time, code, action) {
 
   let locating = `LOCATING INTRUDER\n${percent}% [${progress}]\n            ${formatted}`;
 
-  let access = `> access code\n  ${code}`;
-  let hacked = `> hack\n  ACCESS DENIED!`;
-  let win = `> hack\n\n  ACCESS GRANTED\n\n> sudo rm -rf /\n> kill -9 -1`;
-  let prompt = '\n\n> ' + (action || '');
-  return (ticking && !isWin ? locating + '\n\n' : '') +
-         (currentNode.isHacked ? hacked : isWin ? win : access) +
-         (isWin ? '' : prompt);
+  return locating;
 }
 
-// TODO: draw on traps as well
+function getTrapText(time) {
+  let locating = getTimerText(time);
+  return (ticking ? locating + '\n\n' : '') +
+   '    INTRUDER  \n' +
+   (isGameOver ? '   ELIMINATED' : '    DETECTED  ');
+}
+
 function drawTerminals(action) {
   sectorCodes.forEach((code, i) => {
     drawText(TEXTURES[`T${i}`], getTerminalText(time, code, action), COLOR_VALUES[network.colors[i]], 48);
   });
+
+  drawText(TEXTURES[`TT`], getTrapText(time), COLOR_TRAP);
 }
 
 /* exported drawNodes */
@@ -299,6 +311,21 @@ function reduceTime(amount) {
   drawTerminals();
 }
 
+function tick() {
+  if (isWin) return;
+
+  time--;
+
+  if (time < 0) { time = 0; }
+  drawTerminals();
+
+  if (!time) {
+    gameOver();
+  } else {
+    setTimeout(tick, currentNode.isTrap ? 500 : 1000);
+  }
+}
+
 /* exported initTimer */
 function initTimer() {
   if (ticking) return;
@@ -307,17 +334,7 @@ function initTimer() {
   time = GAME_TIME;
 
   drawTerminals();
-  timer = setInterval(() => {
-    time--;
-    if (time < 0) { time = 0; }
-    drawTerminals();
-
-    if (!time) {
-      gameOver();
-      clearInterval(timer);
-    }
-
-  }, 1000);
+  tick();
 }
 
 // TODO: some text in game over area
@@ -325,7 +342,7 @@ function gameOver() {
   if (cancelMove) cancelMove();
   isGameOver = true;
   console.log('YOU LOSE!');
-  drawText(TEXTURES['TT'], `\n    INTRUDER  \n   ELIMINATED \n`, COLOR_TRAP);
+
   document.getElementById('camera').setAttribute('position', "0 0 0");
   paintWalls(COLOR_TRAP);
   enterNode(prison);
@@ -368,9 +385,6 @@ function win() {
   document.querySelectorAll('.node-action-help').forEach(p => p.parentNode.removeChild(p));
   paintWalls('#00F');
 
-  // cancel game timer
-  clearInterval(timer);
-
   function removeAll(selector, delay, callback) {
     let nodes = [].filter.call(document.querySelectorAll(selector), n => n.getAttribute('visible'));
     if (nodes.length) {
@@ -383,6 +397,7 @@ function win() {
   }
 
   removeAll('.wall', 20, () => removeAll('.node', 50, showWinScreen));
+  console.log("WIN", time);
 }
 
 function drawText(ctx, text, bgColor, size = 48, textColor = 'white') {
@@ -479,13 +494,10 @@ function initTextures() {
 
   drawText(createTexture('H', 512, 512), hint, 'rgba(255,255,255,0.8)', 24, '#333');
 
-  // trap terminals
-  drawText(createTexture('TT', 512, 512), `\n    INTRUDER  \n    DETECTED  \n`, COLOR_TRAP);
-
-  // init node box sides and terminals for all sectors
+  // init node box sides and terminals for all sectors and traps
   [
     'N0', 'N1', 'N2', 'N3',
-    'T0', 'T1', 'T2', 'T3',
+    'T0', 'T1', 'T2', 'T3', 'TT'
   ].forEach(id => createTexture(id, 512, 512));
 
   drawNodes();
