@@ -34,12 +34,12 @@ function enterNode(node) {
     node.el.querySelector('.node-box').components.sound__trap.playSound();
     reduceTime(60);
   }
+
   // TODO: animate?
-  // TODO: this is very slow on mobile
-  document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', node.isTrap ? 'red' : COLOR_VALUES[network.colors[node.sector]]));
+  paintWalls( node.isTrap ? 'red' : COLOR_VALUES[network.colors[node.sector]] );
+
   drawTerminals();
 }
-
 
 /* exported animate */
 function animate(draw, duration) {
@@ -362,7 +362,7 @@ function win() {
 
   document.querySelectorAll('.node-action-hack').forEach(p => p.parentNode.removeChild(p));
   document.querySelectorAll('.node-action-help').forEach(p => p.parentNode.removeChild(p));
-  document.querySelectorAll('.wall').forEach(wall => wall.setAttribute('color', '#00F'));
+  paintWalls('#00F');
 
   // cancel game timer
   clearInterval(timer);
@@ -400,11 +400,27 @@ function drawText(ctx, text, bgColor, size = 48, textColor = 'white') {
 
 let TEXTURES = {};
 
+function paintWalls(color) {
+  let ctx = TEXTURES['G'];
+
+  ctx.fillStyle = 'black';
+  ctx.strokeStyle = color || '#FFF';
+  ctx.fillRect(0,0,256,256);
+
+  for (let i = 0; i < 6; i++) {
+    let y = i*51 + 0.5;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(256,y);
+    ctx.stroke();
+  }
+}
+
 /* exported initTextures */
 function initTextures() {
   let assets = document.querySelector('a-assets');
 
-  let getCanvas = (id, width, height) => {
+  let createTexture = (id, width, height) => {
     let canvas = document.createElement('canvas');
     canvas.id = id;
     canvas.width = width;
@@ -417,31 +433,21 @@ function initTextures() {
   };
 
   // wall grid texture
-  let ctx = getCanvas('G', 256, 256);
-  ctx.fillStyle = 'black';
-  ctx.strokeStyle = '#FFF';
-  ctx.fillRect(0,0,256,256);
-
-  for (let i = 0; i < 6; i++) {
-    let y = i*51 + 0.5;
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(256,y);
-    ctx.stroke();
-  }
+  let ctx = createTexture('G', 256, 256);
+  paintWalls();
 
   // node inside frame texture
-  ctx = getCanvas('F', 128, 128);
+  ctx = createTexture('F', 128, 128);
   ctx.strokeStyle = '#FFF';
   ctx.clearRect(0,0,128,128);
   ctx.strokeRect(0.5,0.5,127,127);
 
   // hack and help actions textures
-  drawText(getCanvas('AA', 512, 128), '>hack', 'rgba(255,255,255,0.0)', 90);
-  drawText(getCanvas('AE', 512, 128), '>help', 'rgba(255,255,255,0.0)', 90);
+  drawText(createTexture('AA', 512, 128), '>hack', 'rgba(255,255,255,0.0)', 90);
+  drawText(createTexture('AE', 512, 128), '>help', 'rgba(255,255,255,0.0)', 90);
 
   // hint arrow and hint text
-  ctx = getCanvas('HA', 128, 128);
+  ctx = createTexture('HA', 128, 128);
   ctx.fillStyle = 'rgba(255,255,255,0.8)';
   ctx.beginPath();
   ctx.moveTo(0, 0);
@@ -468,16 +474,16 @@ function initTextures() {
     'when the time runs out!'
   ].join('\n');
 
-  drawText(getCanvas('H', 512, 512), hint, 'rgba(255,255,255,0.8)', 24, '#333');
+  drawText(createTexture('H', 512, 512), hint, 'rgba(255,255,255,0.8)', 24, '#333');
 
   // trap terminals
-  drawText(getCanvas('TT', 512, 512), `\n    INTRUDER  \n    DETECTED  \n`, 'red');
+  drawText(createTexture('TT', 512, 512), `\n    INTRUDER  \n    DETECTED  \n`, 'red');
 
   // init node box sides and terminals for all sectors
   [
     'N0', 'N1', 'N2', 'N3',
     'T0', 'T1', 'T2', 'T3',
-  ].forEach(id => getCanvas(id, 512, 512));
+  ].forEach(id => createTexture(id, 512, 512));
 
   drawNodes();
 }

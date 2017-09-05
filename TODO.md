@@ -15,18 +15,18 @@
 
 ## VR
 
-- [ ] test game and adjust timings
-- [ ] slow performance of painting walls on mobile
 - [ ] start not on target
 - [ ] show timer on traps
-- [ ] more help?
 - [ ] win screen - better text
 - [ ] lose screen - better text
+- [ ] test game and adjust timings
 - [ ] better sounds
   - sound when entering the trap
   - sound when time is ticking
   - sound on win?
+- [ ] more help?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] slow performance of painting walls on mobile
 - [x] target not in sector with target code
 - [x] bug - moving/clicking when game ends?
 
