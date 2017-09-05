@@ -9,6 +9,7 @@ let SOUND_TRAP = `url(${jsfxr([1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.
 // TODO: use darker colors (get rid of yellow?);
 //const COLOR_VALUES = ['#1B3', '#1AD', '#F70', '#D1A'];
 let COLOR_VALUES = ['#3E5', '#3CF', '#FF3', '#F3C'];
+let COLOR_TRAP = '#F00';
 
 // game state
 let time;  // current time
@@ -214,7 +215,7 @@ function getNode(pos, node) {
   // node inside bottom frame
   inside.appendChild(createEntity('a-plane', {
     position: { x: pos.x, y: pos.y - 0.7, z: pos.z },
-    color: node.isTrap ? '#F00' : COLOR_VALUES[network.colors[node.sector]],
+    color: node.isTrap ? COLOR_TRAP : COLOR_VALUES[network.colors[node.sector]],
     rotation: '-90 45 0',
     material: 'transparent:true',
     src: '#F',
@@ -324,9 +325,9 @@ function gameOver() {
   if (cancelMove) cancelMove();
   isGameOver = true;
   console.log('YOU LOSE!');
-  drawText(TEXTURES['TT'], `\n    INTRUDER  \n   ELIMINATED \n`, '#F00');
+  drawText(TEXTURES['TT'], `\n    INTRUDER  \n   ELIMINATED \n`, COLOR_TRAP);
   document.getElementById('camera').setAttribute('position', "0 0 0");
-  paintWalls('#F00');
+  paintWalls(COLOR_TRAP);
   enterNode(prison);
 }
 
@@ -479,7 +480,7 @@ function initTextures() {
   drawText(createTexture('H', 512, 512), hint, 'rgba(255,255,255,0.8)', 24, '#333');
 
   // trap terminals
-  drawText(createTexture('TT', 512, 512), `\n    INTRUDER  \n    DETECTED  \n`, '#F00');
+  drawText(createTexture('TT', 512, 512), `\n    INTRUDER  \n    DETECTED  \n`, COLOR_TRAP);
 
   // init node box sides and terminals for all sectors
   [

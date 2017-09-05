@@ -79,7 +79,7 @@ AFRAME.registerComponent('move-on-click', {
       let data = el.parentEl.data;
 
       let fromColor = currentWallColor;
-      let nextColor = data.isTrap ? '#F00' : COLOR_VALUES[network.colors[data.sector]];
+      let nextColor = data.isTrap ? COLOR_TRAP : COLOR_VALUES[network.colors[data.sector]];
 
       // get array of RGB values from #RGB notation (just 16 steps per channel)
       let fromRGB = fromColor.split('').splice(1).map(h => parseInt(h, 16));
@@ -320,7 +320,7 @@ AFRAME.registerComponent('cyberspace', {
     camera.setAttribute('position', pos);
     camera.setAttribute('rotation', '0 45 0');
 
-    paintWalls( node.isTrap ? '#F00' : COLOR_VALUES[network.colors[node.sector]] );
+    paintWalls( node.isTrap ? COLOR_TRAP : COLOR_VALUES[network.colors[node.sector]] );
     enterNode(node);
   }
 });

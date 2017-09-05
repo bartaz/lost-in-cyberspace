@@ -15,6 +15,7 @@
 
 ## VR
 
+- [ ] save current node (instead of color and hack, etc)
 - [ ] start not on target
 - [ ] show timer on traps
 - [ ] win screen - better text
@@ -26,6 +27,7 @@
   - sound on win?
 - [ ] more help?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] keep trap color in COLOR_VALUES
 - [x] slow performance of painting walls on mobile
 - [x] target not in sector with target code
 - [x] bug - moving/clicking when game ends?
