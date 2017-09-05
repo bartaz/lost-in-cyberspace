@@ -128,6 +128,7 @@ AFRAME.registerComponent('hack-on-click', {
     let parent = el.parentNode.parentNode.parentNode;
 
     el.addEventListener('click', () => {
+      console.log('hack-on-click', el);
       if (parent.data) {
         if (parent.data.isTarget) {
           win();
@@ -145,9 +146,10 @@ AFRAME.registerComponent('hack-on-click', {
 AFRAME.registerComponent('help-on-click', {
   init: function () {
     let el = this.el;
-    let hint = el.parentNode.parentNode.querySelector('.hint');
+    let hint = el.parentNode.querySelector('.hint');
 
-    this.el.addEventListener('click', () => {
+    el.addEventListener('click', () => {
+      console.log('help-on-click', el);
       hint.setAttribute('visible', !hint.getAttribute('visible'));
     });
   }

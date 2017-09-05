@@ -90,10 +90,11 @@ function getBox(pos) {
   });
 }
 
-function getTerminal(pos, node) {
+// side is 1 or -1 (for 2 sides of the node)
+function getTerminal(pos, node, side = 1) {
   let terminal = createEntity('a-entity', {
-    position: { x: pos.x - 0.5, y: pos.y, z: pos.z - 0.5 },
-    rotation: '0 45 0'
+    position: { x: pos.x - side * 0.5, y: pos.y, z: pos.z - side * 0.5 },
+    rotation: '0 ' + (side * 90 - 45) + ' 0'
   });
 
   // node terminal text
@@ -222,7 +223,9 @@ function getNode(pos, node) {
     width: 1.46
   }));
 
+  // terminals
   inside.appendChild(getTerminal(pos, node));
+  inside.appendChild(getTerminal(pos, node, -1));
 
   nodeEl.appendChild(inside);
 
@@ -349,24 +352,42 @@ function gameOver() {
 }
 
 function showWinScreen() {
-  let blueScreenOfWin = "         ERROR\n" +
-                        "Fatal exception 0x54321.\n" +
-                        "All processes terminated.\n" +
-                        "\n" +
-                        "Contact your system admin\n" +
-                        "or technical support for\n" +
-                        "assistance.\n" +
-                        "\n" +
-                        "\n" +
-                        "YOU WIN!";
-  drawText(TEXTURES['TT'], blueScreenOfWin, 'transparent', 32);
-  var screen = createEntity('a-plane', {
+  let blueScreenOfWin = [
+    "              ERROR" ,
+    "",
+    "A fatal exception 0x654321 has" ,
+    "occured in the network sectors:",
+    sectorCodes.join(" ") + ".",
+    "",
+    "All processes terminated.",
+    "",
+    "Contact your system administator",
+    "or technical support for further",
+    "assistance.",
+    "",
+    "TIME_TO_LOCATE_INTRUDER: 00:12",
+    "INTRUDER_SWITCHES_COUNT: 87",
+    "NETWORK_TOP_HACKER_CODE: 0x654321",
+    "",
+    "YOU WIN!"
+  ].join('\n');
+  drawText(TEXTURES['H'], blueScreenOfWin, 'transparent', 24);
+  let screen = createEntity('a-plane', {
     width: 2,
     height: 2,
-    position: { y: 1, z: -4 },
-    src: '#TT',
+    position: { y: 1, z: -2 },
+    src: '#H',
     material: 'transparent:true',
-    rotation: '0 0 0'
+  });
+  document.getElementById('camera').appendChild(screen);
+
+  screen = createEntity('a-plane', {
+    width: 2,
+    height: 2,
+    position: { y: 1, z: 2 },
+    src: '#H',
+    material: 'transparent:true',
+    rotation: '0 180 0'
   });
   document.getElementById('camera').appendChild(screen);
 }

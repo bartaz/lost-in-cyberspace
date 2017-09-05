@@ -20,17 +20,17 @@
 
 - [ ] count time, moves (hacks, traps?) and display in the end
   - generate a code from it for a hi score in terminal?
-- [ ] show 2 terminals in nodes
-- [ ] help hint on trap?
-- [ ] win screen - better text
-- [ ] lose screen - better text
 - [ ] test game and adjust timings
 - [ ] better sounds
   - sound when entering the trap
   - sound when time is ticking
   - sound on win?
 - [ ] more help?
+  - [ ] help hint on trap?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] show 2 terminals in nodes
+- [x] win screen - better text
+- [x] lose screen - better text
 - [x] show timer on traps
 - [x] start not on target
 - [x] save current node (instead of color and hack, etc)
