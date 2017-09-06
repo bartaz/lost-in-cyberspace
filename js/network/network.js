@@ -261,10 +261,12 @@ function randomNetwork() {
   };
 }
 
+/* exported COLOR_VALUES COLOR_TRAP */
+let COLOR_VALUES = ['#3C5', '#3CF', '#FC3', '#F3C'];
+let COLOR_TRAP = '#F00';
+
 /* exported getNetworkMap */ // used by terminal (and network.html for testing)
 function getNetworkMap(network) {
-  const colorCodes = ['#3E5', '#3CF', '#FF3', '#F3C'];
-
   // 0 - wall (nothing)
   // 1 - connection h
   // 2 - connection v
@@ -357,9 +359,9 @@ function getNetworkMap(network) {
           var color;
 
           if (y < 4) {
-            color = (x < 4) ? colorCodes[network.colors[0]] : colorCodes[network.colors[1]];
+            color = (x < 4) ? COLOR_VALUES[network.colors[0]] : COLOR_VALUES[network.colors[1]];
           } else {
-            color = (x < 4) ? colorCodes[network.colors[2]] : colorCodes[network.colors[3]];
+            color = (x < 4) ? COLOR_VALUES[network.colors[2]] : COLOR_VALUES[network.colors[3]];
           }
 
           x++;

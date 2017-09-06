@@ -1,15 +1,11 @@
 /* global jsfxr */
 
+/* global COLOR_VALUES COLOR_TRAP */ // from network.js
+
 let GAME_TIME = 3 * 60;
 
 let SOUND_MOVE = `url(${jsfxr([2,0.3,0.11,,0.56,0.4091,,0.1027,,,,-0.02,,0.3075,,,,,0.83,,,0.3,,0.5])})`;
 let SOUND_TRAP = `url(${jsfxr([1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5])})`;
-
-// TODO: share with terminal
-// TODO: use darker colors (get rid of yellow?);
-//const COLOR_VALUES = ['#1B3', '#1AD', '#F70', '#D1A'];
-let COLOR_VALUES = ['#3E5', '#3CF', '#FF3', '#F3C'];
-let COLOR_TRAP = '#F00';
 
 // game state
 let time;  // current time
@@ -352,6 +348,7 @@ function gameOver() {
 }
 
 function showWinScreen() {
+  // TODO: get real end game code
   let blueScreenOfWin = [
     "              ERROR" ,
     "",
@@ -371,11 +368,11 @@ function showWinScreen() {
     "",
     "YOU WIN!"
   ].join('\n');
-  drawText(TEXTURES['H'], blueScreenOfWin, 'transparent', 24);
+  drawText(TEXTURES['H'], blueScreenOfWin, '', 24);
   let screen = createEntity('a-plane', {
     width: 2,
     height: 2,
-    position: { y: 1, z: -2 },
+    position: { y: 1, z: -4 },
     src: '#H',
     material: 'transparent:true',
   });
@@ -384,7 +381,7 @@ function showWinScreen() {
   screen = createEntity('a-plane', {
     width: 2,
     height: 2,
-    position: { y: 1, z: 2 },
+    position: { y: 1, z: 4 },
     src: '#H',
     material: 'transparent:true',
     rotation: '0 180 0'
@@ -429,12 +426,17 @@ function drawText(ctx, text, bgColor, size = 48, textColor = 'white') {
     ctx.fillStyle = bgColor;
     ctx.fillRect(0,0,512,512);
   }
-  ctx.strokeStyle = '#555';
   ctx.lineWidth = 1;
   ctx.fillStyle = textColor;
   ctx.font = `${size}px Monaco, monospace`;
   text.forEach((line,i) => ctx.fillText(line, 10, (i+1) * size * 1.2));
-  // TODO: stroke twice (bgColor + transparent black)?
+
+  if (bgColor) {
+    ctx.strokeStyle = bgColor;
+    text.forEach((line,i) => ctx.strokeText(line, 10, (i+1) * size * 1.2));
+  }
+
+  ctx.strokeStyle = 'rgba(0,0,0,0.3)';
   text.forEach((line,i) => ctx.strokeText(line, 10, (i+1) * size * 1.2));
 }
 
@@ -482,8 +484,8 @@ function initTextures() {
   ctx.strokeRect(0.5,0.5,127,127);
 
   // hack and help actions textures
-  drawText(createTexture('AA', 512, 128), '>hack', 'rgba(255,255,255,0.0)', 90);
-  drawText(createTexture('AE', 512, 128), '>help', 'rgba(255,255,255,0.0)', 90);
+  drawText(createTexture('AA', 512, 128), '>hack', '', 90);
+  drawText(createTexture('AE', 512, 128), '>help', '', 90);
 
   // hint arrow and hint text
   ctx = createTexture('HA', 128, 128);
