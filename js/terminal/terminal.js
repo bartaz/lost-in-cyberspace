@@ -16,15 +16,15 @@ Terminal.prototype.submitInput = function () {
     this.domManipulator.showOptionsList();
   } else if (this.currentValue.substring(0, 5) === "help ") {
     let command = this.currentValue.substring(5);
-    if (command === "map") {
+    if (command === "nmap") {
       this.domManipulator.showMapDetails();
     } else if (command === "help") {
       this.domManipulator.showHelpDetails();
     } else {
       this.domManipulator.showHelpCommandNotFound();
     }
-  } else if (this.currentValue === "map" || this.currentValue.substring(0, 4) === "map ") {
-    let codes = this.currentValue.substring(4).split(" ");
+  } else if (this.currentValue === "nmap" || this.currentValue.substring(0, 5) === "nmap ") {
+    let codes = this.currentValue.substring(5).split(" ");
     this.domManipulator.showMap(codes);
   } else {
     this.domManipulator.showCommandNotFound();

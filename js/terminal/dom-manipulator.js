@@ -18,20 +18,21 @@ DomManipulator.prototype.setFocusToInput = function () {
   this.terminalInput.focus();
 };
 
+/* global networkFromCodes getNetworkMap */
 DomManipulator.prototype.showMapDetails = function () {
   this.showSubmittedValue();
-  this.createParagraph("<div class=\"uppercase mar-ver--sm\">Name </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\"><b>map</b> -- Display actual map of nodes</div>"
-  + "<div class=\"uppercase mar-ver--sm\">Synopsis </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\"><b>map</b> [NODE_CODE ...]</div>"
-  + "<div class=\"uppercase mar-ver--sm\">Description </div>"
-  + "<div class=\"pad-lft--md wide mar-ver--sm\"><b>map</b> is a command to display actual map of nodes. The user must provide node codes [NODE_CODE] to include node details and hints on the map. "
+  this.createParagraph("<div class='uppercase mar-ver--sm'>Name </div>"
+  + "<div class='pad-lft--md mar-ver--sm'><b>nmap</b> -- Display the map of network nodes</div>"
+  + "<div class='uppercase mar-ver--sm'>Synopsis </div>"
+  + "<div class='pad-lft--md mar-ver--sm'><b>nmap</b> [NODE_CODE ...]</div>"
+  + "<div class='uppercase mar-ver--sm'>Description </div>"
+  + "<div class='pad-lft--md wide mar-ver--sm'><b>nmap</b> is a command to display the map of network nodes. The user must provide node codes [NODE_CODE] to include node details and hints on the map. "
   + "<br/><br/>The code structure is built of 5 hex values preceded with `0x`. "
   + "<br/><br/>There are 4 types of hints that can be shown on the map: [Sectors], [Target], [Traps] and [Connections]. "
-  + "<br/><br/>The <b>map</b> command accepts multiple codes with or without preceded `0x`.</div>"
-  + "<div class=\"uppercase mar-ver--sm\">Examples </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display map of nodes with [Sectors], [Traps] and [Connections]:</div>"
-  + "<div class=\"pad-lft--lg mar-ver--sm\">`map 0xC16F8 D1234 EF4D0`</div>");
+  + "<br/><br/>The <b>nmap</b> command accepts multiple codes with or without preceded `0x`.</div>"
+  + "<div class='uppercase mar-ver--sm'>Examples </div>"
+  + "<div class='pad-lft--md mar-ver--sm'>The following is how to display map of nodes with [Sectors], [Traps] and [Connections]:</div>"
+  + "<div class='pad-lft--lg mar-ver--sm'>`nmap 0xC16F8 D1234 EF4D0`</div>");
   let network = networkFromCodes("0xC16F8 D1234 EF4D0".split(" "));
   this.createParagraph(getNetworkMap(network) + this.prepareTopLegend() + this.prepareBtmLegend(network), "terminal--map");
   this.setInputValue("");
@@ -52,11 +53,12 @@ DomManipulator.prototype.showHelpDetails = function () {
 DomManipulator.prototype.showOptionsList = function () {
   this.showSubmittedValue();
   this.createParagraph("<div class=\"mar-ver--sm\">List of available commands:</div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\">- <b>map</b> -- Display actual map of nodes</div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\">- <b>help</b> -- Display list of available options or details about particular command</div>"
+  + "<div class=\"pad-lft--md mar-ver--sm\">- <b>nmap [NODE_CODE...]</b> -- Display the map of network nodes</div>"
+  + "<div class=\"pad-lft--md mar-ver--sm\">- <b>help [COMMAND]</b> -- Display detailed help for given command or list of available commands.</div>"
+  + "<br/>"
   + "<div class=\"uppercase mar-ver--sm\">Examples </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display detailed information about <b>map</b> command:</div>"
-  + "<div class=\"pad-lft--lg mar-ver--sm\">`help map`</div>");
+  + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display detailed information about <b>nmap</b> command:</div>"
+  + "<div class=\"pad-lft--lg mar-ver--sm\">`help nmap`</div>");
   this.setInputValue("");
 };
 
