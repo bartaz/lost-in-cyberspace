@@ -18,8 +18,7 @@
 
 ## VR
 
-- [ ] count time, moves (hacks, traps?) and display in the end
-  - generate a code from it for a hi score in terminal?
+- [ ] stroke on hint looks bad
 - [ ] test game and adjust timings
 - [ ] better sounds
   - sound when entering the trap
@@ -28,6 +27,8 @@
 - [ ] more help?
   - [ ] help hint on trap?
 - [ ] more node actions? access (to show the code) + hack?
+- [x] count time, moves (hacks, traps?) and display in the end
+  - generate a code from it for a hi score in terminal?
 - [x] show 2 terminals in nodes
 - [x] win screen - better text
 - [x] lose screen - better text

@@ -19,10 +19,12 @@ let sectorCodes;
 let prison;
 
 let currentNode;
+let moves = -1; // not to count first 'move' when game starts
 
 /* exported enterNode */
 function enterNode(node) {
   currentNode = node;
+  moves++;
 
   // render inside of the box only for current node
   document.querySelectorAll('.node-inside').forEach(n => n.setAttribute('visible', false));
@@ -347,12 +349,16 @@ function gameOver() {
   enterNode(prison);
 }
 
+/* global scoreToCode */
 function showWinScreen() {
-  // TODO: get real end game code
+  let code = scoreToCode(time, moves);
+
+  console.log(time, moves, code);
+
   let blueScreenOfWin = [
     "              ERROR" ,
     "",
-    "A fatal exception 0x654321 has" ,
+    "A fatal exception " + code + " has" ,
     "occured in the network sectors:",
     sectorCodes.join(" ") + ".",
     "",
@@ -362,9 +368,9 @@ function showWinScreen() {
     "or technical support for further",
     "assistance.",
     "",
-    "TIME_TO_LOCATE_INTRUDER: 00:12",
-    "INTRUDER_SWITCHES_COUNT: 87",
-    "NETWORK_TOP_HACKER_CODE: 0x654321",
+    "TIME_TO_LOCATE_INTRUDER: " + `0${~~(time / 60)}:${(time % 60)<10?'0':''}${time % 60}`,
+    "INTRUDER_SWITCHES_COUNT: " + moves,
+    "NETWORK_TOP_HACKER_CODE: " + code,
     "",
     "YOU WIN!"
   ].join('\n');

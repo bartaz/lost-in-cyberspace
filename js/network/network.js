@@ -683,3 +683,52 @@ function networkFromCodes(codes) {
 
   return network;
 }
+
+// Score codes
+// -------------
+//
+// 0xRTTMMC
+//
+// R - just a random hex value (so that it's possible to have different codes from same time/moves pair)
+// TT - double hex value of time left (0-256) in seconds
+// MM - double hex value of moves made by hacker (0-256)
+// C - checksum
+//
+
+/* exported scoreToCode */
+function scoreToCode(time, moves) {
+  let random = randomInt(16);
+
+  let checksum = [random, time, moves].reduce((checksum, value, i) => checksum + (value * (i * 2 + 1)), 0);
+
+  return '0x' + random.toString(16).toUpperCase()
+          + [time, moves].map(v => (v < 16 ? '0' : '') + v.toString(16).toUpperCase()).join('')
+          + (checksum % 16).toString(16).toUpperCase();
+}
+
+/* exported codeToScore */
+function codeToScore(code) {
+  code = code.replace('0x','');
+
+  if (code.length !== 6) {
+    throw new Error('Invalid code. Code length is not valid.');
+  }
+
+  //      random,           time              moves             checksum
+  code = [code.substr(0,1), code.substr(1,2), code.substr(3,2), code.substr(5,1)]
+      .map(x => parseInt(x, 16)) // parse hex values
+      .filter(n => !isNaN(n)); // get only numbers
+
+  if (code.length !== 4) {
+    throw new Error('Invalid code. Code contains invalid characters');
+  }
+
+  let checksumCheck = code.slice(0,3).reduce((checksum, value, i) => checksum + (value * (i * 2 + 1)), 0);
+  checksumCheck = checksumCheck % 16;
+
+  if (checksumCheck !== code[3]) {
+    throw new Error('Invalid code. This score code is invalid');
+  }
+
+  return { time: code[1], moves: code[2] };
+}
