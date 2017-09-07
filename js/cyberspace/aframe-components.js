@@ -136,7 +136,7 @@ AFRAME.registerComponent('hack-on-click', {
           initTimer();
           parent.data.isHacked = true;
           el.components.sound.playSound();
-          reduceTime(10);
+          reduceTime(16);
         }
       }
     });
