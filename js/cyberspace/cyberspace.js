@@ -8,7 +8,7 @@ let SOUND_MOVE = `url(${jsfxr([2,0.3,0.11,,0.56,0.4091,,0.1027,,,,-0.02,,0.3075,
 let SOUND_TRAP = `url(${jsfxr([1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5])})`;
 
 // game state
-let time;  // current time
+let time = GAME_TIME;  // current time
 let ticking; // if time is already ticking
 let isGameOver; /* exported isGameOver */
 let isWin;
@@ -332,7 +332,6 @@ function initTimer() {
   if (ticking) return;
 
   ticking = true;
-  time = GAME_TIME;
 
   drawTerminals();
   tick();
@@ -437,7 +436,7 @@ function drawText(ctx, text, bgColor, size = 48, textColor = 'white') {
   ctx.font = `${size}px Monaco, monospace`;
   text.forEach((line,i) => ctx.fillText(line, 10, (i+1) * size * 1.2));
 
-  if (bgColor) {
+  if (bgColor && size > 30) {
     ctx.strokeStyle = bgColor;
     text.forEach((line,i) => ctx.strokeText(line, 10, (i+1) * size * 1.2));
   }
