@@ -1,20 +1,20 @@
 ### Terminal:
-- [ ] typo in 'help comand'
-- [ ] review help text ('actual map of nodes' sounds strange)
+- [ ] don't depend on number of spaces between arguments: (nmap   c1234      d1234)
+- [ ] review help text
 - [ ] choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
 - [ ] cannot copy example code
+- [ ] easter eggs (some additional commands?) - cat?
+- [ ] "top" command to display top 10 scores (?)
+  - "top" without arguments just displays top 10 (with hardcoded initial values)
+  - "top WIN_CODE NAME" adds entry to top 10 for given win code (from final screen and team name)
 - [x] what characters to use for nodes/traps/target ?
 - [x] add a legend to map explaining what symbols mean (nodes, traps, etc)
 - [x] update map command layout to be more 'command line'
 - [x] maybe help displays list of commands and `help map` or `help help` displays details
 - [x] add example map image to the `help map` command
-- [ ] easter eggs (some additional commands?)
-
+- [x] typo in 'help comand'
 - [x] there is no cursor at the end of input after copying value
 - [x] font in map doesn't work in Firefox (lines don't align)
-- [ ] "top" command to display top 10 scores (?)
-  - "top" without arguments just displays top 10 (with hardcoded initial values)
-  - "top WIN_CODE NAME" adds entry to top 10 for given win code (from final screen and team name)
 
 ## VR
 
