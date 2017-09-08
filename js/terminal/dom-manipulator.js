@@ -8,7 +8,6 @@ function setInputValue(value) {
   }, 1);
 }
 
-
 function showCat() {
   this.showSubmittedValue();
 
@@ -21,7 +20,7 @@ function showCat() {
   );
 
   this.setInputValue("");
-};
+}
 
 /* global networkFromCodes getNetworkMap */
 function showCommandHelp(cmd) {

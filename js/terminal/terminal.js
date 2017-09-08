@@ -1,18 +1,9 @@
-/* global InputManager */
-function Terminal() {
-  this.inputManager   = new InputManager();
-  this.currentValue   = "";
+let currentValue   = "";
 
-  this.inputManager.on("submit", this.submitInput.bind(this));
-  this.inputManager.on("focusedout", this.setFocus.bind(this));
-  this.inputManager.on("restorePrevCommand", this.restorePrevCommand.bind(this));
-  this.inputManager.on("clear", this.clearInput.bind(this));
-}
+function submitInput() {
+  currentValue = terminalInput.value;
 
-Terminal.prototype.submitInput = function () {
-  this.currentValue = terminalInput.value;
-
-  let args = this.currentValue.split(" ").filter(x => x);
+  let args = currentValue.split(" ").filter(x => x);
   let cmd = args.splice(0,1)[0];
 
   let sudo = cmd === 'sudo';
@@ -48,17 +39,18 @@ Terminal.prototype.submitInput = function () {
   window.scrollTo(0, document.body.scrollHeight);
 };
 
-Terminal.prototype.setFocus = function () {
-  terminalInput.focus();
-};
+document.addEventListener("keydown", (event) => {
+  var modifiers = event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
 
-Terminal.prototype.restorePrevCommand = function () {
-  setInputValue(this.currentValue);
-  terminalInput.focus();
-};
 
-Terminal.prototype.clearInput = function () {
-  setInputValue("");
-};
+  if (!modifiers && event.which === 13) { // Enter key submits the command
+    submitInput();
+  } else if (!modifiers && event.which === 38) { //Arrow up shows 1 previous command
+    setInputValue(currentValue);
+    terminalInput.focus();
+  } else if (!modifiers && event.which === 40) { //Arrow down clears input
+    setInputValue("");
+  }
+});
 
-new Terminal();
+document.addEventListener("click", () => terminalInput.focus());
