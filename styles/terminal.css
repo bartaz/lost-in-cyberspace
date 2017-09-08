@@ -9,7 +9,6 @@ input {
 .container p {
     margin-top: 10px;
     margin-bottom: 0;
-    line-height: 20px;
 }
 
 .terminal {
@@ -29,7 +28,7 @@ input {
     display: block;
     position: absolute;
     left: 0;
-    top: 2px;
+    top: 0;
     width: 16px;
     height: 24px;
 }
@@ -37,6 +36,7 @@ input {
 .terminal--map {
     white-space: pre;
     position: relative;
+    line-height: 20px;
 }
 
 .terminal--map .char {
@@ -59,6 +59,7 @@ input {
 }
 
 .terminal--input {
+    display: block;
     outline: none;
     border: none;
     background: transparent;
@@ -89,11 +90,6 @@ input {
 
 .pad-lft--lg {
     padding-left: 60px;
-}
-
-.mar-ver--sm {
-    margin-top: 4px;
-    margin-bottom: 4px;
 }
 
 .wide {

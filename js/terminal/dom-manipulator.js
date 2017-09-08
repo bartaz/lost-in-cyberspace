@@ -23,39 +23,39 @@ DomManipulator.prototype.showCommandHelp = function (cmd) {
   this.showSubmittedValue();
 
   if (cmd === 'help') {
-    this.createParagraph("<div class='mar-ver--sm'>NAME</div>"
-    + "<div class='pad-lft--md mar-ver--sm'><b>help</b> -- Display list of options</div>"
-    + "<div class='mar-ver--sm'>SYNOPSIS</div>"
-    + "<div class='pad-lft--md mar-ver--sm'><b>help</b> [COMMAND]</div>"
-    + "<div class='mar-ver--sm'>DESCRIPTION</div>"
-    + "<div class='pad-lft--md mar-ver--sm'><b>help</b> is a command to display list of available options."
+    this.createParagraph("<div>NAME</div>"
+    + "<div class='pad-lft--md'><b>help</b> -- Display list of options</div>"
+    + "<div>SYNOPSIS</div>"
+    + "<div class='pad-lft--md'><b>help</b> [COMMAND]</div>"
+    + "<div>DESCRIPTION</div>"
+    + "<div class='pad-lft--md'><b>help</b> is a command to display list of available options."
     + "<br/><br/>The user can provide [COMMAND] to get details about particular [COMMAND].</div>");
   } else if (cmd === 'nmap') {
-    this.createParagraph("<div class='mar-ver--sm'>NAME</div>"
-    + "<div class='pad-lft--md mar-ver--sm'><b>nmap</b> -- Display the map of network nodes</div>"
-    + "<div class='mar-ver--sm'>SYNOPSIS</div>"
-    + "<div class='pad-lft--md mar-ver--sm'><b>nmap</b> [NODE_CODE ...]</div>"
-    + "<div class='mar-ver--sm'>DESCRIPTION</div>"
-    + "<div class='pad-lft--md wide mar-ver--sm'><b>nmap</b> is a command to display the map of network nodes. The user must provide node codes [NODE_CODE] to include node details and hints on the map. "
+    this.createParagraph("<div>NAME</div>"
+    + "<div class='pad-lft--md'><b>nmap</b> -- Display the map of network nodes</div>"
+    + "<div>SYNOPSIS</div>"
+    + "<div class='pad-lft--md'><b>nmap</b> [NODE_CODE ...]</div>"
+    + "<div>DESCRIPTION</div>"
+    + "<div class='pad-lft--md wide'><b>nmap</b> is a command to display the map of network nodes. The user must provide node codes [NODE_CODE] to include node details and hints on the map. "
     + "<br/><br/>The code structure is built of 5 hex values preceded with `0x`. "
     + "<br/><br/>There are 4 types of hints that can be shown on the map: [Sectors], [Target], [Traps] and [Connections]. "
     + "<br/><br/>The <b>nmap</b> command accepts multiple codes with or without preceded `0x`.</div>"
-    + "<div class='mar-ver--sm'>EXAMPLES</div>"
-    + "<div class='pad-lft--md mar-ver--sm'>The following is how to display map of nodes with [Sectors], [Traps] and [Connections]:</div>"
-    + "<div class='pad-lft--lg mar-ver--sm'>`nmap 0xC16F8 D1234 EF4D0`</div>");
+    + "<div>EXAMPLES</div>"
+    + "<div class='pad-lft--md'>The following is how to display map of nodes with [Sectors], [Traps] and [Connections]:</div>"
+    + "<div class='pad-lft--lg'>`nmap 0xC16F8 D1234 EF4D0`</div>");
     let network = networkFromCodes("0xC16F8 D1234 EF4D0".split(" "));
     this.createParagraph(getNetworkMap(network) + this.prepareTopLegend() + this.prepareBtmLegend(network), "terminal--map");
   } else if (cmd === 'top') {
-    this.createParagraph("<div class='mar-ver--sm'>NAME</div>"
-    + "<div class='pad-lft--md mar-ver--sm'><b>top</b> -- Display list of top hacker teams' scores.</div>"
-    + "<div class='mar-ver--sm'>SYNOPSIS</div>"
-    + "<div class='pad-lft--md mar-ver--sm'><b>top</b> [NETWORK_TOP_HACKER_CODE] [TEAM_NAME]</div>"
-    + "<div class='mar-ver--sm'>DESCRIPTION</div>"
-    + "<div class='pad-lft--md mar-ver--sm'>The <b>top</b> command displays list of the scores of top hackers teams."
+    this.createParagraph("<div>NAME</div>"
+    + "<div class='pad-lft--md'><b>top</b> -- Display list of top hacker teams' scores.</div>"
+    + "<div>SYNOPSIS</div>"
+    + "<div class='pad-lft--md'><b>top</b> [NETWORK_TOP_HACKER_CODE] [TEAM_NAME]</div>"
+    + "<div>DESCRIPTION</div>"
+    + "<div class='pad-lft--md'>The <b>top</b> command displays list of the scores of top hackers teams."
     + "<br/><br/>If the NETWORK_TOP_HACKER_CODE and optionally TEAM_NAME is provided new top score record will be added, so hackers team can compare their performance with the best of the best.</div>"
-    + "<div class='mar-ver--sm'>EXAMPLES</div>"
-    + "<div class='pad-lft--md mar-ver--sm'>The following is how to add your noob score to top hackers list:</div>"
-    + "<div class='pad-lft--lg mar-ver--sm'>`top 0xF0020F N00BS`</div>");
+    + "<div>EXAMPLES</div>"
+    + "<div class='pad-lft--md'>The following is how to add your noob score to top hackers list:</div>"
+    + "<div class='pad-lft--lg'>`top 0xF0020F N00BS`</div>");
   } else {
     this.createParagraph("No help entry for " + cmd);
   }
@@ -65,10 +65,10 @@ DomManipulator.prototype.showCommandHelp = function (cmd) {
 
 DomManipulator.prototype.showOptionsList = function () {
   this.showSubmittedValue();
-  this.createParagraph("<div class='mar-ver--sm'>List of available commands:</div>"
-  + "<div class='pad-lft--md mar-ver--sm'>- <b>nmap [NODE_CODE...]</b> -- Display the map of network nodes</div>"
-  + "<div class='pad-lft--md mar-ver--sm'>- <b>help [COMMAND]</b> -- Display detailed help for given command or list of available commands.</div>"
-  + "<div class='pad-lft--md mar-ver--sm'>- <b>top</b> -- Display list of top hacker teams' scores.</div>");
+  this.createParagraph("<div>List of available commands:</div>"
+  + "<div class='pad-lft--md'>- <b>nmap [NODE_CODE...]</b> -- Display the map of network nodes</div>"
+  + "<div class='pad-lft--md'>- <b>help [COMMAND]</b> -- Display detailed help for given command or list of available commands.</div>"
+  + "<div class='pad-lft--md'>- <b>top</b> -- Display list of top hacker teams' scores.</div>");
   this.setInputValue("");
 };
 
