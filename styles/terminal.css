@@ -11,6 +11,10 @@ input {
     margin-bottom: 0;
 }
 
+.out {
+  max-width: 800px;
+}
+
 .terminal {
     color: #FFF;
     width: 100%;
@@ -84,16 +88,8 @@ input {
     color: #F00;
 }
 
-.pad-lft--md {
+.pad {
     padding-left: 36px;
-}
-
-.pad-lft--lg {
-    padding-left: 60px;
-}
-
-.wide {
-    max-width: 600px;
 }
 
 .col {
