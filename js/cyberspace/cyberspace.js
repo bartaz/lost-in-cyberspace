@@ -4,8 +4,15 @@
 
 let GAME_TIME = 8 * 32; // TODO: adjust timing 4 * 32 may not be enough for new players
 
-let SOUND_MOVE = `url(${jsfxr([2,0.3,0.11,,0.56,0.4091,,0.1027,,,,-0.02,,0.3075,,,,,0.83,,,0.3,,0.5])})`;
+let SOUND_MOVE = `url(${jsfxr([0,0.002,0.0234,0.1937,0.7505,0.2288,,0.2736,0.0139,-0.1929,-0.2634,-0.818,-0.532,,,,-0.3047,0.8316,0.7164,-0.0983,,0.1088,0.0009,0.5])})`;
 let SOUND_TRAP = `url(${jsfxr([1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5])})`;
+let SOUND_HACK = `url(${jsfxr([1,,0.19,0.13,0.12,0.22,,-0.02,,,,0.02,,,,,-0.0799,0.08,1,,,0.12,,0.5])})`;
+let SOUND_LOSE = `url(${jsfxr([ 0,0.0107,0.4818,0.1177,0.1103,0.5301,,-0.001,-0.2314,,0.8409,0.6064,-0.8357,-0.2814,-0.1833,,-0.1204,-0.0006,0.9992,0.2134,0.7968,0.9975,-0.8724,0.5 ])})`;
+let SOUND_CLICK = `url(${jsfxr([0,,0.1906,,0.0556,0.4761,,,,,,,,0.1562,,,,,1,,,0.1,,0.5])})`;
+let SOUND_WIN = `url(${jsfxr([1,,0.3447,,0.4712,0.2109,,0.1984,,0.1398,0.5774,,,,,,,,1,,,,,0.5])})`;
+
+
+
 
 // game state
 let time = GAME_TIME;  // current time
@@ -31,7 +38,7 @@ function enterNode(node) {
   node.el.querySelector('.node-inside').setAttribute('visible', true);
 
   if (node.isTrap) {
-    node.el.querySelector('.node-box').components.sound__trap.playSound();
+    node.el.querySelector('.node-box').components[isGameOver ? 'sound__lose' : 'sound__trap'].playSound();
     reduceTime(32);
   }
 
@@ -118,6 +125,7 @@ function getTerminal(pos, node, side = 1) {
       'scale-on-hover': '',
       'help-on-click': '',
       'text-on-hover': '',
+      'sound__click': { src: SOUND_CLICK }
     }));
 
     // hack action
@@ -133,7 +141,7 @@ function getTerminal(pos, node, side = 1) {
       'scale-on-hover': '',
       'hack-on-click': '',
       'text-on-hover': '',
-      'sound': { src: SOUND_TRAP }
+      'sound__hack': { src: SOUND_HACK }
     }));
 
     // hint
@@ -186,25 +194,10 @@ function getNode(pos, node) {
     'scale-on-hover': '',
     'text-on-hover': '',
     'fuse-on-hover': '',
-    'sound': { src: SOUND_MOVE, on: 'click' },
-    'sound__trap': { src: SOUND_TRAP }
+    'sound__move': { src: SOUND_MOVE, on: 'click' },
+    'sound__trap': { src: SOUND_TRAP },
+    'sound__lose': { src: SOUND_LOSE }
   }));
-
-  // SWITCH ACTION ?
-  // nodeEl.appendChild(createEntity('a-plane', {
-  //   position: { x: pos.x - 1, y: pos.y + 0.1, z: pos.z + 4},
-  //   rotation: '0 30 0',
-  //   height: 0.375,
-  //   width: 1.5,
-  //   src: '#actions-switch',
-  //   color: '#FFF',
-  //   material: 'transparent: true;',
-  //   'fuse-on-hover': '',
-  //   'scale-on-hover': '',
-  //   //'hack-on-click': '',
-  //   //'text-on-hover': '',
-  //   //'sound': { src: SOUND_TRAP }
-  // }));
 
   let inside = createEntity('a-entity', {
     'class': 'node-inside'
@@ -395,6 +388,10 @@ function showWinScreen() {
 /* global randomInt */
 function win() {
   isWin = true;
+  let camera = document.getElementById('camera');
+  camera.setAttribute('sound', { src: SOUND_WIN });
+  camera.components.sound.playSound();
+
   drawTerminals();
 
   // show sky and remove floor and ceiling

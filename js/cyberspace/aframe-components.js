@@ -104,7 +104,6 @@ AFRAME.registerComponent('move-on-click', {
         }
       }, 1000);
 
-
       if (data) {
         initTimer();
         moving = true;
@@ -128,14 +127,13 @@ AFRAME.registerComponent('hack-on-click', {
     let parent = el.parentNode.parentNode.parentNode;
 
     el.addEventListener('click', () => {
-      console.log('hack-on-click', el);
       if (parent.data) {
         if (parent.data.isTarget) {
           win();
         } else {
           initTimer();
           parent.data.isHacked = true;
-          el.components.sound.playSound();
+          el.components.sound__hack.playSound();
           reduceTime(16);
         }
       }
@@ -149,7 +147,7 @@ AFRAME.registerComponent('help-on-click', {
     let hint = el.parentNode.querySelector('.hint');
 
     el.addEventListener('click', () => {
-      console.log('help-on-click', el);
+      el.components.sound__click.playSound();
       hint.setAttribute('visible', !hint.getAttribute('visible'));
     });
   }
@@ -303,8 +301,8 @@ AFRAME.registerComponent('cyberspace', {
       j = randomInt(8);
       node = nodes[i][j];
     } while (
-      node.isTrap || node.isTarget || !(node.code === networkCodes[0] || node.code === networkCodes[1])
-      //!node.isTarget
+      //node.isTrap || node.isTarget || !(node.code === networkCodes[0] || node.code === networkCodes[1])
+      !node.isTarget
     );
 
     let camera = document.getElementById('camera');
