@@ -85,9 +85,59 @@ DomManipulator.prototype.showMap = function (codes) {
   this.setInputValue("");
 };
 
+
+// 1. read code from args (may be empty)
+// 2. read name from args (may be empty)
+// 3. if code is present try to read score from it
+// 3a. if invalid, keep the error
+// 3b. if valid, keep the score
+// 4. get top scores (with current score included to be saved)
+// 5. print top scores (including current one, marked)
+// 6. print errors if any
+
+/* global getTopScores codeToScore */
+DomManipulator.prototype.showTopScore = function (args) {
+  this.showSubmittedValue();
+
+  let code = args[0];
+  let name = args.slice(1).join(" ");
+
+  console.log("CODE:", code, "NAME:", name);
+
+  let error;
+
+  if (code) {
+    try {
+      // TODO: validate in getTopScores?
+      codeToScore(code); // just validate the code
+      code = formatCode(code);
+    } catch(e) {
+      code = null;
+      error = e.message;
+      console.log("ERROR", error);
+    }
+  }
+
+  let scores = getTopScores(code, name);
+
+  this.createParagraph("TOP HACKERS");
+  this.createParagraph("=============");
+
+  this.createParagraph("&nbsp;&nbsp;&nbsp;<span class='col'>TIME LEFT:</span> <span class='col'>SWITCHES:</span> <span>TEAM:</span>");
+  scores.forEach((s) => {
+
+    this.createParagraph(
+      (s.code === formatCode(args[0]) ? "~&nbsp;" : "&nbsp;&nbsp;") +
+       " <span class='col'>" + `0${~~(s.time / 60)}:${(s.time % 60)<10?'0':''}${s.time % 60}` +
+       "</span> <span class='col'>" + s.moves +
+       "</span> <span>" + (s.name || 'Anonymous') + "</span>");
+  });
+  this.setInputValue("");
+};
+
 DomManipulator.prototype.showErrors = function (codes, errors) {
   if (codes.length === 1 && codes[0] === "") {
-    this.createParagraph("Invalid empty code.");
+    this.createParagraph("Network codes not provided.");
     return;
   }
   if (!errors || !errors.length) return;
@@ -99,10 +149,11 @@ DomManipulator.prototype.showErrors = function (codes, errors) {
   });
 };
 
+function formatCode(code) {
+  return code ? '0x' + code.replace('0x','').toUpperCase() : 'unknown';
+}
+
 DomManipulator.prototype.prepareBtmLegend = function (network) {
-  function formatCode(code) {
-    return code ? '0x' + code.replace('0x','').toUpperCase() : 'unknown';
-  }
 
   function formatLine(colorClass, name, code) {
     return "<li class='" + colorClass + "'>["+ formatCode(code) +"] " + name + "</li>";

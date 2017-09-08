@@ -26,6 +26,9 @@ Terminal.prototype.submitInput = function () {
   } else if (this.currentValue === "nmap" || this.currentValue.substring(0, 5) === "nmap ") {
     let codes = this.currentValue.substring(5).split(" ");
     this.domManipulator.showMap(codes);
+  } else if (this.currentValue === "top" || this.currentValue.indexOf("top ") === 0) {
+    let args = this.currentValue.split(" ").filter(x => x).slice(1);
+    this.domManipulator.showTopScore(args);
   } else {
     this.domManipulator.showCommandNotFound();
   }

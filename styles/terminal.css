@@ -102,3 +102,8 @@ input {
 .wide {
     max-width: 600px;
 }
+
+.col {
+  display: inline-block;
+  width: 120px;
+}
