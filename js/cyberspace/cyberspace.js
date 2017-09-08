@@ -2,7 +2,7 @@
 
 /* global COLOR_VALUES COLOR_TRAP */ // from network.js
 
-let GAME_TIME = 8 * 32; // TODO: adjust timing 4 * 32 may not be enough for new players
+let GAME_TIME = 8 * 32;
 
 let SOUND_MOVE = `url(${jsfxr([0,0.002,0.0234,0.1937,0.7505,0.2288,,0.2736,0.0139,-0.1929,-0.2634,-0.818,-0.532,,,,-0.3047,0.8316,0.7164,-0.0983,,0.1088,0.0009,0.5])})`;
 let SOUND_TRAP = `url(${jsfxr([1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5])})`;
