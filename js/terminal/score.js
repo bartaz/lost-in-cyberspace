@@ -1,7 +1,14 @@
 let defaultTop = {
-  "0x02A0DF": "bartaz test 43 13",
-  "0xB2A0AB": "bartaz test 43 10",
-  "0x440091": "bartaz test 64  9"
+  "0xD4C0D2": "bartaz + calanthe",
+  "0x2FE011": "Project 2501",
+  "0x1D2065": "Oracle/Braniac",
+  "0x6A60AA": "The Lone Gunmen",
+  "0xE6F0E1": "Acid Burn 'n' Crash Override",
+  "0x8A014C": "Wasp & Bob the Dog",
+  "0xC6010C": "Johnny Mnemonic and Jones",
+  "0xA40139": "Martin Brice with Cosmo",
+  "0x92A18F": "fsociety",
+  "0x310203": "Neo & Trinity"
 };
 
 function readTopScores() {

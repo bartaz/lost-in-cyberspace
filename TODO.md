@@ -1,24 +1,10 @@
 ### Terminal:
 - [ ] top command error handling
 - [ ] review help text
-- [ ] prepare list of top 10 scores
+- [ ] clean up CSS classes?
 - [ ] choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
-- [ ] cannot copy example code
 - [ ] easter eggs (some additional commands?) - cat?
-- [x] add help for top command
-- [x] don't depend on number of spaces between arguments: (nmap   c1234      d1234)
-- [x] ignore space at the beginning?
-- [x] "top" command to display top 10 scores (?)
-  - "top" without arguments just displays top 10 (with hardcoded initial values)
-  - "top WIN_CODE NAME" adds entry to top 10 for given win code (from final screen and team name)
-- [x] what characters to use for nodes/traps/target ?
-- [x] add a legend to map explaining what symbols mean (nodes, traps, etc)
-- [x] update map command layout to be more 'command line'
-- [x] maybe help displays list of commands and `help map` or `help help` displays details
-- [x] add example map image to the `help map` command
-- [x] typo in 'help comand'
-- [x] there is no cursor at the end of input after copying value
-- [x] font in map doesn't work in Firefox (lines don't align)
+- [?] cannot copy example code
 
 ## VR
 
@@ -28,21 +14,7 @@
   - sound on win?
 - [ ] more help?
   - [ ] help hint on trap?
-- [ ] more node actions? access (to show the code) + hack?
-- [x] test game and adjust timings
-- [x] stroke on hint looks bad
-- [x] count time, moves (hacks, traps?) and display in the end
-  - generate a code from it for a hi score in terminal?
-- [x] show 2 terminals in nodes
-- [x] win screen - better text
-- [x] lose screen - better text
-- [x] show timer on traps
-- [x] start not on target
-- [x] save current node (instead of color and hack, etc)
-- [x] keep trap color in COLOR_VALUES
-- [x] slow performance of painting walls on mobile
-- [x] target not in sector with target code
-- [x] bug - moving/clicking when game ends?
+- [?] more node actions? access (to show the code) + hack?
 
 ## sounds
 - wrong terminal/trap:
@@ -59,61 +31,6 @@
 select:
 - 0,,0.1906,,0.0556,0.4761,,,,,,,,0.1562,,,,,1,,,0.1,,0.5
 
-
 ## Network
 
 - [ ] list errors of invalid or conflicting codes
-- [x] detect dead ends and put target there?
-- [x] more traps (?)
-
-## Help and tips
-
-- [ ] we need to better explain how to play the game both in VR and terminal
-- [ ] VR needs some tips on reading codes, hacking and navigating
-- [x] Description in README and credits for codepen demo https://codepen.io/somethingformed/pen/raWJXV
-
-### General:
-
-- test main menu on mobile + FF
-- add favicon?
-
-
-### HI SCORE TOP 10 hackers:
-
-bartaz & calanthe // our best score
-
-Oracle & ?? (Braniac) / Black Canary
-The Lone Gunmen
-Acid Burn & Crash Override
-Wasp & Bob the Dog
-Johnny Mnemonic & Jones
-Motoko & Project 2501
-Martin Brice and Cosmo
-Elliot Alderson & Mr. Robot (fsociety)
-Neo & Trinity
-
-
-// czasy gry solo
-
-13 01:15, 1 pułapka (z 3 minut) => 45 sek -> najpierw kolory potem cel
-?? 01:14, 1 pułapka
-
-19 00:12, 2 pułapki             => 48 sek
- 8 00:18, 2 pułapki             => 42 sek
-
-10 01:04, 1 pułapka             => 56 (niepotrzebnie spisywałem kod)
-
-20 01:45, 0 pułapek             => 1:15
-
-19 01:57, 0 pułapek             => 1:03
-14 00:49, 1 pułapka             => 1:11
-
----
-
-12 0:22, 1 pułapka (128 - 32 - 22 = 74)
--
--
--
-14 0:49, 1 pułapke (128 - 32 - 49 = 47)
-11 0:50, 0          78
-13 0:10, 2 pułapki (54)
