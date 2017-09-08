@@ -21,16 +21,16 @@ DomManipulator.prototype.setFocusToInput = function () {
 /* global networkFromCodes getNetworkMap */
 DomManipulator.prototype.showMapDetails = function () {
   this.showSubmittedValue();
-  this.createParagraph("<div class='uppercase mar-ver--sm'>Name </div>"
+  this.createParagraph("<div class='mar-ver--sm'>NAME</div>"
   + "<div class='pad-lft--md mar-ver--sm'><b>nmap</b> -- Display the map of network nodes</div>"
-  + "<div class='uppercase mar-ver--sm'>Synopsis </div>"
+  + "<div class='mar-ver--sm'>SYNOPSIS</div>"
   + "<div class='pad-lft--md mar-ver--sm'><b>nmap</b> [NODE_CODE ...]</div>"
-  + "<div class='uppercase mar-ver--sm'>Description </div>"
+  + "<div class='mar-ver--sm'>DESCRIPTION</div>"
   + "<div class='pad-lft--md wide mar-ver--sm'><b>nmap</b> is a command to display the map of network nodes. The user must provide node codes [NODE_CODE] to include node details and hints on the map. "
   + "<br/><br/>The code structure is built of 5 hex values preceded with `0x`. "
   + "<br/><br/>There are 4 types of hints that can be shown on the map: [Sectors], [Target], [Traps] and [Connections]. "
   + "<br/><br/>The <b>nmap</b> command accepts multiple codes with or without preceded `0x`.</div>"
-  + "<div class='uppercase mar-ver--sm'>Examples </div>"
+  + "<div class='mar-ver--sm'>EXAMPLES</div>"
   + "<div class='pad-lft--md mar-ver--sm'>The following is how to display map of nodes with [Sectors], [Traps] and [Connections]:</div>"
   + "<div class='pad-lft--lg mar-ver--sm'>`nmap 0xC16F8 D1234 EF4D0`</div>");
   let network = networkFromCodes("0xC16F8 D1234 EF4D0".split(" "));
@@ -40,37 +40,37 @@ DomManipulator.prototype.showMapDetails = function () {
 
 DomManipulator.prototype.showHelpDetails = function () {
   this.showSubmittedValue();
-  this.createParagraph("<div class=\"uppercase mar-ver--sm\">Name </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\"><b>help</b> -- Display list of options</div>"
-  + "<div class=\"uppercase mar-ver--sm\">Synopsis </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\"><b>help</b> [COMMAND]</div>"
-  + "<div class=\"uppercase mar-ver--sm\">Description </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\"><b>help</b> is a command to display list of available options."
+  this.createParagraph("<div class='mar-ver--sm'>NAME</div>"
+  + "<div class='pad-lft--md mar-ver--sm'><b>help</b> -- Display list of options</div>"
+  + "<div class='mar-ver--sm'>SYNOPSIS</div>"
+  + "<div class='pad-lft--md mar-ver--sm'><b>help</b> [COMMAND]</div>"
+  + "<div class='mar-ver--sm'>DESCRIPTION</div>"
+  + "<div class='pad-lft--md mar-ver--sm'><b>help</b> is a command to display list of available options."
   + "<br/><br/>The user can provide [COMMAND] to get details about particular [COMMAND].</div>");
   this.setInputValue("");
 };
 
 DomManipulator.prototype.showOptionsList = function () {
   this.showSubmittedValue();
-  this.createParagraph("<div class=\"mar-ver--sm\">List of available commands:</div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\">- <b>nmap [NODE_CODE...]</b> -- Display the map of network nodes</div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\">- <b>help [COMMAND]</b> -- Display detailed help for given command or list of available commands.</div>"
+  this.createParagraph("<div class='mar-ver--sm'>List of available commands:</div>"
+  + "<div class='pad-lft--md mar-ver--sm'>- <b>nmap [NODE_CODE...]</b> -- Display the map of network nodes</div>"
+  + "<div class='pad-lft--md mar-ver--sm'>- <b>help [COMMAND]</b> -- Display detailed help for given command or list of available commands.</div>"
   + "<br/>"
-  + "<div class=\"uppercase mar-ver--sm\">Examples </div>"
-  + "<div class=\"pad-lft--md mar-ver--sm\">The following is how to display detailed information about <b>nmap</b> command:</div>"
-  + "<div class=\"pad-lft--lg mar-ver--sm\">`help nmap`</div>");
+  + "<div class='mar-ver--sm'>EXAMPLES</div>"
+  + "<div class='pad-lft--md mar-ver--sm'>The following is how to display detailed information about <b>nmap</b> command:</div>"
+  + "<div class='pad-lft--lg mar-ver--sm'>`help nmap`</div>");
   this.setInputValue("");
 };
 
 DomManipulator.prototype.showCommandNotFound = function () {
   this.showSubmittedValue();
-  this.createParagraph("<span class=\"uppercase\">Command not found: </span>" + this.getInputValue());
+  this.createParagraph("COMMAND NOT FOUND: " + this.getInputValue());
   this.setInputValue("");
 };
 
 DomManipulator.prototype.showHelpCommandNotFound = function () {
   this.showSubmittedValue();
-  this.createParagraph("<span class=\"uppercase\">Command not found: </span>" + this.getInputValue() + ". Try with different argument");
+  this.createParagraph("COMMAND NOT FOUND: " + this.getInputValue() + ". Try with different argument");
   this.setInputValue("");
 };
 
@@ -79,7 +79,7 @@ DomManipulator.prototype.showMap = function (codes) {
   let network = networkFromCodes(codes);
   // map 0xD1234 0xC16F8 0xEF4D0 0xB129A correct
   // map 0xF298E 0xEF4D0 0x1298E 0x44206 invalid
-  this.createParagraph("<span class=\"uppercase\">Map of nodes: </span>");
+  this.createParagraph("MAP OF THE NETWORK:");
   this.createParagraph(getNetworkMap(network) + this.prepareTopLegend() + this.prepareBtmLegend(network), "terminal--map");
   this.showErrors(codes, network.errors);
   this.setInputValue("");
@@ -159,7 +159,7 @@ DomManipulator.prototype.prepareBtmLegend = function (network) {
     return "<li class='" + colorClass + "'>["+ formatCode(code) +"] " + name + "</li>";
   }
 
-  let result = "<ul class=\"terminal--map-legend\">";
+  let result = "<ul class='terminal--map-legend'>";
   if (network.colors && network.colors.length) {
     result = result + formatLine('color-springgreen', 'Sectors', network.colors.code);
   } else {
@@ -188,7 +188,7 @@ DomManipulator.prototype.prepareBtmLegend = function (network) {
 };
 
 DomManipulator.prototype.prepareTopLegend = function () {
-  let result = "<div class=\"terminal--map-legend-top\">Legend:<ul>";
+  let result = "<div class='terminal--map-legend-top'>Legend:<ul>";
   result = result + "<li>&#9670; - node</li>";
   result = result + "<li>| - connection</li>";
   result = result + "<li>&#8709; - trap</li>";
@@ -198,7 +198,7 @@ DomManipulator.prototype.prepareTopLegend = function () {
 };
 
 DomManipulator.prototype.showSubmittedValue = function () {
-  this.createParagraph("<span class=\"color-green\">> " + this.getInputValue() + "</span>");
+  this.createParagraph("<span class='color-green'>> " + this.getInputValue() + "</span>");
 };
 
 DomManipulator.prototype.createParagraph = function (innerHtml, classNames = "", parentNode = this.terminal) {

@@ -70,20 +70,17 @@ input {
 }
 
 /* Util classes */
-.uppercase {
-    text-transform: uppercase;
-}
 
 .color-green {
     color: #1FC;
 }
 
 .color-springgreen {
-    color: #00FF7F;
+    color: #0F7;
 }
 
 .color-red {
-    color: #FF0000;
+    color: #F00;
 }
 
 .pad-lft--md {
