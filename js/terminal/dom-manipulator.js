@@ -2,6 +2,7 @@ let terminal      = document.getElementById("terminal");
 let terminalInput = document.getElementById("terminal--input");
 
 function setInputValue(value) {
+  // hack to make sure cursor appears at the end of the input
   setTimeout(() => {
     terminalInput.value = value;
     terminalInput.focus();
@@ -70,6 +71,15 @@ function showCommandHelp(cmd) {
     + "<div>EXAMPLES</div>"
     + "<div class='pad'>The following is not to get a sandwich:</div>"
     + "<div class='pad'>`make-me-a-sandwich`</div>");
+  } else if (cmd === 'cat') {
+    createParagraph("<div>NAME</div>"
+    + "<div class='pad'><b>cat</b></div>"
+    + "<div>SYNOPSIS</div>"
+    + "<div class='pad'><b>cat</b></div>"
+    + "<div>DESCRIPTION</div>"
+    + "<div class='pad'>The <b>cat</b> command.</div>"
+    + "<div>EXAMPLES</div>"
+    + "<div class='pad'>`cat`</div>");
   } else {
     createParagraph("No help entry for " + cmd);
   }
@@ -80,10 +90,12 @@ function showCommandHelp(cmd) {
 function showOptionsList() {
   showSubmittedValue();
   createParagraph("<div>List of available commands:</div>"
-  + "<div class='pad'>- <b>nmap [NODE_CODE...]</b> -- Display the map of network nodes</div>"
-  + "<div class='pad'>- <b>help [COMMAND]</b> -- Display detailed help for given command or list of available commands.</div>"
-  + "<div class='pad'>- <b>top</b> -- Display list of top hacker teams' scores.</div>"
-  + "<div class='pad'>- <b>make-me-a-sandwich</b> -- Makes you a sandwich.</div>");
+  + "<div class='pad'>- <b>nmap [NODE_CODE...]</b> -- display the map of network nodes</div>"
+  + "<div class='pad'>- <b>help [COMMAND]</b> -- display detailed help for given command</div>"
+  + "<div class='pad'>- <b>top</b> -- display list of top hacker teams' scores</div>"
+  + "<div class='pad'>- <b>make-me-a-sandwich</b></div>"
+  + "<div class='pad'>- <b>cat</b></div>"
+  );
   setInputValue("");
 }
 
