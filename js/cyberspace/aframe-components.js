@@ -305,8 +305,6 @@ AFRAME.registerComponent('cyberspace', {
     );
 
     let camera = document.getElementById('camera');
-    // TODO: read position from the node el?
-    // TODO: set position on node el and position the rest relatively
     let pos = {
       x: ((i * 2 + 1) * 4),
       z: ((j * 2 + 1) * 4)

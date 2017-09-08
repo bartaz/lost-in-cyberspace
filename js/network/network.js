@@ -562,10 +562,7 @@ function trapsToCode(traps) {
 
 // returns traps definition for given traps code
 // throws if code is invalid
-// TODO: not needed?
-function decodeTraps(values) {
-  return createTrapsObject(values);
-}
+// see: createTrapsObject
 
 // Target codes
 // -------------
@@ -597,7 +594,7 @@ function decodeTraps(values) {
 // Code is invalid because duplicated coordinates don't match
 
 function targetToCode(target) {
-  let type = hexRandomMod4(3); // TODO: make it 3,7,B,F later?
+  let type = hexRandomMod4(3);
   let code = '0x' + type;
 
   code = code + target.map(hexRandomMod8).join('') + target.map(hexRandomMod8).join('');
@@ -660,7 +657,7 @@ function networkFromCodes(codes) {
               network.walls.code = code;
               break;
             case 2:
-              network.traps = decodeTraps(parsed);
+              network.traps = createTrapsObject(parsed);
               network.traps.code = code;
               break;
             case 3:

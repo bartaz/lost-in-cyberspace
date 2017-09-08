@@ -217,22 +217,6 @@ function getNode(pos, node) {
 
   nodeEl.appendChild(inside);
 
-  // TODO: second terminal ?
-  // it needs actions, hint, etc...
-  // node terminal text
-  // nodeEl.appendChild(createEntity('a-plane', {
-  //   'class': 'node-terminal',
-  //   position: { x: pos.x + 0.5, y: pos.y - 0.4, z: pos.z + 0.5 },
-  //   rotation: '-10 225 0',
-  //   height: 0.5,
-  //   width: 0.5,
-  //   src: `#terminal-${node.isTrap ? 'trap' : node.sector}`,
-  //   'fuse-on-hover': '',
-  //   'text-on-hover': '',
-  //   'hack-on-click': '',
-  //   'sound': { src: `url(${jsfxr([1,0.06,0.3,0.2,0.08,0.18,,,,,,,,,,,,,1,,,0.09,,0.5])})`}
-  // }));
-
   nodeEl.data = node;
 
   return nodeEl;
@@ -327,7 +311,6 @@ function initTimer() {
   tick();
 }
 
-// TODO: some text in game over area
 function gameOver() {
   if (cancelMove) cancelMove();
   isGameOver = true;
