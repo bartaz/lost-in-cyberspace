@@ -300,8 +300,8 @@ AFRAME.registerComponent('cyberspace', {
       j = randomInt(8);
       node = nodes[i][j];
     } while (
-      //node.isTrap || node.isTarget || !(node.code === networkCodes[0] || node.code === networkCodes[1])
-      !node.isTarget
+      node.isTrap || node.isTarget || !(node.code === networkCodes[0] || node.code === networkCodes[1])
+      //!node.isTarget
     );
 
     let camera = document.getElementById('camera');
