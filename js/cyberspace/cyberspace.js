@@ -11,9 +11,6 @@ let SOUND_LOSE = `url(${jsfxr([ 0,0.0107,0.4818,0.1177,0.1103,0.5301,,-0.001,-0.
 let SOUND_CLICK = `url(${jsfxr([0,,0.1906,,0.0556,0.4761,,,,,,,,0.1562,,,,,1,,,0.1,,0.5])})`;
 let SOUND_WIN = `url(${jsfxr([1,,0.3447,,0.4712,0.2109,,0.1984,,0.1398,0.5774,,,,,,,,1,,,,,0.5])})`;
 
-
-
-
 // game state
 let time = GAME_TIME;  // current time
 let ticking; // if time is already ticking
@@ -367,7 +364,7 @@ function showWinScreen() {
   let screen = createEntity('a-plane', {
     width: 2,
     height: 2,
-    position: { y: 1, z: -4 },
+    position: { y: 1, z: -3 },
     src: '#H',
     material: 'transparent:true',
   });
@@ -376,7 +373,7 @@ function showWinScreen() {
   screen = createEntity('a-plane', {
     width: 2,
     height: 2,
-    position: { y: 1, z: 4 },
+    position: { y: 1, z: 3 },
     src: '#H',
     material: 'transparent:true',
     rotation: '0 180 0'

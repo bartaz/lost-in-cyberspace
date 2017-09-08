@@ -159,7 +159,6 @@ AFRAME.registerComponent('cyberspace', {
     let scene = this.el;
 
     network = randomNetwork();
-    console.log("NETWORK", network);
 
     // get network codes and randomize their order
     // initial order is color / connections / traps / target
