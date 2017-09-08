@@ -114,8 +114,8 @@ DomManipulator.prototype.showTopScore = function (args) {
       codeToScore(code); // just validate the code
       code = formatCode(code);
     } catch(e) {
+      error = "<b>" + code + "</b> is not a valid NETWORK_TOP_HACKER_CODE. You can get one after successfully hacking the network.";
       code = null;
-      error = e.message;
     }
   }
 
@@ -133,21 +133,22 @@ DomManipulator.prototype.showTopScore = function (args) {
        "</span> <span class='col'>" + s.moves +
        "</span> <span>" + (s.name || 'Anonymous') + "</span>");
   });
+
+  if (error) {
+    this.createParagraph(error);
+  }
+
   this.setInputValue("");
 };
 
 DomManipulator.prototype.showErrors = function (codes, errors) {
-  if (codes.length === 1 && codes[0] === "") {
+  if (!codes.length) {
     this.createParagraph("Network codes not provided.");
     return;
   }
   if (!errors || !errors.length) return;
 
-  let that = this;
-
-  errors.forEach(function(error) {
-    that.createParagraph(error);
-  });
+  errors.forEach((error) => this.createParagraph('<b>'+ error + '</b> is not a valid NODE_CODE.'));
 };
 
 function formatCode(code) {

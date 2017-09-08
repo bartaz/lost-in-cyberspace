@@ -397,7 +397,7 @@ function parseCode(code) {
     .split(''); // turn into array of hex characters
 
   if (code.length !== 5) {
-    throw new Error('Invalid code. Code length is not valid.');
+    throw new Error('Code length is not valid.');
   }
 
   code = code
@@ -405,7 +405,7 @@ function parseCode(code) {
     .filter(n => !isNaN(n)); // get only numbers
 
   if (code.length !== 5) {
-    throw new Error('Invalid code. Code contains invalid characters');
+    throw new Error('Code contains invalid characters');
   }
 
   return code;
@@ -460,7 +460,7 @@ function decodeColors(values) {
   let hasDuplicates = colors.some((c,i) => colors.indexOf(c) !== i);
 
   if (hasDuplicates) {
-    throw new Error('Invalid code. Duplicated colors in different sectors');
+    throw new Error('Duplicated colors in different sectors');
   }
 
   return colors;
@@ -522,7 +522,7 @@ function decodeWalls(values) {
   let walls = createWallsObject(values[0], values[1], values[2], values[3]);
 
   if (!walls) {
-    throw new Error('Invalid code. Code contains invalid walls definition');
+    throw new Error('Code contains invalid walls definition');
   }
 
   return walls;
@@ -611,7 +611,7 @@ function decodeTarget(values) {
   values = values.map(n => n % 8);
 
   if (values[0] !== values[2] || values[1] !== values[3]) {
-    throw new Error('Invalid code. Code contains invalid target definition');
+    throw new Error('Code contains invalid target definition');
   }
 
   return values.splice(0,2);
@@ -643,7 +643,7 @@ function networkFromCodes(codes) {
       try {
         parsed = parseCode(code);
       } catch(e) {
-        errors.push(code + ": " + e.message);
+        errors.push(code);
       }
 
       if (parsed) {
@@ -671,7 +671,7 @@ function networkFromCodes(codes) {
           // TODO: check if multiple codes of same type are given
           // TODO: check if traps conflict with target
         } catch (e) {
-          errors.push(code + ": " + e.message);
+          errors.push(code);
         }
       }
     }
@@ -711,7 +711,7 @@ function codeToScore(code) {
   code = code.replace('0x','');
 
   if (code.length !== 6) {
-    throw new Error('Invalid code. Code length is not valid.');
+    throw new Error('Code length is not valid.');
   }
 
   //      random,           time              moves             checksum
@@ -720,14 +720,14 @@ function codeToScore(code) {
       .filter(n => !isNaN(n)); // get only numbers
 
   if (code.length !== 4) {
-    throw new Error('Invalid code. Code contains invalid characters');
+    throw new Error('Code contains invalid characters');
   }
 
   let checksumCheck = code.slice(0,3).reduce((checksum, value, i) => checksum + (value * (i * 2 + 1)), 0);
   checksumCheck = checksumCheck % 16;
 
   if (checksumCheck !== code[3]) {
-    throw new Error('Invalid code. This score code is invalid');
+    throw new Error('This score code is invalid');
   }
 
   return { time: code[1], moves: code[2] };

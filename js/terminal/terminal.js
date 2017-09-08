@@ -1,3 +1,4 @@
+/* global InputManager DomManipulator */
 function Terminal() {
   this.inputManager   = new InputManager();
   this.domManipulator = new DomManipulator();

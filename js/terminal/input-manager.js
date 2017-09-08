@@ -2,7 +2,7 @@ function InputManager() {
   this.events = {};
 
   this.listen();
-};
+}
 
 InputManager.prototype.on = function (event, callback) {
   if (!this.events[event]) {
@@ -37,7 +37,7 @@ InputManager.prototype.listen = function () {
     }
   });
 
-  document.addEventListener("click", function (event) {
-      self.emit("focusedout");
+  document.addEventListener("click", function () {
+    self.emit("focusedout");
   });
-}
+};
