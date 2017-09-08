@@ -1,5 +1,5 @@
 input {
-    font-family: 'Monaco', monospace;
+    font-family: Monaco, Consolas, monospace;
 }
 
 .container {
@@ -15,17 +15,17 @@ input {
   max-width: 800px;
 }
 
-.terminal {
+.t {
     color: #FFF;
     width: 100%;
     font-size: 18px;
 }
 
-.terminal--input-wrapper {
+.ti-wrapper {
     position: relative;
 }
 
-.terminal--input-wrapper::before {
+.ti-wrapper::before {
     content: ">";
     color: #1FC;
     font-size: 18px;
@@ -37,32 +37,34 @@ input {
     height: 24px;
 }
 
-.terminal--map {
+.tm {
     white-space: pre;
     position: relative;
     line-height: 20px;
 }
 
-.terminal--map .char {
+.tm .char {
     font-size: 20px;
     width: 18px;
     height: 18px;
     display: inline-block;
 }
-
-.terminal--map-legend {
+.tm-lt,
+.tm-l {
     position: absolute;
+    left: 330px;
+    line-height: 21px;
+}
+
+.tm-lt {
+    top: 0;
+}
+
+.tm-l {
     bottom: 0;
-    left: 330px;
 }
 
-.terminal--map-legend-top {
-    position: absolute;
-    top: 10px;
-    left: 330px;
-}
-
-.terminal--input {
+.ti {
     display: block;
     outline: none;
     border: none;

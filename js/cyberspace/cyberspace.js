@@ -406,7 +406,7 @@ function drawText(ctx, text, bgColor, size = 48, textColor = 'white') {
   }
   ctx.lineWidth = 1;
   ctx.fillStyle = textColor;
-  ctx.font = `${size}px Monaco, monospace`;
+  ctx.font = `${size}px Monaco,Consolas,monospace`;
   text.forEach((line,i) => ctx.fillText(line, 10, (i+1) * size * 1.2));
 
   if (bgColor && size > 30) {

@@ -5,7 +5,7 @@ body {
   background: #031e11;
   margin: 0;
   color: #FFF;
-  font-family: 'Monaco', monospace;
+  font-family: Monaco, Consolas, monospace;
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.4;

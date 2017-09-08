@@ -1,5 +1,5 @@
 let terminal      = document.getElementById("terminal");
-let terminalInput = document.getElementById("terminal--input");
+let terminalInput = document.getElementById("ti");
 
 function setInputValue(value) {
   // hack to make sure cursor appears at the end of the input
@@ -54,7 +54,7 @@ function showCommandHelp(cmd) {
     + "<div class='pad'>The following is how to display map of nodes with [Sectors], [Traps] and [Connections]:</div>"
     + "<div class='pad'>`nmap 0xC16F8 D1234 EF4D0`</div>");
     let network = networkFromCodes("0xC16F8 D1234 EF4D0".split(" "));
-    createParagraph(getNetworkMap(network) + prepareTopLegend() + prepareBtmLegend(network), "terminal--map pad");
+    createParagraph(getNetworkMap(network) + prepareTopLegend() + prepareBtmLegend(network), "tm pad");
   } else if (cmd === 'top') {
     createParagraph("<div>NAME</div>"
     + "<div class='pad'><b>top</b> -- display the list of top hacker teams' scores.</div>"
@@ -116,7 +116,7 @@ function showMap(codes) {
   // map 0xD1234 0xC16F8 0xEF4D0 0xB129A correct
   // map 0xF298E 0xEF4D0 0x1298E 0x44206 invalid
   createParagraph("MAP OF THE NETWORK:");
-  createParagraph(getNetworkMap(network) + prepareTopLegend() + prepareBtmLegend(network), "terminal--map");
+  createParagraph(getNetworkMap(network) + prepareTopLegend() + prepareBtmLegend(network), "tm");
   showErrors(codes, network.errors);
   setInputValue("");
 }
@@ -184,7 +184,7 @@ function formatLine(colorClass, name, code) {
 }
 
 function prepareBtmLegend(network) {
-  let result = "<ul class='terminal--map-legend'>";
+  let result = "<ul class='tm-l'>";
   if (network.colors && network.colors.length) {
     result = result + formatLine('color-springgreen', 'Sectors', network.colors.code);
   } else {
@@ -213,7 +213,7 @@ function prepareBtmLegend(network) {
 }
 
 function prepareTopLegend() {
-  let result = "<div class='terminal--map-legend-top'>Legend:<ul>";
+  let result = "<div class='tm-lt'>Legend:<ul>";
   result = result + "<li>&#9670; - node</li>";
   result = result + "<li>| - connection</li>";
   result = result + "<li>&#8709; - trap</li>";
