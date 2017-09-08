@@ -1,10 +1,11 @@
 ### Terminal:
+- [ ] top command error handling
 - [ ] review help text
-- [ ] add help for top command
 - [ ] prepare list of top 10 scores
 - [ ] choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
 - [ ] cannot copy example code
 - [ ] easter eggs (some additional commands?) - cat?
+- [x] add help for top command
 - [x] don't depend on number of spaces between arguments: (nmap   c1234      d1234)
 - [x] ignore space at the beginning?
 - [x] "top" command to display top 10 scores (?)

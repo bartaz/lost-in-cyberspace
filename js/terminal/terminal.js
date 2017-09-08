@@ -23,13 +23,7 @@ Terminal.prototype.submitInput = function () {
 
   if (cmd === 'help' || cmd === 'man') {
     if (args[0]) {
-      if (args[0] === 'nmap') {
-        this.domManipulator.showMapDetails();
-      } else if (args[0] === 'help') {
-        this.domManipulator.showHelpDetails();
-      } else {
-        this.domManipulator.showHelpCommandNotFound(args);
-      }
+      this.domManipulator.showCommandHelp(args[0]);
     } else {
       this.domManipulator.showOptionsList();
     }
