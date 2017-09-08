@@ -15,6 +15,12 @@ Terminal.prototype.submitInput = function () {
   let args = this.currentValue.split(" ").filter(x => x);
   let cmd = args.splice(0,1)[0];
 
+  let sudo = cmd === 'sudo';
+
+  if (sudo) {
+    cmd = args.splice(0,1)[0];
+  }
+
   // if --help is passed as argument redirect to help command
   if (args.indexOf('-h') !== -1 || args.indexOf('--help') !== -1) {
     args = [cmd];
@@ -31,6 +37,8 @@ Terminal.prototype.submitInput = function () {
     showMap(args);
   } else if (cmd === 'top') {
     showTopScore(args);
+  } else if (cmd === 'make-me-a-sandwich') {
+    showSandwich(sudo, args);
   } else {
     showCommandNotFound();
   }

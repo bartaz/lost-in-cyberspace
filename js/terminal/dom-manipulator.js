@@ -46,6 +46,16 @@ function showCommandHelp(cmd) {
     + "<div>EXAMPLES</div>"
     + "<div class='pad'>The following is how to add your noob score to top hackers list:</div>"
     + "<div class='pad'>`top 0xF0020F N00BS`</div>");
+  } else if (cmd === 'make-me-a-sandwich') {
+    createParagraph("<div>NAME</div>"
+    + "<div class='pad'><b>make-me-a-sandwich</b> -- Makes you a sandwich.</div>"
+    + "<div>SYNOPSIS</div>"
+    + "<div class='pad'><b>make-me-a-sandwich</b></div>"
+    + "<div>DESCRIPTION</div>"
+    + "<div class='pad'>The <b>make-me-a-sandwich</b> will make you a sandwich. If you know how to ask for it.</div>"
+    + "<div>EXAMPLES</div>"
+    + "<div class='pad'>The following is not to get a sandwich:</div>"
+    + "<div class='pad'>`make-me-a-sandwich`</div>");
   } else {
     createParagraph("No help entry for " + cmd);
   }
@@ -58,7 +68,8 @@ function showOptionsList() {
   createParagraph("<div>List of available commands:</div>"
   + "<div class='pad'>- <b>nmap [NODE_CODE...]</b> -- Display the map of network nodes</div>"
   + "<div class='pad'>- <b>help [COMMAND]</b> -- Display detailed help for given command or list of available commands.</div>"
-  + "<div class='pad'>- <b>top</b> -- Display list of top hacker teams' scores.</div>");
+  + "<div class='pad'>- <b>top</b> -- Display list of top hacker teams' scores.</div>"
+  + "<div class='pad'>- <b>make-me-a-sandwich</b> -- Makes you a sandwich.</div>");
   setInputValue("");
 }
 
@@ -78,16 +89,6 @@ function showMap(codes) {
   showErrors(codes, network.errors);
   setInputValue("");
 }
-
-
-// 1. read code from args (may be empty)
-// 2. read name from args (may be empty)
-// 3. if code is present try to read score from it
-// 3a. if invalid, keep the error
-// 3b. if valid, keep the score
-// 4. get top scores (with current score included to be saved)
-// 5. print top scores (including current one, marked)
-// 6. print errors if any
 
 /* global getTopScores codeToScore */
 function showTopScore(args) {
@@ -125,6 +126,12 @@ function showTopScore(args) {
   }
 
   setInputValue("");
+}
+
+function showSandwich(sudo, args) {
+  showSubmittedValue();
+  createParagraph((sudo || (args.indexOf('--please') > -1) || (args.indexOf('please') > -1)) ? "Okay. <a href='https://www.xkcd.com/149/'>https://www.xkcd.com/149/</a>" : "What? Make it yourself.");
+  setInputValue("")
 }
 
 function showErrors(codes, errors) {
