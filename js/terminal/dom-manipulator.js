@@ -111,18 +111,14 @@ function showTopScore(args) {
 
   let scores = getTopScores(code, name);
 
-  createParagraph("TOP HACKERS");
-  createParagraph("=============");
-
-  createParagraph("&nbsp;&nbsp;&nbsp;<span class='col'>TIME LEFT:</span> <span class='col'>SWITCHES:</span> <span>TEAM:</span>");
-  scores.forEach((s) => {
-
-    createParagraph(
-      (s.code === formatCode(args[0]) ? "~&nbsp;" : "&nbsp;&nbsp;") +
+  createParagraph("<div>&nbsp;&nbsp;&nbsp;TOP HACKERS<br>&nbsp;&nbsp;-------------</div>"
+  + "<div>&nbsp;&nbsp;&nbsp;<span class='col'>TIME LEFT:</span> <span class='col'>SWITCHES:</span> <span>TEAM:</span><br>"
+  + scores.map(s => {
+    return (s.code === formatCode(args[0]) ? "<div class='color-green'>~&nbsp;" : "<div>&nbsp;&nbsp;") +
        " <span class='col'>" + `0${~~(s.time / 60)}:${(s.time % 60)<10?'0':''}${s.time % 60}` +
        "</span> <span class='col'>" + s.moves +
-       "</span> <span>" + (s.name || 'Anonymous') + "</span>");
-  });
+       "</span> <span>" + (s.name || 'Anonymous') + "</span></div>";
+  }).join('') + "</div>");
 
   if (error) {
     createParagraph(error);
