@@ -29,47 +29,52 @@ function showCommandHelp(cmd) {
 
   if (cmd === 'help') {
     createParagraph("<div>NAME</div>"
-    + "<div class='pad'><b>help</b> -- Display list of options</div>"
+    + "<div class='pad'><b>help</b> -- display help for given command or list of available commands.</div>"
     + "<div>SYNOPSIS</div>"
     + "<div class='pad'><b>help</b> [COMMAND]</div>"
     + "<div>DESCRIPTION</div>"
-    + "<div class='pad'><b>help</b> is a command to display list of available options."
-    + "<br/><br/>The user can provide [COMMAND] to get details about particular [COMMAND].</div>");
+    + "<div class='pad'>The <b>help</b> command will display list of available commands."
+    + "<br/><br/>If COMMAND is given as argument <b>help</b> will show details given COMMAND.</div>"
+    + "<div>EXAMPLES</div>"
+    + "<div class='pad'>The following is how to display help for <b>nmap</b> command:</div>"
+    + "<div class='pad'>`help nmap`</div>"
+    + "<div>ALIASES</div>"
+    + "<div class='pad'><b>man</b></div>"
+  );
   } else if (cmd === 'nmap') {
     createParagraph("<div>NAME</div>"
-    + "<div class='pad'><b>nmap</b> -- Display the map of network nodes</div>"
+    + "<div class='pad'><b>nmap</b> -- display the map of network nodes</div>"
     + "<div>SYNOPSIS</div>"
-    + "<div class='pad'><b>nmap</b> [NODE_CODE ...]</div>"
+    + "<div class='pad'><b>nmap</b> [ACCESS_CODE ...]</div>"
     + "<div>DESCRIPTION</div>"
-    + "<div class='pad'><b>nmap</b> is a command to display the map of network nodes. The user must provide node codes [NODE_CODE] to include node details and hints on the map. "
-    + "<br/><br/>The code structure is built of 5 hex values preceded with `0x`. "
-    + "<br/><br/>There are 4 types of hints that can be shown on the map: [Sectors], [Target], [Traps] and [Connections]. "
-    + "<br/><br/>The <b>nmap</b> command accepts multiple codes with or without preceded `0x`.</div>"
+    + "<div class='pad'>The <b>nmap</b> command displays the map of network nodes based on the ACCESS_CODEs provided as arguments."
+    + "<br><br>There are 4 ACCESS_CODEs that can be found by HACKER in 4 sectors of the network. Each ACCESS_CODE provides different data to the map: Sectors, Connections, Traps and Target."
+    + "<br><br>The <b>nmap</b> command accepts between 0-4 ACCESS_CODEs, case insensitive with optional 0x prefix.</div>"
     + "<div>EXAMPLES</div>"
     + "<div class='pad'>The following is how to display map of nodes with [Sectors], [Traps] and [Connections]:</div>"
     + "<div class='pad'>`nmap 0xC16F8 D1234 EF4D0`</div>");
     let network = networkFromCodes("0xC16F8 D1234 EF4D0".split(" "));
-    createParagraph(getNetworkMap(network) + prepareTopLegend() + prepareBtmLegend(network), "terminal--map");
+    createParagraph(getNetworkMap(network) + prepareTopLegend() + prepareBtmLegend(network), "terminal--map pad");
   } else if (cmd === 'top') {
     createParagraph("<div>NAME</div>"
-    + "<div class='pad'><b>top</b> -- Display list of top hacker teams' scores.</div>"
+    + "<div class='pad'><b>top</b> -- display the list of top hacker teams' scores.</div>"
     + "<div>SYNOPSIS</div>"
     + "<div class='pad'><b>top</b> [NETWORK_TOP_HACKER_CODE] [TEAM_NAME]</div>"
     + "<div>DESCRIPTION</div>"
-    + "<div class='pad'>The <b>top</b> command displays list of the scores of top hackers teams."
-    + "<br/><br/>If the NETWORK_TOP_HACKER_CODE and optionally TEAM_NAME is provided new top score record will be added, so hackers team can compare their performance with the best of the best.</div>"
+    + "<div class='pad'>The <b>top</b> command displays the list of the scores of top hackers teams."
+    + "<br/><br/>If the NETWORK_TOP_HACKER_CODE and optionally the TEAM_NAME is provided new top score record will be added to the list, so you can compare your performance with the best of the best.</div>"
     + "<div>EXAMPLES</div>"
     + "<div class='pad'>The following is how to add your noob score to top hackers list:</div>"
     + "<div class='pad'>`top 0xF0020F N00BS`</div>");
   } else if (cmd === 'make-me-a-sandwich') {
     createParagraph("<div>NAME</div>"
-    + "<div class='pad'><b>make-me-a-sandwich</b> -- Makes you a sandwich.</div>"
+    + "<div class='pad'><b>make-me-a-sandwich</b> -- makes you a sandwich.</div>"
     + "<div>SYNOPSIS</div>"
     + "<div class='pad'><b>make-me-a-sandwich</b></div>"
     + "<div>DESCRIPTION</div>"
-    + "<div class='pad'>The <b>make-me-a-sandwich</b> will make you a sandwich. If you know how to ask for it.</div>"
+    + "<div class='pad'>The <b>make-me-a-sandwich</b> command will make you a sandwich.<br>If you know how to ask for it.</div>"
     + "<div>EXAMPLES</div>"
-    + "<div class='pad'>The following is not to get a sandwich:</div>"
+    + "<div class='pad'>The following is not how to get a sandwich:</div>"
     + "<div class='pad'>`make-me-a-sandwich`</div>");
   } else if (cmd === 'cat') {
     createParagraph("<div>NAME</div>"
@@ -89,10 +94,10 @@ function showCommandHelp(cmd) {
 
 function showOptionsList() {
   showSubmittedValue();
-  createParagraph("<div>List of available commands:</div>"
-  + "<div class='pad'>- <b>nmap [NODE_CODE...]</b> -- display the map of network nodes</div>"
+  createParagraph("<div>Available commands:</div>"
+  + "<div class='pad'>- <b>nmap [ACCESS_CODE...]</b> -- display the map of network nodes</div>"
   + "<div class='pad'>- <b>help [COMMAND]</b> -- display detailed help for given command</div>"
-  + "<div class='pad'>- <b>top</b> -- display list of top hacker teams' scores</div>"
+  + "<div class='pad'>- <b>top</b> -- display the list of top hacker teams' scores</div>"
   + "<div class='pad'>- <b>make-me-a-sandwich</b></div>"
   + "<div class='pad'>- <b>cat</b></div>"
   );
@@ -167,7 +172,7 @@ function showErrors(codes, errors) {
   }
   if (!errors || !errors.length) return;
 
-  errors.forEach((error) => createParagraph('<b>'+ error + '</b> is not a valid NODE_CODE.'));
+  errors.forEach((error) => createParagraph('<b>'+ error + '</b> is not a valid ACCESS_CODE.'));
 }
 
 function formatCode(code) {
@@ -186,10 +191,10 @@ function prepareBtmLegend(network) {
     result = result + formatLine('color-red', 'Sectors');
   }
 
-  if (network.target && network.target.length) {
-    result = result + formatLine('color-springgreen', 'Target coordinates', network.target.code);
+  if (network.walls) {
+    result = result + formatLine('color-springgreen', 'Connections', network.walls.code);
   } else {
-    result = result + formatLine('color-red', 'Target coordinates');
+    result = result + formatLine('color-red', 'Connections');
   }
 
   if (network.traps) {
@@ -198,10 +203,10 @@ function prepareBtmLegend(network) {
     result = result + formatLine('color-red', 'Traps');
   }
 
-  if (network.walls) {
-    result = result + formatLine('color-springgreen', 'Connections', network.walls.code);
+  if (network.target && network.target.length) {
+    result = result + formatLine('color-springgreen', 'Target coordinates', network.target.code);
   } else {
-    result = result + formatLine('color-red', 'Connections');
+    result = result + formatLine('color-red', 'Target coordinates');
   }
 
   return result + "</ul>";

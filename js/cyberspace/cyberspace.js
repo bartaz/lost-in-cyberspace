@@ -477,7 +477,7 @@ function initTextures() {
   let hint = [
     '> access code',
     '',
-    'ACCESS CODES from terminals in',
+    'ACCESS_CODEs from terminals in',
     'different sectors can be used by',
     'NAVIGATOR to map the network and',
     'locate the TARGET node.',
