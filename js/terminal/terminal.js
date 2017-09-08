@@ -12,22 +12,30 @@ function Terminal() {
 Terminal.prototype.submitInput = function () {
   this.currentValue = this.domManipulator.getInputValue();
 
-  if (this.currentValue === "help") {
-    this.domManipulator.showOptionsList();
-  } else if (this.currentValue.substring(0, 5) === "help ") {
-    let command = this.currentValue.substring(5);
-    if (command === "nmap") {
-      this.domManipulator.showMapDetails();
-    } else if (command === "help") {
-      this.domManipulator.showHelpDetails();
+  let args = this.currentValue.split(" ").filter(x => x);
+  let cmd = args.splice(0,1)[0];
+
+  // if --help is passed as argument redirect to help command
+  if (args.indexOf('-h') !== -1 || args.indexOf('--help') !== -1) {
+    args = [cmd];
+    cmd = 'help';
+  }
+
+  if (cmd === 'help' || cmd === 'man') {
+    if (args[0]) {
+      if (args[0] === 'nmap') {
+        this.domManipulator.showMapDetails();
+      } else if (args[0] === 'help') {
+        this.domManipulator.showHelpDetails();
+      } else {
+        this.domManipulator.showHelpCommandNotFound(args);
+      }
     } else {
-      this.domManipulator.showHelpCommandNotFound();
+      this.domManipulator.showOptionsList();
     }
-  } else if (this.currentValue === "nmap" || this.currentValue.substring(0, 5) === "nmap ") {
-    let codes = this.currentValue.substring(5).split(" ");
-    this.domManipulator.showMap(codes);
-  } else if (this.currentValue === "top" || this.currentValue.indexOf("top ") === 0) {
-    let args = this.currentValue.split(" ").filter(x => x).slice(1);
+  } else if (cmd === 'nmap') {
+    this.domManipulator.showMap(args);
+  } else if (cmd === 'top') {
     this.domManipulator.showTopScore(args);
   } else {
     this.domManipulator.showCommandNotFound();

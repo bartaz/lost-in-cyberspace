@@ -68,9 +68,9 @@ DomManipulator.prototype.showCommandNotFound = function () {
   this.setInputValue("");
 };
 
-DomManipulator.prototype.showHelpCommandNotFound = function () {
+DomManipulator.prototype.showHelpCommandNotFound = function (args) {
   this.showSubmittedValue();
-  this.createParagraph("COMMAND NOT FOUND: " + this.getInputValue() + ". Try with different argument");
+  this.createParagraph("No help entry for " + args.join(" "));
   this.setInputValue("");
 };
 

@@ -1,12 +1,12 @@
 ### Terminal:
-- [ ] don't depend on number of spaces between arguments: (nmap   c1234      d1234)
-- [ ] ignore space at the beginning?
 - [ ] review help text
 - [ ] add help for top command
 - [ ] prepare list of top 10 scores
 - [ ] choose some font and test in in Firefox and Chrome (IE?) in different systems (Mac, Windows, Linux)
 - [ ] cannot copy example code
 - [ ] easter eggs (some additional commands?) - cat?
+- [x] don't depend on number of spaces between arguments: (nmap   c1234      d1234)
+- [x] ignore space at the beginning?
 - [x] "top" command to display top 10 scores (?)
   - "top" without arguments just displays top 10 (with hardcoded initial values)
   - "top WIN_CODE NAME" adds entry to top 10 for given win code (from final screen and team name)
