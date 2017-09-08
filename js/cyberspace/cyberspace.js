@@ -341,7 +341,6 @@ function initTimer() {
 function gameOver() {
   if (cancelMove) cancelMove();
   isGameOver = true;
-  console.log('YOU LOSE!');
 
   document.getElementById('camera').setAttribute('position', "0 0 0");
   paintWalls(COLOR_TRAP);
@@ -351,8 +350,6 @@ function gameOver() {
 /* global scoreToCode */
 function showWinScreen() {
   let code = scoreToCode(time, moves);
-
-  console.log(time, moves, code);
 
   let blueScreenOfWin = [
     "              ERROR" ,
@@ -420,7 +417,6 @@ function win() {
   }
 
   removeAll('.wall', 20, () => removeAll('.node', 50, showWinScreen));
-  console.log("WIN", time);
 }
 
 function drawText(ctx, text, bgColor, size = 48, textColor = 'white') {

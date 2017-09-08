@@ -102,8 +102,6 @@ DomManipulator.prototype.showTopScore = function (args) {
   let code = args[0];
   let name = args.slice(1).join(" ");
 
-  console.log("CODE:", code, "NAME:", name);
-
   let error;
 
   if (code) {
@@ -114,7 +112,6 @@ DomManipulator.prototype.showTopScore = function (args) {
     } catch(e) {
       code = null;
       error = e.message;
-      console.log("ERROR", error);
     }
   }
 
