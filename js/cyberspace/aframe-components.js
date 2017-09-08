@@ -15,9 +15,11 @@ AFRAME.registerComponent('scale-on-hover', {
 /* global animate */
 AFRAME.registerComponent('fuse-on-hover', {
   init: function () {
+    let cursor = document.getElementById("cursor");
+    if (!cursor.components.cursor.data.fuse) return; // disable fuse effect on desktop
+
     let defaultRadius = 0.007;
     let el = this.el;
-    let cursor = document.getElementById("cursor");
     let cancel;
 
     el.addEventListener('mouseenter', () => {

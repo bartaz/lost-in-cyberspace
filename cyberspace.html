@@ -9,11 +9,11 @@
     <script src="./js/cyberspace/aframe-components.js"></script>
   </head>
   <body bgcolor="#000">
-    <p style='position:absolute;margin-left:1em;color:#FFF;font:2em Monaco, monospace;'>Loading...</p>
-    <a-scene cyberspace stats id="scene">
+    <p style='position:absolute;margin-left:1em;color:#FFF;font:1em Monaco, monospace;'>Entering CYBERSPACE...</p>
+    <a-scene cyberspace id="scene">
       <a-assets>
       </a-assets>
-      <a-entity id="camera" position="0 0 0">
+      <a-entity id="camera" wasd-controls="false">
         <a-camera>
         <a-entity id="cursor" cursor
           position="0 0 -0.5"
