@@ -1,7 +1,6 @@
-/* global InputManager DomManipulator */
+/* global InputManager */
 function Terminal() {
   this.inputManager   = new InputManager();
-  this.domManipulator = new DomManipulator();
   this.currentValue   = "";
 
   this.inputManager.on("submit", this.submitInput.bind(this));
@@ -11,7 +10,7 @@ function Terminal() {
 }
 
 Terminal.prototype.submitInput = function () {
-  this.currentValue = this.domManipulator.getInputValue();
+  this.currentValue = terminalInput.value;
 
   let args = this.currentValue.split(" ").filter(x => x);
   let cmd = args.splice(0,1)[0];
@@ -24,32 +23,32 @@ Terminal.prototype.submitInput = function () {
 
   if (cmd === 'help' || cmd === 'man') {
     if (args[0]) {
-      this.domManipulator.showCommandHelp(args[0]);
+      showCommandHelp(args[0]);
     } else {
-      this.domManipulator.showOptionsList();
+      showOptionsList();
     }
   } else if (cmd === 'nmap') {
-    this.domManipulator.showMap(args);
+    showMap(args);
   } else if (cmd === 'top') {
-    this.domManipulator.showTopScore(args);
+    showTopScore(args);
   } else {
-    this.domManipulator.showCommandNotFound();
+    showCommandNotFound();
   }
 
-  this.domManipulator.scrollToBottom();
+  window.scrollTo(0, document.body.scrollHeight);
 };
 
 Terminal.prototype.setFocus = function () {
-  this.domManipulator.setFocusToInput();
+  terminalInput.focus();
 };
 
 Terminal.prototype.restorePrevCommand = function () {
-  this.domManipulator.setInputValue(this.currentValue);
-  this.domManipulator.setFocusToInput();
+  setInputValue(this.currentValue);
+  terminalInput.focus();
 };
 
 Terminal.prototype.clearInput = function () {
-  this.domManipulator.setInputValue("");
+  setInputValue("");
 };
 
 new Terminal();

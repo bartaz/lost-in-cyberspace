@@ -1,29 +1,19 @@
-function DomManipulator() {
-  this.terminal      = document.getElementById("terminal");
-  this.terminalInput = document.getElementById("terminal--input");
+let terminal      = document.getElementById("terminal");
+let terminalInput = document.getElementById("terminal--input");
+
+function setInputValue(value) {
+  setTimeout(() => {
+    terminalInput.value = value;
+    terminalInput.focus();
+  }, 1);
 }
 
-DomManipulator.prototype.getInputValue = function () {
-  return this.terminalInput.value;
-};
-
-DomManipulator.prototype.setInputValue = function (value) {
-  setTimeout(() => {
-    this.terminalInput.value = value;
-    this.terminalInput.focus();
-  }, 1);
-};
-
-DomManipulator.prototype.setFocusToInput = function () {
-  this.terminalInput.focus();
-};
-
 /* global networkFromCodes getNetworkMap */
-DomManipulator.prototype.showCommandHelp = function (cmd) {
-  this.showSubmittedValue();
+function showCommandHelp(cmd) {
+  showSubmittedValue();
 
   if (cmd === 'help') {
-    this.createParagraph("<div>NAME</div>"
+    createParagraph("<div>NAME</div>"
     + "<div class='pad'><b>help</b> -- Display list of options</div>"
     + "<div>SYNOPSIS</div>"
     + "<div class='pad'><b>help</b> [COMMAND]</div>"
@@ -31,7 +21,7 @@ DomManipulator.prototype.showCommandHelp = function (cmd) {
     + "<div class='pad'><b>help</b> is a command to display list of available options."
     + "<br/><br/>The user can provide [COMMAND] to get details about particular [COMMAND].</div>");
   } else if (cmd === 'nmap') {
-    this.createParagraph("<div>NAME</div>"
+    createParagraph("<div>NAME</div>"
     + "<div class='pad'><b>nmap</b> -- Display the map of network nodes</div>"
     + "<div>SYNOPSIS</div>"
     + "<div class='pad'><b>nmap</b> [NODE_CODE ...]</div>"
@@ -44,9 +34,9 @@ DomManipulator.prototype.showCommandHelp = function (cmd) {
     + "<div class='pad'>The following is how to display map of nodes with [Sectors], [Traps] and [Connections]:</div>"
     + "<div class='pad'>`nmap 0xC16F8 D1234 EF4D0`</div>");
     let network = networkFromCodes("0xC16F8 D1234 EF4D0".split(" "));
-    this.createParagraph(getNetworkMap(network) + this.prepareTopLegend() + this.prepareBtmLegend(network), "terminal--map");
+    createParagraph(getNetworkMap(network) + prepareTopLegend() + prepareBtmLegend(network), "terminal--map");
   } else if (cmd === 'top') {
-    this.createParagraph("<div>NAME</div>"
+    createParagraph("<div>NAME</div>"
     + "<div class='pad'><b>top</b> -- Display list of top hacker teams' scores.</div>"
     + "<div>SYNOPSIS</div>"
     + "<div class='pad'><b>top</b> [NETWORK_TOP_HACKER_CODE] [TEAM_NAME]</div>"
@@ -57,37 +47,37 @@ DomManipulator.prototype.showCommandHelp = function (cmd) {
     + "<div class='pad'>The following is how to add your noob score to top hackers list:</div>"
     + "<div class='pad'>`top 0xF0020F N00BS`</div>");
   } else {
-    this.createParagraph("No help entry for " + cmd);
+    createParagraph("No help entry for " + cmd);
   }
 
-  this.setInputValue("");
-};
+  setInputValue("");
+}
 
-DomManipulator.prototype.showOptionsList = function () {
-  this.showSubmittedValue();
-  this.createParagraph("<div>List of available commands:</div>"
+function showOptionsList() {
+  showSubmittedValue();
+  createParagraph("<div>List of available commands:</div>"
   + "<div class='pad'>- <b>nmap [NODE_CODE...]</b> -- Display the map of network nodes</div>"
   + "<div class='pad'>- <b>help [COMMAND]</b> -- Display detailed help for given command or list of available commands.</div>"
   + "<div class='pad'>- <b>top</b> -- Display list of top hacker teams' scores.</div>");
-  this.setInputValue("");
-};
+  setInputValue("");
+}
 
-DomManipulator.prototype.showCommandNotFound = function () {
-  this.showSubmittedValue();
-  this.createParagraph("COMMAND NOT FOUND: " + this.getInputValue());
-  this.setInputValue("");
-};
+function showCommandNotFound() {
+  showSubmittedValue();
+  createParagraph("COMMAND NOT FOUND: " + terminalInput.value);
+  setInputValue("");
+}
 
-DomManipulator.prototype.showMap = function (codes) {
-  this.showSubmittedValue();
+function showMap(codes) {
+  showSubmittedValue();
   let network = networkFromCodes(codes);
   // map 0xD1234 0xC16F8 0xEF4D0 0xB129A correct
   // map 0xF298E 0xEF4D0 0x1298E 0x44206 invalid
-  this.createParagraph("MAP OF THE NETWORK:");
-  this.createParagraph(getNetworkMap(network) + this.prepareTopLegend() + this.prepareBtmLegend(network), "terminal--map");
-  this.showErrors(codes, network.errors);
-  this.setInputValue("");
-};
+  createParagraph("MAP OF THE NETWORK:");
+  createParagraph(getNetworkMap(network) + prepareTopLegend() + prepareBtmLegend(network), "terminal--map");
+  showErrors(codes, network.errors);
+  setInputValue("");
+}
 
 
 // 1. read code from args (may be empty)
@@ -100,8 +90,8 @@ DomManipulator.prototype.showMap = function (codes) {
 // 6. print errors if any
 
 /* global getTopScores codeToScore */
-DomManipulator.prototype.showTopScore = function (args) {
-  this.showSubmittedValue();
+function showTopScore(args) {
+  showSubmittedValue();
 
   let code = args[0];
   let name = args.slice(1).join(" ");
@@ -121,13 +111,13 @@ DomManipulator.prototype.showTopScore = function (args) {
 
   let scores = getTopScores(code, name);
 
-  this.createParagraph("TOP HACKERS");
-  this.createParagraph("=============");
+  createParagraph("TOP HACKERS");
+  createParagraph("=============");
 
-  this.createParagraph("&nbsp;&nbsp;&nbsp;<span class='col'>TIME LEFT:</span> <span class='col'>SWITCHES:</span> <span>TEAM:</span>");
+  createParagraph("&nbsp;&nbsp;&nbsp;<span class='col'>TIME LEFT:</span> <span class='col'>SWITCHES:</span> <span>TEAM:</span>");
   scores.forEach((s) => {
 
-    this.createParagraph(
+    createParagraph(
       (s.code === formatCode(args[0]) ? "~&nbsp;" : "&nbsp;&nbsp;") +
        " <span class='col'>" + `0${~~(s.time / 60)}:${(s.time % 60)<10?'0':''}${s.time % 60}` +
        "</span> <span class='col'>" + s.moves +
@@ -135,32 +125,31 @@ DomManipulator.prototype.showTopScore = function (args) {
   });
 
   if (error) {
-    this.createParagraph(error);
+    createParagraph(error);
   }
 
-  this.setInputValue("");
-};
+  setInputValue("");
+}
 
-DomManipulator.prototype.showErrors = function (codes, errors) {
+function showErrors(codes, errors) {
   if (!codes.length) {
-    this.createParagraph("Network codes not provided.");
+    createParagraph("Network codes not provided.");
     return;
   }
   if (!errors || !errors.length) return;
 
-  errors.forEach((error) => this.createParagraph('<b>'+ error + '</b> is not a valid NODE_CODE.'));
-};
+  errors.forEach((error) => createParagraph('<b>'+ error + '</b> is not a valid NODE_CODE.'));
+}
 
 function formatCode(code) {
   return code ? '0x' + code.replace('0x','').toUpperCase() : 'unknown';
 }
 
-DomManipulator.prototype.prepareBtmLegend = function (network) {
+function formatLine(colorClass, name, code) {
+  return "<li class='" + colorClass + "'>["+ formatCode(code) +"] " + name + "</li>";
+}
 
-  function formatLine(colorClass, name, code) {
-    return "<li class='" + colorClass + "'>["+ formatCode(code) +"] " + name + "</li>";
-  }
-
+function prepareBtmLegend(network) {
   let result = "<ul class='terminal--map-legend'>";
   if (network.colors && network.colors.length) {
     result = result + formatLine('color-springgreen', 'Sectors', network.colors.code);
@@ -187,9 +176,9 @@ DomManipulator.prototype.prepareBtmLegend = function (network) {
   }
 
   return result + "</ul>";
-};
+}
 
-DomManipulator.prototype.prepareTopLegend = function () {
+function prepareTopLegend() {
   let result = "<div class='terminal--map-legend-top'>Legend:<ul>";
   result = result + "<li>&#9670; - node</li>";
   result = result + "<li>| - connection</li>";
@@ -197,19 +186,15 @@ DomManipulator.prototype.prepareTopLegend = function () {
   result = result + "<li>X - target</li>";
 
   return result + "</ul></div>";
-};
+}
 
-DomManipulator.prototype.showSubmittedValue = function () {
-  this.createParagraph("<span class='color-green'>> " + this.getInputValue() + "</span>");
-};
+function showSubmittedValue () {
+  createParagraph("<span class='color-green'>> " + terminalInput.value + "</span>");
+}
 
-DomManipulator.prototype.createParagraph = function (innerHtml, classNames = "", parentNode = this.terminal) {
+function createParagraph(innerHtml, classNames = "", parentNode = terminal) {
   let p = document.createElement("p");
   p.setAttribute("class", "out " + classNames);
   p.innerHTML = innerHtml;
   parentNode.appendChild(p);
-};
-
-DomManipulator.prototype.scrollToBottom = function () {
-  window.scrollTo(0, document.body.scrollHeight);
-};
+}
