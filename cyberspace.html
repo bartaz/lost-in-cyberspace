@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Lost in Cyberspace</title>
+    <meta charset="utf-8">
+    <title>Lost in CYBERSPACE</title>
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="./js/network/network.js"></script>
     <script src="./js/cyberspace/jsfxr.js"></script>
@@ -9,12 +10,12 @@
     <script src="./js/cyberspace/aframe-components.js"></script>
   </head>
   <body bgcolor="#000">
-    <p style='position:absolute;margin-left:1em;color:#FFF;font:1em Monaco,Consolas,monospace;'>Entering CYBERSPACE...</p>
+    <p style="position:absolute;margin-left:1em;color:#FFF;font:1em Monaco,Consolas,monospace;">Entering CYBERSPACE...</p>
     <a-scene cyberspace id="scene">
       <a-assets>
       </a-assets>
-      <a-entity id="camera" wasd-controls="false">
-        <a-camera>
+      <a-entity id="camera">
+        <a-camera wasd-controls-enabled="false">
         <a-entity id="cursor" cursor
           position="0 0 -0.5"
           geometry="primitive: ring; radiusInner: 0.007; radiusOuter: 0.01, segmentsTheta: 32"

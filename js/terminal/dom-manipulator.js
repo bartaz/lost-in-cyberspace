@@ -10,9 +10,9 @@ function setInputValue(value) {
 }
 
 function showCat() {
-  this.showSubmittedValue();
+  showSubmittedValue();
 
-  this.createParagraph(
+  createParagraph(
     "<span class='color-red'>,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`</span><br>"
     + "<span style='color: "+ COLOR_VALUES[2] +"'>.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,</span><br>"
     + "<span style='color: "+ COLOR_VALUES[0] +"'>*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,---/V\\<br>"
@@ -20,7 +20,7 @@ function showCat() {
     + "<span style='color: "+ COLOR_VALUES[3] +"'>^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'</span>&nbsp;&nbsp;UU&nbsp;&nbsp;UU"
   );
 
-  this.setInputValue("");
+  setInputValue("");
 }
 
 /* global networkFromCodes getNetworkMap */

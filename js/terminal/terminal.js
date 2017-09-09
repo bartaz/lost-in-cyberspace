@@ -40,17 +40,26 @@ function submitInput() {
 };
 
 document.addEventListener("keydown", (event) => {
-  var modifiers = event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
+  let modifiers = event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
 
-
-  if (!modifiers && event.which === 13) { // Enter key submits the command
-    submitInput();
-  } else if (!modifiers && event.which === 38) { //Arrow up shows 1 previous command
-    setInputValue(currentValue);
+  if (!modifiers) {
     terminalInput.focus();
-  } else if (!modifiers && event.which === 40) { //Arrow down clears input
-    setInputValue("");
+    if (event.which === 13) { // Enter key submits the command
+      submitInput();
+    } else if (event.which === 38) { //Arrow up shows 1 previous command
+      setInputValue(currentValue);
+      terminalInput.focus();
+    } else if (event.which === 40) { //Arrow down clears input
+      setInputValue("");
+    }
   }
 });
 
-document.addEventListener("click", () => terminalInput.focus());
+document.addEventListener("click", (event) => {
+  // if clicking outside of terminal, focus on the input
+  if (event.target === document.documentElement ||
+      event.target === document.body ||
+      event.target === document.querySelector('.container')) {
+    terminalInput.focus()
+  }
+});

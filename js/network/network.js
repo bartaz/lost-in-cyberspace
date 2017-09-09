@@ -328,7 +328,7 @@ function getNetworkMap(network) {
 
   // turn magic numbers into HTML friendly string representation
   let networkString = networkGrid.map(function(line, i){
-    var x = 0;
+    let x = 0;
     return line.join('')
       .replace(/0/g, '<span class="char"></span>') // print walls
       .replace(/1|2/g, function(value) { // print connections
@@ -345,7 +345,7 @@ function getNetworkMap(network) {
       })
       .replace(/3|4|5/g, function(value) { // print nodes (including traps & target)
         let y = i / 2;
-        var node = '&#9830;'; // standard node
+        let node = '&#9830;'; // standard node
 
         if (value === '4') { // it's a trap!
           node = '&#8709;';
@@ -356,7 +356,7 @@ function getNetworkMap(network) {
         }
 
         if (network.colors) {
-          var color;
+          let color;
 
           if (y < 4) {
             color = (x < 4) ? COLOR_VALUES[network.colors[0]] : COLOR_VALUES[network.colors[1]];
