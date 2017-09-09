@@ -1,10 +1,26 @@
-This game is made for the js13kgame'17 competition.
+Lost in CYBERSPACE
+====================
 
-The **Lost in Cyberspace** is a cooperative game designed for 2 players playing on separate devices. The only connection you need between each other is your voice. You can be in the same room or on the other part of the world as long as you can hear each other.
+**Lost in CYBERSPACE** is a cooperative game designed for 2 players, each playing on a separate device.
+The only connection you need between each other is your voice.
+You can be in the same room or on the other part of the world, as long as you can hear each other.
 
-One player takes a role of a **HACKER** lost in the cyberspace maze of a corporate network. Their role is to move around cyberspace, read access codes to **NAVIGATOR**, find a target node and hack it.
-Hacking wrong terminals will make the **HACKER** easier to locate and lose some time. When the time runs out, it's the end of a game!
+One player takes a role of a **HACKER** lost in the **CYBERSPACE** maze of a corporate network. They need to move around **CYBERSPACE**, read the access codes to **NAVIGATOR** and find the **TARGET** node to hack it. But beware! Hacking wrong nodes will make you easier to locate and you will be lost in **CYBERSPACE** when the time runs out!
 
-The other player takes a role of a **NAVIGATOR** who uses terminal to decode access codes they got from **HACKER**. He/she reads the map of cyberspace network **HACKER** is trapped in and help them find the way to the target node.
+The other player takes a role of a **NAVIGATOR** who uses a terminal to decode the access codes they got from **HACKER**, read the map of **CYBERSPACE** and help **HACKER** find the way to the **TARGET** node.
+
+This game is made for the [js13kgames 2017](http://2017.js13kgames.com/) competition.
+
+## Authors
+
+Bartek Szopka (@bartaz), Zofia Korcz (@calanthe)
+
+## License
+
+MIT License, Copyright (c) 2017 Bartek Szopka & Zofia Korcz
+
+## Credits
 
 Retro CRT like terminal styling based on https://codepen.io/somethingformed/pen/raWJXV demo.
+
+Command line cat thanks to https://github.com/djui/nyancat
