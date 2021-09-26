@@ -1,31 +1,56 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>Lost in CYBERSPACE</title>
     <link rel="stylesheet" href="styles/main.css" />
+
+    <script defer>
+      window.onload = () => {
+        if (
+          window.DeviceMotionEvent &&
+          typeof window.DeviceMotionEvent.requestPermission == "function"
+        ) {
+          document.querySelector("#ask-vr").addEventListener("click", (e) => {
+            e.preventDefault();
+            window.DeviceMotionEvent.requestPermission().then((res) => {
+              window.location.href = window.location.href.replace(
+                /\/$/,
+                "/cyberspace.html"
+              );
+            });
+          });
+        }
+      };
+    </script>
   </head>
   <body>
     <div class="output">
       <h1>Lost in <span class="logo">CYBERSPACE</span></h1>
       <p>
-          It's a cooperative game designed for 2 players, each playing on a separate device.<br/>
-          The only connection you need between each other is your voice.
-          You can be in the same room or on the other part of the world, as long as you can hear each other.
+        It's a cooperative game designed for 2 players, each playing on a
+        separate device.<br />
+        The only connection you need between each other is your voice. You can
+        be in the same room or on the other part of the world, as long as you
+        can hear each other.
       </p>
       <p>
-          One player takes a role of a HACKER lost in the CYBERSPACE maze of a corporate network.
-          Your need to move around CYBERSPACE, read the access codes to NAVIGATOR and find the TARGET node to hack it.
+        One player takes a role of a HACKER lost in the CYBERSPACE maze of a
+        corporate network. Your need to move around CYBERSPACE, read the access
+        codes to NAVIGATOR and find the TARGET node to hack it.
       </p>
       <ul>
-        <li><a href="./cyberspace.html">Play as HACKER [VR]</a></li>
+        <li><a href="./cyberspace.html" id="ask-vr">Play as HACKER [VR]</a></li>
       </ul>
       <p>
-          The other player takes a role of a NAVIGATOR who uses a terminal to decode the access codes they got from HACKER,
-          read the map of CYBERSPACE and help HACKER find the way to the TARGET node.
+        The other player takes a role of a NAVIGATOR who uses a terminal to
+        decode the access codes they got from HACKER, read the map of CYBERSPACE
+        and help HACKER find the way to the TARGET node.
       </p>
       <ul>
-        <li><a href="./terminal.html">Play as NAVIGATOR [Desktop]</a></li>
+        <li>
+          <a href="./terminal.html">Play as NAVIGATOR [Desktop]</a>
+        </li>
       </ul>
     </div>
     <div class="scanlines"></div>
